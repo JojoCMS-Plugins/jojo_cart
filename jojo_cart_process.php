@@ -118,7 +118,7 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
             $smarty->assign('order',      $cart->order);
             $smarty->assign('items',      $cart->items);
 
-            if ($cart->fields['shipping_rd']) {
+            if (isset($cart->fields['shipping_rd'])) {
                 $surcharge = Jojo::selectRow("SELECT rural_surcharge FROM {cart_region} WHERE regioncode = ?", array($cart->fields['shippingRegion']));
                 $cart->order['surcharge'] = $surcharge['rural_surcharge'];
             }
