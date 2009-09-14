@@ -44,7 +44,7 @@ class jojo_plugin_Jojo_cart_payment extends JOJO_Plugin
         $cart->order['subtotal'] = call_user_func(array(Jojo_Cart_Class, 'subTotal'));
         $cart->order['freight']  = call_user_func(array(Jojo_Cart_Class, 'getFreight'));
         $cart->order['amount']   = call_user_func(array(Jojo_Cart_Class, 'total'));
-        if ($cart->fields['shipping_rd']) {
+        if (isset($cart->fields['shipping_rd'])) {
             $surcharge = Jojo::selectRow("SELECT rural_surcharge FROM {cart_region} WHERE regioncode = ?", array($cart->fields['shippingRegion']));
             $cart->order['surcharge'] = $surcharge['rural_surcharge'];
         }
