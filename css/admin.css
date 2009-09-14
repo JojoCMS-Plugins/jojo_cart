@@ -37,15 +37,44 @@ strong {
 em {
   font-style: italic;
 }
+
 .adminTransactionList thead tr th {
   font-weight:bold;
   padding-bottom:10px;
   text-align:left;
 }
+
 #adminTransactionList {
   background:white;
   padding:0 15px;
 }
+
 #cluetip {
   margin-left:100px;
+}
+
+.cluetip-default #cluetip-inner {
+  padding: 1px 5px;
+}
+
+.cluetip-default div#cluetip-close {
+  padding:5px 5px 0px;
+  text-align:right;
+  background:#FFFFFF;
+}
+
+.transactionlist_ajax {
+  background:#FFFFFF;
+  width:350px;
+  padding:10px;
+}
+
+#cluetip-title {
+  background:#FFFFFF;
+  padding:10px 10px;
+  margin:10px 5px;
+}
+
+h3#cluetip-title {
+  margin-bottom:0px;
 }

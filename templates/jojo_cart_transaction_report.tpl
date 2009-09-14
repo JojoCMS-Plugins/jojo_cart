@@ -6,7 +6,9 @@
   <script type="text/javascript">
 {literal}
 $(document).ready(function() {
-$('a.info').cluetip({activation:"click", showTitle: false});
+$('a.info').cluetip({activation:"click", closePosition: 'top',closeText: '<img src="images/cross.png" alt="" />',sticky:true,ajaxCache: true,showTitle:false});
+$('a.paid').cluetip({activation:"click", closePosition: 'top',closeText: '<img src="images/cross.png" alt="" />',sticky:true,width:380,showTitle:false});
+$('a.shipped').cluetip({activation:"click", closePosition: 'top',closeText: '<img src="images/cross.png" alt="" />',sticky:true,width:380,showTitle:false});
 });
 {/literal}
 </script>
@@ -34,9 +36,14 @@ $('a.info').cluetip({activation:"click", showTitle: false});
       <td><a class="info" href="{$ADMIN}/cart/transactionlist/{$transactions[t].token}/" rel="{$ADMIN}/cart/transaction_list/{$transactions[t].token}/">{$transactions[t].FirstName} {$transactions[t].LastName}</a></td>
       <td>{$transactions[t].currencysymbol}{$transactions[t].amount}</td>
       <td>{$transactions[t].currency}</td>
-      <td>{$transactions[t].status}</td>
+      <td>
+      {if $transactions[t].status=='payment_pending' or $transactions[t].status=='pending' or $transactions[t].status=='abandoned'}<a class="paid" target="_blank" href="cart/paidadmin_complete/{$transactions[t].token}/{$transactions[t].actioncode}/" rel="cart/paidadmin_complete/{$transactions[t].token}/{$transactions[t].actioncode}/">{$transactions[t].status} - click to complete</a>{else}{$transactions[t].status}{/if}
+      {if $transactions[t].status<>'abandoned'}<a class="paid" target="_blank" href="cart/paidadmin_abandoned/{$transactions[t].token}/{$transactions[t].actioncode}/" rel="cart/paidadmin_abandoned/{$transactions[t].token}/{$transactions[t].actioncode}/" title="Change Status to Abandoned">A</a>{/if}
+      {if $transactions[t].status<>'payment_pending' and $transactions[t].status<>'pending'}<a class="paid" target="_blank" href="cart/paidadmin_paymentpending/{$transactions[t].token}/{$transactions[t].actioncode}/" rel="cart/paidadmin_paymentpending/{$transactions[t].token}/{$transactions[t].actioncode}/" title="Change Status to Payment Pending">P</a>{/if}
+      </td>
       <td>{$transactions[t].handler}</td>
-      <td>{if $transactions[t].shipped==-1}n/a{elseif $transactions[t].shipped}{$transactions[t].shipped|date_format:"%d %b %Y"}{/if}</td>
+      <td>{if $transactions[t].shipped<1}<a class="shipped" target="_blank" href="cart/shippedadmin/{$transactions[t].token}/{$transactions[t].actioncode}/" rel="cart/shippedadmin/{$transactions[t].token}/{$transactions[t].actioncode}/">click to ship</a>
+      {elseif $transactions[t].shipped}{$transactions[t].shipped|date_format:"%d %b %Y"} <a class="shipped" href="cart/shippedadmin_unshipped/{$transactions[t].token}/{$transactions[t].actioncode}/" rel="cart/shippedadmin_unshipped/{$transactions[t].token}/{$transactions[t].actioncode}/">U</a>{/if}</td>
     </tr>
     {/section}
   </tbody>

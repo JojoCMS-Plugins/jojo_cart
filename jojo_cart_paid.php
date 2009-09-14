@@ -24,7 +24,10 @@ class jojo_plugin_Jojo_cart_paid extends JOJO_Plugin
         $send       = Jojo::getFormData('send',       false);
         $token      = Jojo::getFormData('token',      false);
         $actioncode = Jojo::getFormData('actioncode', false);
+        $action     = Jojo::getFormData('action', false);
 
+        //paidadmin_complete|paidadmin_paymentpending|paidadmin_abandoned
+        if(strpos($action,'paidadmin')!==false) jojo_plugin_Admin::adminMenu();
         /* send the notification to the client */
         if ($send) {
             $from_name   = Jojo::either(_CONTACTNAME, _FROMNAME,_SITETITLE);
@@ -42,13 +45,29 @@ class jojo_plugin_Jojo_cart_paid extends JOJO_Plugin
 
         $cart = call_user_func(array(Jojo_Cart_Class, 'getCart'), $token);
         //if (($cart->shipped == 0) || ($cart->shipped == -1)) $cart->shipped = time();
-        $cart->status = 'complete';
-        call_user_func(array(Jojo_Cart_Class, 'saveCart'));
 
         /* ensure the actioncode is the same as is stored against the cart */
         if ($actioncode != $cart->actioncode) {
             $content['content'] = 'This link is invalid.';
         } else {
+            switch($action){
+              case "paid":
+              case "paidadmin_complete":
+                $cart->status = 'complete';
+                $smarty->assign('changestatus','');
+                break;
+              case "paidadmin_paymentpending":
+                $cart->status = 'payment_pending';
+                $smarty->assign('changestatus','Status has been changed to payment pending');
+                break;
+              case "paidadmin_abandoned":
+                $cart->status = 'abandoned';
+                $smarty->assign('changestatus','Status has been changed to abandoned');
+                break;
+            }
+
+            call_user_func(array(Jojo_Cart_Class, 'saveCart'));
+
             $smarty->assign('token',      $cart->token);
             $smarty->assign('actioncode', $cart->actioncode);
             $smarty->assign('fields',     $cart->fields);
@@ -65,4 +84,3 @@ class jojo_plugin_Jojo_cart_paid extends JOJO_Plugin
         return _PROTOCOL.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
     }
 }
-

@@ -51,8 +51,9 @@ Jojo::registerURI("cart/[action:complete|cancel|cheque|payment-info]",          
 Jojo::registerURI("cart/[action:empty]",                                                        'jojo_plugin_Jojo_cart_update');  // "cart/action/"
 Jojo::registerURI("cart/[action:add|remove]/[id:[a-zA-Z0-9_-]*]",                               'jojo_plugin_Jojo_cart_update');  // "cart/add/product-name/" or "cart/add/id/" or "cart/remove/product-name/" or "cart/remove/id/"
 Jojo::registerURI("cart/[action:add|remove]",                                                   'jojo_plugin_Jojo_cart_update');  // "cart/add/" - with the ID in a POST variable
-Jojo::registerURI("cart/[action:shipped]/[token:[a-zA-Z0-9]{20}]/[actioncode:[a-zA-Z0-9]{10}]", 'jojo_plugin_Jojo_cart_shipped'); // "cart/shipped/VUvx2v7beGA5QWUlydU1/2v7beGydU1/"
-Jojo::registerURI("cart/[action:paid]/[token:[a-zA-Z0-9]{20}]/[actioncode:[a-zA-Z0-9]{10}]",    'jojo_plugin_Jojo_cart_paid');    // "cart/paid/VUvx2v7beGA5QWUlydU1/2v7beGydU1/"
+
+Jojo::registerURI("cart/[action:shipped|shippedadmin|shippedadmin_unshipped]/[token:[a-zA-Z0-9]{20}]/[actioncode:[a-zA-Z0-9]{10}]", 'jojo_plugin_Jojo_cart_shipped'); // "cart/shipped/VUvx2v7beGA5QWUlydU1/2v7beGydU1/"
+Jojo::registerURI("cart/[action:paid|paidadmin_complete|paidadmin_paymentpending|paidadmin_abandoned]/[token:[a-zA-Z0-9]{20}]/[actioncode:[a-zA-Z0-9]{10}]",    'jojo_plugin_Jojo_cart_paid');    // "cart/paid/VUvx2v7beGA5QWUlydU1/2v7beGydU1/"
 Jojo::registerURI(_ADMIN."/cart/transactions/[token:[a-zA-Z0-9]{20}]",                          'jojo_plugin_Jojo_cart_process'); // "admin/cart/transactions/VUvx2v7beGA5QWUlydU1/"
 Jojo::registerURI(_ADMIN."/cart/transactions/[token:[a-zA-Z0-9]{32}]",                          'jojo_plugin_Jojo_cart_process'); // "admin/cart/transactions/VUvx2v7beGA5QWUlydU1eGA5QWUlydU1/" - the longer MD5 token Jojo used to use
 Jojo::registerURI(_ADMIN."/cart/transaction_list/[token:[a-zA-Z0-9]{20}]",                      'jojo_plugin_Jojo_cart_transaction_list'); // "admin/cart/transactionlist/VUvx2v7beGA5QWUlydU1/"

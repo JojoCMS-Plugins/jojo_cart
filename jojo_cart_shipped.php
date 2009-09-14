@@ -24,6 +24,9 @@ class jojo_plugin_Jojo_cart_shipped extends JOJO_Plugin
         $send       = Jojo::getFormData('send',       false);
         $token      = Jojo::getFormData('token',      false);
         $actioncode = Jojo::getFormData('actioncode', false);
+        $action     = Jojo::getFormData('action', false);
+
+        if(strpos($action,'shippedadmin')!==false) jojo_plugin_Admin::adminMenu();
 
         /* send the notification to the client */
         if ($send) {
@@ -42,14 +45,22 @@ class jojo_plugin_Jojo_cart_shipped extends JOJO_Plugin
         }
 
         $cart = call_user_func(array(Jojo_Cart_Class, 'getCart'), $token);
-        if (($cart->shipped == 0) || ($cart->shipped == -1)) $cart->shipped = time();
-
-        call_user_func(array(Jojo_Cart_Class, 'saveCart'));
 
         /* ensure the actioncode is the same as is stored against the cart */
         if ($actioncode != $cart->actioncode) {
             $content['content'] = 'This link is invalid.';
         } else {
+            if (($cart->shipped == 0) || ($cart->shipped == -1)) {
+              $cart->shipped = time();
+              $smarty->assign('changestatus','');
+            }
+            if ($action == "shippedadmin_unshipped") {
+              $cart->shipped = 0;
+              $smarty->assign('changestatus','Status has been changed to Unshipped');
+            }
+
+            call_user_func(array(Jojo_Cart_Class, 'saveCart'));
+
             $smarty->assign('token',      $cart->token);
             $smarty->assign('actioncode', $cart->actioncode);
             $smarty->assign('fields',     $cart->fields);
