@@ -37,7 +37,7 @@ class jojo_plugin_jojo_cart_transaction_report extends JOJO_Plugin
             $cart = unserialize($transactions[$i]['data']);
             $transactions[$i]['datetime'] = $transactions[$i]['updated'];
             $transactions[$i]['status'] = $transactions[$i]['status'];
-
+            $transactions[$i]['handler'] = str_replace('jojo_plugin_jojo_cart_','', $transactions[$i]['handler']);
             if (is_array($cart)) {
                 $transactions[$i]['FirstName'] = $cart['fields']['FirstName'];
                 $transactions[$i]['LastName']  = $cart['fields']['LastName'];
