@@ -21,23 +21,23 @@ class jojo_plugin_jojo_cart_transaction_report extends JOJO_Plugin
         global $smarty;
 
         $content = array();
-        
+
         $token = Jojo::getFormData('token', false);
-        
+
         if ($token) {
             echo $token;
             exit;
         }
-        
+
         jojo_plugin_Admin::adminMenu();
-        
-        $transactions = Jojo::selectQuery("SELECT * FROM {cart} WHERE 1 ORDER BY updated DESC");
+
+        $transactions = Jojo::selectQuery("SELECT * FROM {cart} WHERE id > 0 ORDER BY updated DESC");
         $n = count($transactions);
         for ($i=0; $i<$n; $i++) {
             $cart = unserialize($transactions[$i]['data']);
             $transactions[$i]['datetime'] = $transactions[$i]['updated'];
             $transactions[$i]['status'] = $transactions[$i]['status'];
-            
+
             if (is_array($cart)) {
                 $transactions[$i]['FirstName'] = $cart['fields']['FirstName'];
                 $transactions[$i]['LastName']  = $cart['fields']['LastName'];
@@ -52,7 +52,7 @@ class jojo_plugin_jojo_cart_transaction_report extends JOJO_Plugin
             $transactions[$i]['currencysymbol'] = call_user_func(array(Jojo_Cart_Class, 'getCurrencySymbol'), $transactions[$i]['currency']);
         }
         $smarty->assign('transactions', $transactions);
-        
+
         $content['title'] = 'Transaction report';
         $content['content'] = $smarty->fetch('jojo_cart_transaction_report.tpl');
 
