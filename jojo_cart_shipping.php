@@ -58,7 +58,7 @@ class jojo_plugin_Jojo_cart_shipping extends JOJO_Plugin
             global $smarty;
             $smarty->assign('selectedMethod', call_user_func(array(Jojo_Cart_Class, 'getShippingMethod')));
 
-            /* Work out the shiping cost for each */
+            /* Work out the shipping cost for each */
             foreach ($commonMethods as $method => $label) {
                 call_user_func(array(Jojo_Cart_Class, 'setShippingMethod'), $method);
                 $commonMethods[$method] = array(
