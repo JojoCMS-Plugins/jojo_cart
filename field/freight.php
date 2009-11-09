@@ -37,8 +37,9 @@ class Jojo_Field_freight extends Jojo_Field
         global $smarty;
 
         $freight = new Jojo_Cart_Freight($this->value);
-
-        $smarty->assign('methods',                 Jojo::selectAssoc('SELECT * FROM {cart_freightmethod} ORDER BY shortname'));
+        $methods = Jojo::selectAssoc('SELECT * FROM {cart_freightmethod} ORDER BY shortname');
+        $smarty->assign('methods',                 $methods);
+        $smarty->assign('methods_count',           count($methods));
         $smarty->assign('sharedmodels',            Jojo::selectAssoc('SELECT id, name FROM {cart_freight_model} ORDER BY name'));
         $smarty->assign('sharedmodels_nonpack',    Jojo::selectAssoc('SELECT id, name FROM cart_freight_model WHERE freightmodel NOT LIKE \'%:5:"model";s:6:"packed"%\' ORDER BY name'));
         $smarty->assign('freight_type',            $freight->getModel());

@@ -17,7 +17,7 @@
 
     <table id="regionPerItem" class="adminZebraTable">
         <tr class="advanced" style="display: table-row-group;">
-            <td colspan="{assign var=count value=$methods|@count}{$count+1}"><h3>Per Item Shipping Cost</h3></td>
+            <td colspan="{assign var=count value=$methods_count}{$count+1}"><h3>Per Item Shipping Cost</h3></td>
         </tr>
 
         <tr>
@@ -44,7 +44,7 @@
 
     <table id="regionBase" class="adminZebraTable" style="display:none">
         <tr class="advanced" style="display: table-row-group;">
-            <td colspan="{assign var=count value=$methods|@count}{$count+1}"><h3>Base Shipping Cost</h3></td>
+            <td colspan="{assign var=count value=$methods_count}{$count+1}"><h3>Base Shipping Cost</h3></td>
         </tr>
         <tr>
             <th>Region</th>
@@ -70,7 +70,7 @@
 
     <table id="regionMin" class="adminZebraTable" style="display:none">
         <tr class="advanced" style="display: table-row-group;">
-            <td colspan="{assign var=count value=$methods|@count}{$count+1}"><h3>Minimum Shipping Cost</h3></td>
+            <td colspan="{assign var=count value=$methods_count}{$count+1}"><h3>Minimum Shipping Cost</h3></td>
         </tr>
         <tr>
             <th>Region</th>
