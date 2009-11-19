@@ -46,5 +46,6 @@ This order used discount code: {$discount.code}
 If you have any queries regarding this order, please contact us on {$OPTIONS.contactaddress|default:$OPTIONS.webmasteraddress}
 
 Regards,
+
 {$OPTIONS.fromname}
-{$sitetitle}
+{if $sitetitle!=$OPTIONS.fromname}{$sitetitle}{/if}
