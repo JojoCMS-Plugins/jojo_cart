@@ -27,7 +27,7 @@ Order ID = {$id}
   <td>Freight</td><td colspan="2">&nbsp;</td><td align="right">{$order.freight|string_format:"%01.2f"}</td>
 </tr>
 <tr>
-  <td>Amount</td><td colspan="2">&nbsp;</td><td align="right">{$order.currency}{$order.currency_symbol}{$order.amount|string_format:"%01.2f"}</td>
+  <td>Amount</td><td colspan="2">&nbsp;</td><td align="right">{$currency}{$currencysymbol}{$order.amount|string_format:"%01.2f"}</td>
 </tr>
 
 </tbody>

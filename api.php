@@ -169,12 +169,33 @@ $_options[] = array(
 );
 
 $_options[] = array(
+    'id'          => 'cart_freight_in_multiple_currencies',
+    'category'    => 'Cart',
+    'label'       => 'Allow freight in multiple currencies',
+    'description' => 'Allow freight in multiple currencies, or if multiple currencies, dont have freight for other currencies.',
+    'type'        => 'radio',
+    'default'     => 'no',
+    'options'     => 'yes,no',
+    'plugin'      => 'jojo_cart'
+);
+
+$_options[] = array(
     'id'          => 'cart_confirm_shipped',
     'category'    => 'Cart',
     'label'       => 'Confirm orders have shipped',
     'description' => 'Order admin emails will contain a confirmation link which marks the order as being shipped',
     'type'        => 'radio',
     'default'     => 'no',
+    'options'     => 'yes,no',
+    'plugin'      => 'jojo_cart'
+);
+$_options[] = array(
+    'id'          => 'cart_show_gst',
+    'category'    => 'Cart',
+    'label'       => 'Show GST value on orders',
+    'description' => 'Shows the GST value on NZD transactions (and not on foreign currency), or dont mention GST at all.',
+    'type'        => 'radio',
+    'default'     => 'yes',
     'options'     => 'yes,no',
     'plugin'      => 'jojo_cart'
 );

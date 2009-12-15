@@ -44,6 +44,7 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
 
         /* Which payment plugin are we using? */
         $activeplugin = self::activePaymentPlugin();
+        $smarty->assign('activeplugin',  $activeplugin);
         if (!$activeplugin) {
             echo 'Error: unable to find active payment plugin';
             $log             = new Jojo_Eventlog();
@@ -79,7 +80,7 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
 
         /* If the receipt is an array, convert into HTML first */
         if (is_array($result['receipt'])) {
-            $smarty->assign('receipt', $result['receipt']);
+            $smarty->assign('rawreceipt', $result['receipt']);
             $result['receipt'] = $smarty->fetch('jojo_cart_receipt.tpl');
         }
         $cart->receipt = $result['receipt'];
@@ -170,7 +171,7 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
             }
 
             /* Email webmaster */
-            if (Jojo::getOption('cart_webmaster_copy', 'yes') == 'yes' AND $to_email <> _WEBMASTERADDRESS) {
+            if (Jojo::getOption('cart_webmaster_copy', 'yes') == 'yes' AND $to_email != _WEBMASTERADDRESS) {
               $to_name     = _WEBMASTERNAME;
               $to_email    = _WEBMASTERADDRESS;
               $subject     = 'Order from '.Jojo::getOption('sitetitle');
@@ -189,14 +190,14 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
 
             /* save cart to database */
             if ($result['paid']) {
-                $cart->status = 'complete';
+                $cart->cartstatus = 'complete';
             } else {
-                $cart->status = 'payment_pending';
+                $cart->cartstatus = 'payment_pending';
             }
             call_user_func(array(Jojo_Cart_Class, 'saveCart'));
 
             /* make doubly sure that complete status is being saved - I'm finding cases where it's not */
-            Jojo::updateQuery("UPDATE {cart} SET status=? WHERE token=? LIMIT 1", array($cart->status, $token));
+            Jojo::updateQuery("UPDATE {cart} SET status=? WHERE token=? LIMIT 1", array($cart->cartstatus, $token));
 
             /* empty cart and clear token */
             call_user_func(array(Jojo_Cart_Class, 'emptyCart'));

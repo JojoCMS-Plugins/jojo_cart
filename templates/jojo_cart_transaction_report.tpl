@@ -28,24 +28,24 @@ $('a.shipped').cluetip({activation:"click", closePosition: 'top',closeText: '<im
     </tr>
   </thead>
   <tbody>
-    {section name=t loop=$transactions}
-    <tr class="{cycle values='row1,row2'} {$transactions[t].status}">
-      <td>{$transactions[t].id}</td>
-      <td>{$transactions[t].datetime|date_format:"%d %b %Y"}</td>
-      <td>{$transactions[t].datetime|date_format:"%H:%M"}</td>
-      <td><a class="info" href="{$ADMIN}/cart/transactionlist/{$transactions[t].token}/" rel="{$ADMIN}/cart/transaction_list/{$transactions[t].token}/">{$transactions[t].FirstName} {$transactions[t].LastName}</a></td>
-      <td>{$transactions[t].currencysymbol}{$transactions[t].amount}</td>
-      <td>{$transactions[t].currency}</td>
+    {foreach from=$transactions item=transaction}
+    <tr class="{cycle values='row1,row2'} {$transaction.status}">
+      <td>{$transaction.id}</td>
+      <td>{$transaction.datetime|date_format:"%d %b %Y"}</td>
+      <td>{$transaction.datetime|date_format:"%H:%M"}</td>
+      <td><a class="info" href="{$ADMIN}/cart/transactionlist/{$transaction.token}/" rel="{$ADMIN}/cart/transaction_list/{$transaction.token}/">{$transaction.FirstName} {$transaction.LastName}</a></td>
+      <td>{$transaction.currencysymbol}{$transaction.amount}</td>
+      <td>{if $transaction.currency}{$transaction.currency}{/if}</td>
       <td>
-      {if $transactions[t].status=='payment_pending' or $transactions[t].status=='pending' or $transactions[t].status=='abandoned'}<a class="paid" target="_blank" href="cart/paidadmin_complete/{$transactions[t].token}/{$transactions[t].actioncode}/" rel="cart/paidadmin_complete/{$transactions[t].token}/{$transactions[t].actioncode}/">{$transactions[t].status} - click to complete</a>{else}{$transactions[t].status}{/if}
-      {if $transactions[t].status != 'abandoned'}<a class="paid" target="_blank" href="cart/paidadmin_abandoned/{$transactions[t].token}/{$transactions[t].actioncode}/" rel="cart/paidadmin_abandoned/{$transactions[t].token}/{$transactions[t].actioncode}/" title="Change Status to Abandoned">A</a>{/if}
-      {if $transactions[t].status!='payment_pending' and $transactions[t].status!='pending'}<a class="paid" target="_blank" href="cart/paidadmin_paymentpending/{$transactions[t].token}/{$transactions[t].actioncode}/" rel="cart/paidadmin_paymentpending/{$transactions[t].token}/{$transactions[t].actioncode}/" title="Change Status to Payment Pending">P</a>{/if}
+      {if $transaction.status=='payment_pending' || $transaction.status=='pending' || $transaction.status=='abandoned'}<a class="paid" target="_blank" href="cart/paidadmin_complete/{$transaction.token}/{$transaction.actioncode}/" rel="cart/paidadmin_complete/{$transaction.token}/{$transaction.actioncode}/">{$transaction.status} - click to complete</a>{else}{$transaction.status}{/if}
+      {if $transaction.status!='abandoned'}<a class="paid" target="_blank" href="cart/paidadmin_abandoned/{$transaction.token}/{$transaction.actioncode}/" rel="cart/paidadmin_abandoned/{$transaction.token}/{$transaction.actioncode}/" title="Change Status to Abandoned">A</a>{/if}
+      {if $transaction.status!='payment_pending' && $transaction.status!='pending'}<a class="paid" target="_blank" href="cart/paidadmin_paymentpending/{$transaction.token}/{$transaction.actioncode}/" rel="cart/paidadmin_paymentpending/{$transaction.token}/{$transaction.actioncode}/" title="Change Status to Payment Pending">P</a>{/if}
       </td>
-      <td>{$transactions[t].handler}</td>
-      <td>{if $transactions[t].shipped<1}<a class="shipped" target="_blank" href="cart/shippedadmin/{$transactions[t].token}/{$transactions[t].actioncode}/" rel="cart/shippedadmin/{$transactions[t].token}/{$transactions[t].actioncode}/">click to ship</a>
-      {elseif $transactions[t].shipped}{$transactions[t].shipped|date_format:"%d %b %Y"} <a class="shipped" href="cart/shippedadmin_unshipped/{$transactions[t].token}/{$transactions[t].actioncode}/" rel="cart/shippedadmin_unshipped/{$transactions[t].token}/{$transactions[t].actioncode}/">U</a>{/if}</td>
+      <td>{$transaction.handler}</td>
+      <td>{if $transaction.shipped<1}<a class="shipped" target="_blank" href="cart/shippedadmin/{$transaction.token}/{$transaction.actioncode}/" rel="cart/shippedadmin/{$transaction.token}/{$transaction.actioncode}/">click to ship</a>
+      {elseif $transaction.shipped}{$transaction.shipped|date_format:"%d %b %Y"} <a class="shipped" href="cart/shippedadmin_unshipped/{$transaction.token}/{$transaction.actioncode}/" rel="cart/shippedadmin_unshipped/{$transaction.token}/{$transaction.actioncode}/">U</a>{/if}</td>
     </tr>
-    {/section}
+    {/foreach}
   </tbody>
 </table>
 

@@ -17,7 +17,7 @@
 
     <table id="fixedPerItem" class="adminZebraTable">
         <tr class="advanced" style="display: table-row-group;">
-            <td colspan="{assign var=count value=$methods_count}{$count+1}" ><h3>Per Item Shipping Cost</h3></td>
+            <td colspan="{assign var=count value=count($methods)}{$count+1}" ><h3>Per Item Shipping Cost</h3></td>
         </tr>
 
         <tr class="{cycle values="row1,row2"}">
@@ -37,7 +37,7 @@
 
     <table id="fixedBase" class="adminZebraTable" style="display: none">
         <tr class="advanced" style="display: table-row-group;">
-            <td colspan="{assign var=count value=$methods_count}{$count+1}"><h3>Base Shipping Cost</h3></td>
+            <td colspan="{assign var=count value=count($methods)}{$count+1}"><h3>Base Shipping Cost</h3></td>
         </tr>
         <tr class="{cycle values="row1,row2"}">
             <td></td>
@@ -56,7 +56,7 @@
 
     <table id="fixedMin" class="adminZebraTable" style="display: none">
         <tr class="advanced" style="display: table-row-group;">
-            <th colspan="{assign var=count value=$methods_count}{$count+1}"><h3>Minimum Shipping Cost</h3></th>
+            <th colspan="{assign var=count value=count($methods)}{$count+1}"><h3>Minimum Shipping Cost</h3></th>
         </tr>
         <tr class="{cycle values="row1,row2"}">
             <td></td>

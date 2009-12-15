@@ -104,6 +104,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         $_SESSION['jojo_cart']->handler    = isset($_SESSION['jojo_cart']->handler)     ? $_SESSION['jojo_cart']->handler     : '';
         $_SESSION['jojo_cart']->amount     = isset($_SESSION['jojo_cart']->amount)      ? $_SESSION['jojo_cart']->amount      : '';
         $_SESSION['jojo_cart']->shipped    = isset($_SESSION['jojo_cart']->shipped)     ? $_SESSION['jojo_cart']->shipped     : 0;
+        $_SESSION['jojo_cart']->cartstatus    = isset($_SESSION['jojo_cart']->cartstatus)     ? $_SESSION['jojo_cart']->cartstatus     : 'pending';
 
         /* Create unique action code for use in admin emails, ensure they are not already in the database for another order */
         if (empty($_SESSION['jojo_cart']->actioncode)) {
@@ -113,6 +114,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
                 $res = Jojo::selectQuery($query, $_SESSION['jojo_cart']->actioncode);
             } while (count($res) > 0);
         }
+        ksort($_SESSION['jojo_cart']->items);
 
         /* Return the session cart */
         return $_SESSION['jojo_cart'];
@@ -132,7 +134,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         unset($cart->order['cardExpiryYear']);
         unset($cart->order['cardName']);
 
-        $status = isset($cart->status) ? $cart->status : 'pending'; //default to pending
+        $status = isset($cart->cartstatus) ? $cart->cartstatus : 'pending'; //default to pending
 
         /* Create unique action code for use in admin emails, ensure they are not already in the database for another order */
         if (!empty($cart->actioncode)) {
@@ -276,6 +278,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
                 break;
             }
         }
+
         if (!$found) {
             /* Product doesn't exist */
             return false;
@@ -326,6 +329,16 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         $items = $cart->items;
         $items = Jojo::applyFilter('jojo_cart_sort', $items);
         return $items;
+    }
+
+    public static function getNumItems($items)
+    {
+        $numItems = 0;
+        foreach ($items as $k => $item) {
+           $numItems += $item['quantity'];
+        }
+
+        return $numItems;
     }
 
     /**
@@ -399,8 +412,10 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         $cart = self::getCart();
 
         /* Currently, we cannot deal with freight unless it's in the default cart currency */
-        if (self::getCartCurrency() != Jojo::getOption('cart_default_currency', 'USD')) {
+        if(Jojo::getOption('cart_freight_in_multiple_currencies', 'no')=='no'){
+          if (self::getCartCurrency() != Jojo::getOption('cart_default_currency', 'USD')) {
             return false;
+          }
         }
 
         /* Check for a shipping region */
@@ -537,7 +552,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         /* Get the cart array */
         $cart = self::getCart();
         $smarty->assign('token',  $cart->token);
-        $smarty->assign('status', $cart->status);
+        $smarty->assign('status', $cart->cartstatus);
         $cart->order['subtotal'] = self::subTotal();
 
         /* calculate freight */
@@ -548,7 +563,11 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
 
         /* Assign vars to Smarty */
         $smarty->assign('items', self::getItems());
-        if (!count(self::getItems())) $smarty->assign('cartisempty', true);
+        if (!count(self::getItems())) {
+            $smarty->assign('cartisempty', true);
+        } else {
+            $cart->order['numitems'] = self::getNumItems($cart->items);
+        }
 
         if ($action == 'cancel') {
             $content['title']    = 'Transaction cancelled';
@@ -562,6 +581,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
             if ($token) {
                 $savedcart = self::getCart($token);
                 if (isset($savedcart->receipt)) $smarty->assign('receipt', $savedcart->receipt);
+                if (isset($savedcart->handler)) $smarty->assign('handler', $savedcart->handler);
             }
 
             $content['title']    = 'Transaction complete';
@@ -582,7 +602,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
 
             return $content;
         }
-        
+
         if ($action == 'payment-info') {
             $token = Jojo::getFormData('token', false);
             if ($token) {

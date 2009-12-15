@@ -26,12 +26,15 @@ class jojo_plugin_jojo_cart_transaction_list extends JOJO_Plugin
 
         jojo_plugin_Admin::adminMenu();
 
-        $transactions = Jojo::selectRow("SELECT * FROM {cart} WHERE token=? LIMIT 1",$token);
-            $cart = unserialize($transactions['data']);
+        $transaction = Jojo::selectRow("SELECT * FROM {cart} WHERE token=? ",$token);
+            $cart = unserialize($transaction['data']);
             $smarty->assign('items',        $cart->items);
             $smarty->assign('fields',       $cart->fields);
             $smarty->assign('order',        $cart->order);
-            $smarty->assign('id',           $transactions['id']);
+            $smarty->assign('id',           $transaction['id']);
+            $currency = isset($cart->order['currency']) ? $cart->order['currency'] : call_user_func(array(Jojo_Cart_Class, 'getCartCurrency'), $transaction['token']);
+            $smarty->assign('currency', $currency);
+            $smarty->assign('currencysymbol', call_user_func(array(Jojo_Cart_Class, 'getCurrencySymbol'), $currency));
 
         $content['title'] = 'Transaction report';
         $content['content'] = $smarty->fetch('jojo_cart_transaction_list.tpl');

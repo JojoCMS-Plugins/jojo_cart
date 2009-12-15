@@ -1,7 +1,7 @@
-{if $receipt}
+{if $rawreceipt}
 <table style="border:0">
   <tbody>
-  {foreach from=$receipt key=label item=value}
+  {foreach from=$rawreceipt key=label item=value}
     <tr>
       <td>{$label}:</td>
       <td>{$value}</td>

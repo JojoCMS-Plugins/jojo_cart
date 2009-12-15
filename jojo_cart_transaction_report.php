@@ -32,24 +32,24 @@ class jojo_plugin_jojo_cart_transaction_report extends JOJO_Plugin
         jojo_plugin_Admin::adminMenu();
 
         $transactions = Jojo::selectQuery("SELECT * FROM {cart} WHERE id > 0 ORDER BY updated DESC");
-        $n = count($transactions);
-        for ($i=0; $i<$n; $i++) {
-            $cart = unserialize($transactions[$i]['data']);
-            $transactions[$i]['datetime'] = $transactions[$i]['updated'];
-            $transactions[$i]['status'] = $transactions[$i]['status'];
+        foreach($transactions as &$transaction) {
+            $cart = unserialize($transaction['data']);
+            $transaction['datetime'] = $transaction['updated'];
+            $transaction['status'] = $transaction['status'];
             $transactions[$i]['handler'] = str_replace('jojo_plugin_jojo_cart_','', $transactions[$i]['handler']);
             if (is_array($cart)) {
-                $transactions[$i]['FirstName'] = $cart['fields']['FirstName'];
-                $transactions[$i]['LastName']  = $cart['fields']['LastName'];
-                $transactions[$i]['amount']    = $cart['order']['amount'];
-                $transactions[$i]['currency']  = $cart['order']['currency'];
+                $transaction['FirstName'] = $cart['fields']['FirstName'];
+                $transaction['LastName']  = $cart['fields']['LastName'];
+                $transaction['amount']    = $cart['order']['amount'];
+                $transaction['currency'] = isset($cart['order']['currency']) ? $cart['order']['currency'] : '';
             } elseif (is_object($cart) ) {
-                $transactions[$i]['FirstName'] = !empty($cart->fields['billing_firstname']) ? $cart->fields['billing_firstname'] : $cart->fields['shipping_firstname'];
-                $transactions[$i]['LastName']  = !empty($cart->fields['billing_lastname']) ? $cart->fields['billing_lastname'] : $cart->fields['shipping_lastname'];
-                $transactions[$i]['amount']    = $cart->order['amount'];
-                $transactions[$i]['currency']  = $cart->order['currency'];
+                $transaction['FirstName'] = !empty($cart->fields['billing_firstname']) ? $cart->fields['billing_firstname'] : $cart->fields['shipping_firstname'];
+                $transaction['LastName']  = !empty($cart->fields['billing_lastname']) ? $cart->fields['billing_lastname'] : $cart->fields['shipping_lastname'];
+                $transaction['amount']    = $cart->order['amount'];
+                $transaction['currency'] = isset($cart->order['currency']) ? $cart->order['currency'] : '';
             }
-            $transactions[$i]['currencysymbol'] = call_user_func(array(Jojo_Cart_Class, 'getCurrencySymbol'), $transactions[$i]['currency']);
+            $transaction['currency'] = !empty($transaction['currency']) ? $transaction['currency'] : call_user_func(array(Jojo_Cart_Class, 'getCartCurrency'), $transaction['token']);
+            $transaction['currencysymbol'] = call_user_func(array(Jojo_Cart_Class, 'getCurrencySymbol'), $transaction['currency']);
         }
         $smarty->assign('transactions', $transactions);
 

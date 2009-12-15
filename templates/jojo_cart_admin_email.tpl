@@ -1,10 +1,5 @@
 An order has been placed on {$sitetitle}.
 
-Payment Type
-============
-{$handler}
-
-
 {if $status=='payment_pending'}
 PAYMENT PENDING
 ===============
@@ -14,6 +9,21 @@ Once payment has been made, please dispatch the order and click the following li
 
 {$SITEURL}/cart/paid/{$token}/{$actioncode}/
 
+{else}
+Payment Method: {if $activeplugin=='jojo_plugin_jojo_cart_emailorder'}Email Order (Invoice for payment){else}Online Transaction using {$activeplugin}{/if}
+
+Errors: {if $errors}{$errors}{else}None{/if}
+
+{if $rawreceipt}Receipt: 
+{foreach from=$rawreceipt key=k item=i}
+{$k}: {$i}
+{/foreach}
+{/if}
+
+============
+Payment Type
+============
+{$handler}
 
 {/if}
 {if $OPTIONS.cart_confirm_shipped == 'yes'}
@@ -23,8 +33,8 @@ Click the following link to mark the order as being shipped. You can optionally 
 
 {$SITEURL}/cart/shipped/{$token}/{$actioncode}/
 
-
 {/if}
+
 Order Details
 =============
 Order no: {$id}

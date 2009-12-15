@@ -38,6 +38,8 @@ Freight: {$order.freight|string_format:"%01.2f"}
 {/if}
 Total: {$order.currency|default:$OPTIONS.cart_default_currency}{$order.currency_symbol|default:' '}{$order.amount|string_format:"%01.2f"}
 
+{if $OPTIONS.cart_show_gst!='no' && ($order.currency|default:$OPTIONS.cart_default_currency=='NZD')}includes GST of {$order.currency_symbol|default:' '}{$order.amount/9|string_format:"%01.2f"}
+{/if}
 {if $discount && $discount.code != ''}
 This order used discount code: {$discount.code}
 {/if}
@@ -46,6 +48,5 @@ This order used discount code: {$discount.code}
 If you have any queries regarding this order, please contact us on {$OPTIONS.contactaddress|default:$OPTIONS.webmasteraddress}
 
 Regards,
-
 {$OPTIONS.fromname}
 {if $sitetitle!=$OPTIONS.fromname}{$sitetitle}{/if}

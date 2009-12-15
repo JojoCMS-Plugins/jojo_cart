@@ -53,15 +53,15 @@ class jojo_plugin_Jojo_cart_paid extends JOJO_Plugin
             switch($action){
               case "paid":
               case "paidadmin_complete":
-                $cart->status = 'complete';
+                $cart->cartstatus = 'complete';
                 $smarty->assign('changestatus','');
                 break;
               case "paidadmin_paymentpending":
-                $cart->status = 'payment_pending';
+                $cart->cartstatus = 'payment_pending';
                 $smarty->assign('changestatus','Status has been changed to payment pending');
                 break;
               case "paidadmin_abandoned":
-                $cart->status = 'abandoned';
+                $cart->cartstatus = 'abandoned';
                 $smarty->assign('changestatus','Status has been changed to abandoned');
                 break;
             }

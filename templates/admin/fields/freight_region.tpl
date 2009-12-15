@@ -17,7 +17,7 @@
 
     <table id="regionPerItem" class="adminZebraTable">
         <tr class="advanced" style="display: table-row-group;">
-            <td colspan="{assign var=count value=$methods_count}{$count+1}"><h3>Per Item Shipping Cost</h3></td>
+            <td colspan="{assign var=count value=count($methods)}{$count+1}"><h3>Per Item Shipping Cost</h3></td>
         </tr>
 
         <tr>
@@ -32,19 +32,19 @@
             <td><input style="text-align: right" type="text" size="6" name="fm_{$fd_field}_default[{$methodid}]" value="{$freight_default[$methodid]}" />  {$OPTIONS.cart_default_currency}</td>
 {/foreach}
         </tr>
-{section name=r loop=$freight_regions}
+{foreach from=$freight_regions item=region}
         <tr class="{cycle values="row1,row2"}">
-            <td>{$freight_regions[r].name}</td>
+            <td>{$region.name}</td>
 {foreach from=$methods key=methodid item=method}
-            <td><input style="text-align: right" type="text" size="6" name="fm_{$fd_field}_region_{$freight_regions[r].code}[{$methodid}]" value="{$freight_regions[r][price][$methodid]}" autocomplete="off" /> {$OPTIONS.cart_default_currency}</td>
+            <td><input style="text-align: right" type="text" size="6" name="fm_{$fd_field}_region_{$region.code}[{$methodid}]" value="{$region[price][$methodid]}" autocomplete="off" /> {$OPTIONS.cart_default_currency}</td>
 {/foreach}
         </tr>
-{/section}
+{/foreach}
     </table>
 
     <table id="regionBase" class="adminZebraTable" style="display:none">
         <tr class="advanced" style="display: table-row-group;">
-            <td colspan="{assign var=count value=$methods_count}{$count+1}"><h3>Base Shipping Cost</h3></td>
+            <td colspan="{assign var=count value=count($methods)}{$count+1}"><h3>Base Shipping Cost</h3></td>
         </tr>
         <tr>
             <th>Region</th>
@@ -70,7 +70,7 @@
 
     <table id="regionMin" class="adminZebraTable" style="display:none">
         <tr class="advanced" style="display: table-row-group;">
-            <td colspan="{assign var=count value=$methods_count}{$count+1}"><h3>Minimum Shipping Cost</h3></td>
+            <td colspan="{assign var=count value=count($methods)}{$count+1}"><h3>Minimum Shipping Cost</h3></td>
         </tr>
         <tr>
             <th>Region</th>
