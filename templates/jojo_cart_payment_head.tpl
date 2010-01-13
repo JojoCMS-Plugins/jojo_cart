@@ -1,1 +1,1 @@
-<script type="text/javascript" src="js/creditcard.js"></script>
+<script type="text/javascript" src="{$SITEURL}/js/creditcard.js"></script>
