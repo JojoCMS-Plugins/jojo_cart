@@ -1,6 +1,6 @@
 <p>There are multiple shipping methods available for your order. Please select your prefered shipping method below.</p>
 
-<form action="{if _MULTILANGUAGE}{$lclanguage}/{/if}cart/shipping/" method="POST">
+<form action="{if $OPTIONS.multilanguage=='yes'}{$lclanguage}/{/if}cart/shipping/" method="POST">
 
     <ul>
     {foreach from=$shippingMethods key=methodid item=method}
