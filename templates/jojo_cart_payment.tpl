@@ -59,13 +59,15 @@
 </div>
 
 {if count($paymentoptions) > 1}
-  <div class="box" id="payment_option_radios" class="hidden">
+  <div class="box" id="payment_option_radios">
     <h3>Payment options</h3>
+    <ul>
     {foreach from=$paymentoptions key=k item=option}
     <li style="list-style:none">
       <label><input type="radio" id="payment_option_radio_{$option.id}" name="paymentoption" value="{$option.id}" /> {$option.label}</label>
     </li>
     {/foreach}
+    </ul>
   </div>
 
   {foreach from=$paymentoptions key=k item=option}
