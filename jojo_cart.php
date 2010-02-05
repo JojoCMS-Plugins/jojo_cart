@@ -450,8 +450,8 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         foreach ($sharedModelQuantities as $modelid => $quantity) {
             $total += $sharedModel[$modelid]->getFreight($region, $method, $quantity);
         }
-
         $total = max($total, Jojo_Cart_Freight::getRegionMinimum($region, $method));
+        $total = Jojo::applyFilter('jojo_cart:getFreight:total', $total, $cart);
         return $total;
     }
 
