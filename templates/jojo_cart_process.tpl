@@ -3,9 +3,9 @@
 {if $errors}
 <p>The following errors were found...<br />
 <ul>
-{section name=e loop=$errors}
-<li>{$errors[e]}</li>
-{/section}
+{foreach name=e from=$errors item=e}
+<li>{$e}</li>
+{/foreach}
 </ul>
 </p>
 {/if}
