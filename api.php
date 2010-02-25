@@ -208,3 +208,14 @@ $_options[] = array(
     'default'     => 'yes',
     'options'     => 'yes,no'
 );
+
+$_options[] = array(
+    'id'          => 'cart_shipped_tracking_message',
+    'category'    => 'Cart',
+    'label'       => 'Tracking information',
+    'description' => 'A default block of text used to record tracking inormation for orders',
+    'type'        => 'textarea',
+    'default'     => "Tracking Information:\nTicket number: xxxxxxxxx\nPhone: 555-5555\nWebsite: www.example.com",
+    'options'     => '',
+    'plugin'      => 'jojo_cart'
+);

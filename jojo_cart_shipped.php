@@ -21,18 +21,19 @@ class jojo_plugin_Jojo_cart_shipped extends JOJO_Plugin
         global $smarty;
         $content = array();
 
-        $send       = Jojo::getFormData('send',       false);
-        $token      = Jojo::getFormData('token',      false);
-        $actioncode = Jojo::getFormData('actioncode', false);
-        $action     = Jojo::getFormData('action', false);
+        $send          = Jojo::getFormData('send',          false);
+        $save_tracking = Jojo::getFormData('save_tracking', false);
+        $token         = Jojo::getFormData('token',         false);
+        $actioncode    = Jojo::getFormData('actioncode',    false);
+        $action        = Jojo::getFormData('action',        false);
 
         if(strpos($action,'shippedadmin')!==false) jojo_plugin_Admin::adminMenu();
 
         /* send the notification to the client */
         if ($send) {
 
-            $from_name   = Jojo::either(_CONTACTNAME, _FROMNAME,_SITETITLE);
-            $from_email  = Jojo::either(_CONTACTADDRESS,_FROMADDRESS,_WEBMASTERADDRESS);
+            $from_name   = Jojo::either(_CONTACTNAME, _FROMNAME, _SITETITLE);
+            $from_email  = Jojo::either(_CONTACTADDRESS, _FROMADDRESS, _WEBMASTERADDRESS);
             $email       = Jojo::getFormData('email',   false);
             $subject     = Jojo::getFormData('subject', false);
             $message     = Jojo::getFormData('message', false);
@@ -43,30 +44,37 @@ class jojo_plugin_Jojo_cart_shipped extends JOJO_Plugin
 
             return $content;
         }
-
+        
         $cart = call_user_func(array(Jojo_Cart_Class, 'getCart'), $token);
-
+        
         /* ensure the actioncode is the same as is stored against the cart */
         if ($actioncode != $cart->actioncode) {
             $content['content'] = 'This link is invalid.';
-        } else {
-            if (($cart->shipped == 0) || ($cart->shipped == -1)) {
-              $cart->shipped = time();
-              $smarty->assign('changestatus','');
-            }
-            if ($action == "shippedadmin_unshipped") {
-              $cart->shipped = 0;
-              $smarty->assign('changestatus','Status has been changed to Unshipped');
-            }
-
-            call_user_func(array(Jojo_Cart_Class, 'saveCart'));
-
-            $smarty->assign('token',      $cart->token);
-            $smarty->assign('actioncode', $cart->actioncode);
-            $smarty->assign('fields',     $cart->fields);
-
-            $content['content'] = $smarty->fetch('jojo_cart_shipped.tpl');
+            return $content;
         }
+        
+        if (($cart->shipped == 0) || ($cart->shipped == -1)) {
+            $cart->shipped = time();
+            $smarty->assign('changestatus','');
+        }
+        if ($action == "shippedadmin_unshipped") {
+            $cart->shipped = 0;
+          $smarty->assign('changestatus','Status has been changed to Unshipped');
+        }
+        
+        /* save the tracking data in the database */
+        if ($save_tracking) {
+            $cart->tracking_message = Jojo::getFormData('tracking_message', '');
+        }
+
+        call_user_func(array(Jojo_Cart_Class, 'saveCart'));
+        $tracking_message = isset($cart->tracking_message) ? $cart->tracking_message : Jojo::getOption('cart_shipped_tracking_message', '');
+        $smarty->assign('tracking_message', $tracking_message);
+        $smarty->assign('token',            $cart->token);
+        $smarty->assign('actioncode',       $cart->actioncode);
+        $smarty->assign('fields',           $cart->fields);
+
+        $content['content'] = $smarty->fetch('jojo_cart_shipped.tpl');
 
         return $content;
     }
