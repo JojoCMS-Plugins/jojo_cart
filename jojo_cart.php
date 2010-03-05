@@ -361,7 +361,15 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
             if (!in_array($item['id'], $cart->discount['exclusions']) &&
                 (!count($cart->discount['products']) || in_array($item['id'], $cart->discount['products'])) &&
                 $cart->items[$k]['quantity'] >= $cart->discount['minorder']) {
-                if ($cart->discount['percent']) {
+                if (isset($cart->discount['custom'][$item['id']])) {
+                    if (preg_match('/^(\\d+)%$/', $cart->discount['custom'][$item['id']], $match)) {
+                        $percentage = $match[1];
+                        $cart->items[$k]['netprice'] -= $item['price'] * $percentage / 100;
+                    } elseif (preg_match('/^(\\d+)$/', $cart->discount['custom'][$item['id']], $match)) {
+                        $fixed = $match[1];
+                        $cart->items[$k]['netprice'] -= $fixed;
+                    }
+                } elseif ($cart->discount['percent']) {
                     /* Percentage discount */
                     $cart->items[$k]['netprice'] -= $item['price'] * $cart->discount['percent'] / 100;
                 } elseif ($cart->discount['fixed']) {
@@ -516,6 +524,15 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
             $v = trim($v);
             if (!empty($v)) {
                 $cart->discount['exclusions'][] = $v;
+            }
+        }
+        
+        /* apply custom discounts */
+        foreach (explode("\n", str_replace(',', "\n", $discount['custom'])) as $k => $v) {
+            $v = trim($v);
+            if (!empty($v)) {
+                $parts = explode('=', $v);
+                $cart->discount['custom'][trim($parts[0])] = trim($parts[1]);
             }
         }
 

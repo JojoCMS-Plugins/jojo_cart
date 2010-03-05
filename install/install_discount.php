@@ -27,6 +27,7 @@ $query = "
       `minorder` int(11) NOT NULL,
       `products` varchar(255) NOT NULL,
       `exclusions` varchar(255) NOT NULL,
+      `custom` TEXT NOT NULL,
       PRIMARY KEY  (`discountcode`)
     ) ENGINE=MyISAM DEFAULT CHARSET=latin1;";
 

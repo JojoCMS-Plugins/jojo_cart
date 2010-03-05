@@ -94,6 +94,7 @@ $default_fd['discount']['products'] = array(
         'fd_rows' => "8",
         'fd_cols' => "50",
         'fd_order' => "9",
+        'fd_help'  => "If you wish to restrict this discount code to only specific products, enter the product IDs here, comma separated.",
     );
 
 // Exclusions Field
@@ -103,4 +104,15 @@ $default_fd['discount']['exclusions'] = array(
         'fd_rows' => "8",
         'fd_cols' => "50",
         'fd_order' => "10",
+        'fd_help'  => "Enter the product IDs of any products you wish to exclude from this discount code, comma separated.",
+    );
+    
+// Custom Field
+$default_fd['discount']['custom'] = array(
+        'fd_name'  => "Custom Discount",
+        'fd_type'  => "textarea",
+        'fd_rows'  => "8",
+        'fd_cols'  => "50",
+        'fd_order' => "10",
+        'fd_help'  => "Use the custom field when you need one discount code to apply different discount amounts to different products. One entry per line. eg to apply a $10 discount to product ID 123, enter the following: '123=10'.",
     );
