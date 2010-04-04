@@ -9,4 +9,4 @@ Your recent order placed with {$SITEURL} has recently been shipped. If you don't
 
 Regards,
 {$OPTIONS.fromname}
-{$sitetitle}
+{if $sitetitle!=$OPTIONS.fromname}{$sitetitle}{/if}
