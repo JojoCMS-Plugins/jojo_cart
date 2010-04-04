@@ -32,27 +32,51 @@ class jojo_plugin_Jojo_cart_shipped extends JOJO_Plugin
         /* send the notification to the client */
         if ($send) {
 
-            $from_name   = Jojo::either(_CONTACTNAME, _FROMNAME, _SITETITLE);
-            $from_email  = Jojo::either(_CONTACTADDRESS, _FROMADDRESS, _WEBMASTERADDRESS);
-            $email       = Jojo::getFormData('email',   false);
             $subject     = Jojo::getFormData('subject', false);
             $message     = Jojo::getFormData('message', false);
+            $from_name   = Jojo::either(_CONTACTNAME, _FROMNAME,_SITETITLE);
+            $from_email  = Jojo::either(_CONTACTADDRESS,_FROMADDRESS,_WEBMASTERADDRESS);
+            $email       = Jojo::getFormData('email',   false);
 
+            if (defined('_CONTACTADDRESS') && (_CONTACTADDRESS != _WEBMASTERADDRESS)) {
+                /* Email admin */
+                $to_name     = Jojo::either(_CONTACTNAME, _FROMNAME,_SITETITLE);
+                $to_email    = Jojo::either(_CART_SHIPPED_EMAIL,_CONTACTADDRESS,_FROMADDRESS,_WEBMASTERADDRESS);
+                Jojo::simpleMail($to_name, $to_email, "copy ".$subject, $message, $from_name, $from_email);
+            }
+
+            if (defined('_CART_ORDER_EMAIL')) {
+                /* Email admin - if defined in the cart options */
+                $to_name     = _CART_ORDER_NAME;
+                $to_email    = _CART_ORDER_EMAIL;
+                Jojo::simpleMail($to_name, $to_email, "copy ".$subject, $message, $from_name, $from_email);
+            }
+
+            /* Email webmaster */
+            if (Jojo::getOption('cart_webmaster_copy', 'yes') == 'yes' AND $to_email != _WEBMASTERADDRESS) {
+              $to_name     = _WEBMASTERNAME;
+              $to_email    = _WEBMASTERADDRESS;
+              Jojo::simpleMail($to_name, $to_email, "copy ".$subject, $message, $from_name, $from_email);
+            }
+
+
+            /* email client */
             Jojo::simpleMail('', $email, $subject, $message, $from_name, $from_email);
 
             $content['content'] = 'The customer confirmation email has been sent.';
 
             return $content;
         }
-        
+
+
         $cart = call_user_func(array(Jojo_Cart_Class, 'getCart'), $token);
-        
+
         /* ensure the actioncode is the same as is stored against the cart */
         if ($actioncode != $cart->actioncode) {
             $content['content'] = 'This link is invalid.';
             return $content;
         }
-        
+
         if (($cart->shipped == 0) || ($cart->shipped == -1)) {
             $cart->shipped = time();
             $smarty->assign('changestatus','');
@@ -61,7 +85,7 @@ class jojo_plugin_Jojo_cart_shipped extends JOJO_Plugin
             $cart->shipped = 0;
           $smarty->assign('changestatus','Status has been changed to Unshipped');
         }
-        
+
         /* save the tracking data in the database */
         if ($save_tracking) {
             $cart->tracking_message = Jojo::getFormData('tracking_message', '');
@@ -85,4 +109,3 @@ class jojo_plugin_Jojo_cart_shipped extends JOJO_Plugin
         return _PROTOCOL.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
     }
 }
-

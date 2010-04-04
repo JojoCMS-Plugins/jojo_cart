@@ -147,6 +147,18 @@ $_options[] = array(
 );
 
 $_options[] = array(
+    'id'          => 'cart_shipped_email',
+    'category'    => 'Cart',
+    'label'       => 'Admin Shipped email address',
+    'description' => 'Order shipped emails will be copied to this email address rather than the normal contact address',
+    'type'        => 'text',
+    'default'     => '',
+    'options'     => '',
+    'plugin'      => 'jojo_cart'
+);
+
+
+$_options[] = array(
     'id'          => 'cart_order_name',
     'category'    => 'Cart',
     'label'       => 'Order name',
@@ -213,7 +225,7 @@ $_options[] = array(
     'id'          => 'cart_shipped_tracking_message',
     'category'    => 'Cart',
     'label'       => 'Tracking information',
-    'description' => 'A default block of text used to record tracking inormation for orders',
+    'description' => 'A default block of text used to record tracking information for orders',
     'type'        => 'textarea',
     'default'     => "Tracking Information:\nTicket number: xxxxxxxxx\nPhone: 555-5555\nWebsite: www.example.com",
     'options'     => '',

@@ -36,6 +36,28 @@ class jojo_plugin_Jojo_cart_paid extends JOJO_Plugin
             $subject     = Jojo::getFormData('subject', false);
             $message     = Jojo::getFormData('message', false);
 
+            if (defined('_CONTACTADDRESS') && (_CONTACTADDRESS != _WEBMASTERADDRESS)) {
+                /* Email admin */
+                $to_name     = Jojo::either(_CONTACTNAME, _FROMNAME,_SITETITLE);
+                $to_email    = Jojo::either(_CART_SHIPPED_EMAIL,_CONTACTADDRESS,_FROMADDRESS,_WEBMASTERADDRESS);
+                Jojo::simpleMail($to_name, $to_email, "copy ".$subject, $message, $from_name, $from_email);
+            }
+
+            if (defined('_CART_ORDER_EMAIL')) {
+                /* Email admin - if defined in the cart options */
+                $to_name     = _CART_ORDER_NAME;
+                $to_email    = _CART_ORDER_EMAIL;
+                Jojo::simpleMail($to_name, $to_email, "copy ".$subject, $message, $from_name, $from_email);
+            }
+
+            /* Email webmaster */
+            if (Jojo::getOption('cart_webmaster_copy', 'yes') == 'yes' AND $to_email != _WEBMASTERADDRESS) {
+              $to_name     = _WEBMASTERNAME;
+              $to_email    = _WEBMASTERADDRESS;
+              Jojo::simpleMail($to_name, $to_email, "copy ".$subject, $message, $from_name, $from_email);
+            }
+
+            /* Email client */
             Jojo::simpleMail('', $email, $subject, $message, $from_name, $from_email);
 
             $content['content'] = 'The customer confirmation email has been sent.';

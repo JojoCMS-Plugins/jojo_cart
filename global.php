@@ -31,3 +31,5 @@ if (class_exists(Jojo_Cart_Class)) {
         $smarty->assign('cartisempty', false);
     }
 }
+
+if(!defined('_CART_SHIPPED_EMAIL')) define('_CART_SHIPPED_EMAIL',Jojo::getOption('cart_shipped_email', ''));
