@@ -107,3 +107,16 @@ div.contact-form label[for='same_as_shipping'] {
 #cart-paymentoption {
   margin-top: 15px;
 }
+
+.jojo_cart label {
+  display:block;
+  float:left;
+  margin-bottom:3px;
+  margin-right:5px;
+  width:150px;
+}
+
+.jojo_cart input, .jojo_cart select, .jojo_cart textarea {
+  margin-bottom:3px;
+  margin-right:5px;
+}
