@@ -31,7 +31,7 @@ class jojo_plugin_jojo_cart_transaction_report extends JOJO_Plugin
 
         jojo_plugin_Admin::adminMenu();
 
-        $transactions = Jojo::selectQuery("SELECT * FROM {cart} WHERE id > 0 ORDER BY id DESC LIMIT ?",array(Jojo::getOption('cart_transactions_report_number', 150)));
+        $transactions = Jojo::selectQuery("SELECT * FROM {cart} WHERE id > 0 ORDER BY id DESC LIMIT ".Jojo::getOption('cart_transactions_report_number', 150));
         foreach($transactions as &$transaction) {
             $cart = unserialize($transaction['data']);
             $transaction['datetime'] = $transaction['updated'];
