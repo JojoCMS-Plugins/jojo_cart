@@ -96,17 +96,17 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
 
         if ($result['success']) {
             /* Get visitor details for emailing etc */
-            if (isset($cart->fields['billing_email'])) {
+            if (!empty($cart->fields['billing_email'])) {
                 $email = $cart->fields['billing_email'];
-            } elseif (isset($cart->fields['shipping_email'])) {
+            } elseif (!empty($cart->fields['shipping_email'])) {
                 $email = $cart->fields['shipping_email'];
             } else {
                 $email = '';
             }
 
-            if (isset($cart->fields['billing_firstname'])) {
+            if (!empty($cart->fields['billing_firstname'])) {
                 $name = $cart->fields['billing_firstname'] . ' ' . $cart->fields['billing_lastname'];
-            } elseif (isset($cart->fields['shipping_firstname'])) {
+            } elseif (!empty($cart->fields['shipping_firstname'])) {
                 $name = $cart->fields['shipping_firstname'] . ' ' . $cart->fields['shipping_lastname'];
             } else {
                 $name = '';
