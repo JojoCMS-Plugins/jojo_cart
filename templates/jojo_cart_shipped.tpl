@@ -1,7 +1,7 @@
 <div class="transactionlist_ajax">
 {if $changestatus}{$changestatus}{else}
   <p>The order has been marked as "shipped". You can optionally use the form below to email the client and notify them of this.</p>
-  
+
   <h2>Enter tracking information</h2>
   <p></p>
   <form method="post" action="{$SITEURL}/cart/shipped/{$token}/{$actioncode}/">
@@ -13,7 +13,7 @@
   <form method="post" action="{$SITEURL}/cart/shipped/{$token}/{$actioncode}/">
     <h2>Send message to client:</h2>
     <label>To:<br />
-    <input type="text" size="30" name="email" value="{$fields.billing_email|default:$fields.shipping_email}" /></label><br />
+    <input type="text" size="30" name="email" value="{if $fields.billing_email}{$fields.billing_email}{else}{$fields.shipping_email}{/if}" /></label><br />
     <label>Subject:<br />
     <input type="test" size="30" name="subject" value="Your order has shipped" /></label><br />
     <label>Message:<br />
