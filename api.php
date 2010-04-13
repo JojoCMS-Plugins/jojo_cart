@@ -231,3 +231,14 @@ $_options[] = array(
     'options'     => '',
     'plugin'      => 'jojo_cart'
 );
+
+$_options[] = array(
+    'id'          => 'cart_transactions_report_number',
+    'category'    => 'Cart',
+    'label'       => 'The number of transactions shown on the transaction report',
+    'description' => '',
+    'type'        => 'text',
+    'default'     => '150',
+    'options'     => '',
+    'plugin'      => 'jojo_cart'
+);
