@@ -168,6 +168,13 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
                 $subject     = 'Order from '.Jojo::getOption('sitetitle');
                 $message     = $smarty->fetch('jojo_cart_admin_email.tpl') . Jojo::emailFooter();
                 Jojo::simpleMail($to_name, $to_email, $subject, $message, $name, $email);
+            } elseif (Jojo::getOption('cart_order_email', false)) {
+                /* Email admin - if defined in the cart options */
+                $to_name     = Jojo::getOption('cart_order_name', '');
+                $to_email    = Jojo::getOption('cart_order_email', false);
+                $subject     = 'Order from '.Jojo::getOption('sitetitle');
+                $message     = $smarty->fetch('jojo_cart_admin_email.tpl') . Jojo::emailFooter();
+                Jojo::simpleMail($to_name, $to_email, $subject, $message, $name, $email);
             }
 
             /* Email webmaster */
