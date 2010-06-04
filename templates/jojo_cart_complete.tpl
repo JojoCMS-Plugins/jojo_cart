@@ -7,7 +7,7 @@
   {$receipt}
 </div>
 {/if}
-
+{if $OPTIONS.cart_tracking_code}{$OPTIONS.cart_tracking_code}{/if}
 {jojoHook hook="jojo_cart_complete_bottom"}
 
 </div>
