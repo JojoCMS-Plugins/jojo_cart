@@ -49,7 +49,7 @@ Jojo::registerURI("cart/[action:process]/[token:[a-zA-Z0-9]{20}]",              
 Jojo::registerURI("cart/[action:complete|payment-info]/[token:[a-zA-Z0-9]{20}]",                Jojo_Cart_Class);                 // "cart/complete/da9fdd0cd8175bd247bd04bdebe90fe6133572b2/"
 Jojo::registerURI("cart/[action:complete|cancel|cheque|payment-info]",                          Jojo_Cart_Class);                 // "cart/action/"
 Jojo::registerURI("cart/[action:empty]",                                                        'jojo_plugin_Jojo_cart_update');  // "cart/action/"
-Jojo::registerURI("cart/[action:add|remove]/[id:[a-zA-Z0-9_-]*]",                               'jojo_plugin_Jojo_cart_update');  // "cart/add/product-name/" or "cart/add/id/" or "cart/remove/product-name/" or "cart/remove/id/"
+Jojo::registerURI("cart/[action:add|remove]/[id:[a-zA-Z0-9_\-\+]*]",                               'jojo_plugin_Jojo_cart_update');  // "cart/add/product-name/" or "cart/add/id/" or "cart/remove/product-name/" or "cart/remove/id/"
 Jojo::registerURI("cart/[action:add|remove]",                                                   'jojo_plugin_Jojo_cart_update');  // "cart/add/" - with the ID in a POST variable
 
 Jojo::registerURI("cart/[action:shipped|shippedadmin|shippedadmin_unshipped]/[token:[a-zA-Z0-9]{20}]/[actioncode:[a-zA-Z0-9]{10}]", 'jojo_plugin_Jojo_cart_shipped'); // "cart/shipped/VUvx2v7beGA5QWUlydU1/2v7beGydU1/"
