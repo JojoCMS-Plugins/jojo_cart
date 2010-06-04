@@ -376,6 +376,18 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
                     /* Fixed discount */
                     $cart->items[$k]['netprice'] -= $cart->discount['fixed'];
                 }
+                if (preg_match('/^(.*?)-T(\\d*)$/i', $item['id'], $match)) {
+                    $newid = $match[1];
+                    foreach ($cart->discount['custom'] as $c_id => $c_v) {
+                        if (preg_match('/^(\\d+)%$/', $cart->discount['custom'][$newid], $match)) {
+                            $percentage = $match[1];
+                            $cart->items[$k]['netprice'] -= $item['price'] * $percentage / 100;
+                        } elseif (preg_match('/^(\\d+)$/', $cart->discount['custom'][$item['id']], $match)) {
+                            $fixed = $match[1];
+                            $cart->items[$k]['netprice'] -= $fixed;
+                        }
+                    }
+                }
             }
 
             $cart->items[$k]['linetotal'] = $cart->items[$k]['netprice'] * $cart->items[$k]['quantity'];
@@ -535,7 +547,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
                 $cart->discount['custom'][trim($parts[0])] = trim($parts[1]);
             }
         }
-
+       
         self::total();
         return true;
     }
