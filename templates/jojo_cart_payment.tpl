@@ -41,7 +41,7 @@
 
     <div id="cart-total">
         Total: <span>{$order.currency|default:$OPTIONS.cart_default_currency}{$order.currency_symbol|default:' '}{$order.amount|string_format:"%01.2f"}</span>
-        {if $OPTIONS.cart_show_gst != 'no' && (($order.currency=='NZD') || ($order.currency=='' && $OPTIONS.cart_default_currency=='NZD'))}<p class="note">includes GST of {$order.currency_symbol|default:' '}{$order.amount/9|string_format:"%01.2f"}</p>{/if}
+        {if $OPTIONS.cart_show_gst != 'no' && (($order.currency=='NZD') || ($order.currency=='' && $OPTIONS.cart_default_currency=='NZD'))}<p class="note">includes GST of {$order.currency_symbol|default:' '}{if $smarty.now>1285891200}{$order.amount/7.66666|string_format:"%01.2f"}{else}{$order.amount/9|string_format:"%01.2f"}{/if}</p>{/if}
     </div>
 {if $usediscount}
     <div id="cart-discountcode">
