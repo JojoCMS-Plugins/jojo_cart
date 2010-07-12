@@ -20,7 +20,7 @@ $query = "
       `regioncode` varchar(30) NOT NULL,
       `name` varchar(255) NOT NULL,
       `displayorder` int(11) NOT NULL,
-      `minfrieght` blob NOT NULL,
+      `minfreight` blob NOT NULL,
       PRIMARY KEY  (`regioncode`)
     ) ENGINE=MyISAM DEFAULT CHARSET=latin1;";
 

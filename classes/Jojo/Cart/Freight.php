@@ -67,13 +67,14 @@ class Jojo_Cart_Freight {
             $input = array();
         }
         $this->setModel(isset($input['model'])  ? $input['model']  : 'fixed');
-        $this->data        = isset($input['data'])        ? $input['data']  : array();
-        $this->default     = isset($input['default'])     ? $input['default'] : array();
-        $this->base        = isset($input['base'])        ? $input['base'] : array();
-        $this->combine     = isset($input['combine'])     ? $input['combine'] : array();
-        $this->minimum     = isset($input['minimum'])     ? $input['minimum'] : array();
-        $this->sharedmodel = isset($input['sharedmodel']) ? $input['sharedmodel'] : array();
-        $this->packs       = isset($input['packs'])       ? $input['packs'] : array();
+        $this->data         = isset($input['data'])        ? $input['data']  : array();
+        $this->default      = isset($input['default'])     ? $input['default'] : array();
+        $this->base         = isset($input['base'])        ? $input['base'] : array();
+        $this->combine      = isset($input['combine'])     ? $input['combine'] : array();
+        $this->minimum      = isset($input['minimum'])     ? $input['minimum'] : array();
+        $this->sharedmodel  = isset($input['sharedmodel']) ? $input['sharedmodel'] : array();
+        $this->freightunits = isset($input['freightunits']) ? $input['freightunits'] : 1;
+        $this->packs        = isset($input['packs'])       ? $input['packs'] : array();
     }
 
     /* exports the object into a string, for storing in a database / session */
@@ -87,7 +88,8 @@ class Jojo_Cart_Freight {
                             'combine' => $this->combine,
                             'minimum' => $this->minimum,
                             'sharedmodel' => $this->sharedmodel,
-                            'packs' => $this->packs
+                            'packs' => $this->packs,
+                            'freightunits' => $this->freightunits,
                             )
                         );
     }
@@ -120,6 +122,23 @@ class Jojo_Cart_Freight {
     {
         $this->sharedmodel = $id;
     }
+
+    /**
+     * Get the number of shared model freight units this product uses
+     */
+    function getFreightUnits()
+    {
+        return isset($this->freightunits) ? $this->freightunits : 1;
+    }
+
+    /**
+     * Set the number of shared model freight units this product uses
+     */
+    function setFreightUnits($units = 1)
+    {
+        $this->freightunits = $units;
+    }
+
 
     /**
      * Set the freight model to be used. Options are limited to fixed and region.
@@ -156,7 +175,7 @@ class Jojo_Cart_Freight {
     }
 
     /**
-     * Returns the frieght methods for a particular region
+     * Returns the freight methods for a particular region
      */
     function getFreightMethods($region)
     {
@@ -320,12 +339,12 @@ class Jojo_Cart_Freight {
      */
     public static function getRegionMinimum($region, $method)
     {
-        $region = Jojo::selectRow('SELECT minfrieght FROM {cart_region} WHERE regioncode = ?', $region);
+        $region = Jojo::selectRow('SELECT minfreight FROM {cart_region} WHERE regioncode = ?', $region);
 
-        if (!$region || !$region['minfrieght']) {
+        if (!$region || !$region['minfreight']) {
             return 0;
         }
-        $prices = unserialize($region['minfrieght']);
+        $prices = unserialize($region['minfreight']);
         return (isset($prices[$method]) && $prices[$method]) ? $prices[$method] : 0;
     }
 

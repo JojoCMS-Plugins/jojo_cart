@@ -51,6 +51,7 @@ class Jojo_Field_freight extends Jojo_Field
         $smarty->assign('freight_combine',         $freight->getCombine());
         if ($freight->getModel() == "shared") {
             $smarty->assign('sharedmodel',         $freight->getSharedModel(true));
+            $smarty->assign('freightunits',        $freight->getFreightUnits(true));
         }
         if ($freight->getModel() == "packed") {
             $smarty->assign('packs',         $freight->getPacks());
@@ -88,6 +89,7 @@ class Jojo_Field_freight extends Jojo_Field
             }
         } elseif ($type == 'shared') {
             $freight->setSharedModel(Jojo::getFormData('fm_' . $this->fd_field . '_model', 0));
+            $freight->setFreightUnits(Jojo::getFormData('fm_' . $this->fd_field . '_freightunits', 1));
         } elseif ($type == 'packed') {
             $packs = array();
             foreach(Jojo::getFormData('fm_' . $this->fd_field . '_pack', array()) as $pack) {
@@ -99,7 +101,6 @@ class Jojo_Field_freight extends Jojo_Field
         }
 
         $this->value = $freight->export();
-
         return true;
     }
 }

@@ -42,9 +42,9 @@ $default_fd['cart_region']['displayorder'] = array(
         'fd_order' => "3",
     );
 
-// Minfrieght Field
-$default_fd['cart_region']['minfrieght'] = array(
-        'fd_name' => "Minfrieght",
+// Minfreight Field
+$default_fd['cart_region']['minfreight'] = array(
+        'fd_name' => "Minfreight",
         'fd_type' => "minfreight",
         'fd_showlabel' => "no",
         'fd_order' => "4",

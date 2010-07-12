@@ -32,7 +32,7 @@
 </select><br/><br/>
 
 <div id="fm_{$fd_field}_packed"{if $freight_type!='packed'} style="display:none"{/if} class="fm_{$fd_field}_freight">
-    <p>Enter a pack size and the shared frieght model to use for that pack size.</p>
+    <p>Enter a pack size and the shared freight model to use for that pack size.</p>
 
     <table class="adminZebraTable">
         <tr>

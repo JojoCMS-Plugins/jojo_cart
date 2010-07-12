@@ -201,6 +201,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
      * var $id mixed  The id of the product to add
      */
     function addToCart($id, $quantity = false) {
+
         /* Get product details from the product plugin */
         $found = false;
         foreach (self::getProductHandlers() as $productHandler) {
@@ -217,12 +218,10 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         }
 
         if ($quantity !== false) {
-        	$quantity_to_add = $quantity;
+            $quantity_to_add = $quantity;
         } else {
-        	$quantity_to_add = !empty($item['quantity']) ? $item['quantity'] : 1;
+            $quantity_to_add = !empty($item['quantity']) ? $item['quantity'] : 1;
         }
-
-
 
         /* Get the current number in the cart */
         $cart = self::getCart();
@@ -458,7 +457,8 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
             if ($freight->getModel() == 'shared') {
                 /* Shared model, calculate this later */
                 $modelid = $freight->getSharedModel(true);
-                $sharedModelQuantities[$modelid] = isset($sharedModelQuantities[$modelid]) ? $sharedModelQuantities[$modelid] + $item['quantity'] : $item['quantity'];
+                $freightUnits = $freight->getFreightUnits();
+                $sharedModelQuantities[$modelid] = isset($sharedModelQuantities[$modelid]) ? $sharedModelQuantities[$modelid] + $freightUnits * $item['quantity'] : $freightUnits * $item['quantity'];
                 $sharedModel[$modelid] = $freight->getSharedModel();
             } else {
                 /* Individual freight, calculate now */
@@ -468,7 +468,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
 
         /* Get the shipping for the shared models */
         foreach ($sharedModelQuantities as $modelid => $quantity) {
-            $total += $sharedModel[$modelid]->getFreight($region, $method, $quantity);
+            $total += $sharedModel[$modelid]->getFreight($region, $method, ceil($quantity));
         }
         $total = max($total, Jojo_Cart_Freight::getRegionMinimum($region, $method));
         $total = Jojo::applyFilter('jojo_cart:getFreight:total', $total, $cart);
@@ -538,7 +538,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
                 $cart->discount['exclusions'][] = $v;
             }
         }
-        
+
         /* apply custom discounts */
         foreach (explode("\n", str_replace(',', "\n", $discount['custom'])) as $k => $v) {
             $v = trim($v);
@@ -547,7 +547,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
                 $cart->discount['custom'][trim($parts[0])] = trim($parts[1]);
             }
         }
-       
+
         self::total();
         return true;
     }
