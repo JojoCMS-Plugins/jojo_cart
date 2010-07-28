@@ -43,7 +43,7 @@ Order ID = {$id}
     <tr class="row1'}">
       <td colspan="3">
       {foreach from=$fields key=k item=i}
-          {$i}<br />
+          {if $i}{$i}<br />{/if}
       {/foreach}
       </td>
       </tr>
