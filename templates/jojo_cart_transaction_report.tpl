@@ -25,6 +25,7 @@ $('a.shipped').cluetip({activation:"click", closePosition: 'top',closeText: '<im
       <th>Status</th>
       <th>Handler</th>
       <th>Shipped</th>
+      {jojoHook hook="jojo_cart_transaction_report_th"}
     </tr>
   </thead>
   <tbody>
@@ -44,6 +45,7 @@ $('a.shipped').cluetip({activation:"click", closePosition: 'top',closeText: '<im
       <td>{$transaction.handler}</td>
       <td>{if $transaction.shipped<1}<a class="shipped" target="_blank" href="cart/shippedadmin/{$transaction.token}/{$transaction.actioncode}/" rel="cart/shippedadmin/{$transaction.token}/{$transaction.actioncode}/">click to ship</a>
       {elseif $transaction.shipped}{$transaction.shipped|date_format:"%d %b %Y"} <a class="shipped" href="cart/shippedadmin_unshipped/{$transaction.token}/{$transaction.actioncode}/" rel="cart/shippedadmin_unshipped/{$transaction.token}/{$transaction.actioncode}/">U</a>{/if}</td>
+    {jojoHook hook="jojo_cart_transaction_report_td"}
     </tr>
     {/foreach}
   </tbody>
