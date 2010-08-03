@@ -48,6 +48,7 @@ class jojo_plugin_jojo_cart_transaction_report extends JOJO_Plugin
                 $transaction['amount']    = $cart->order['amount'];
                 $transaction['currency'] = isset($cart->order['currency']) ? $cart->order['currency'] : '';
             }
+            $transaction['data']=$cart;
             $transaction['currency'] = !empty($transaction['currency']) ? $transaction['currency'] : call_user_func(array(Jojo_Cart_Class, 'getCartCurrency'), $transaction['token']);
             $transaction['currencysymbol'] = call_user_func(array(Jojo_Cart_Class, 'getCurrencySymbol'), $transaction['currency']);
         }
