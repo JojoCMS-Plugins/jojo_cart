@@ -96,7 +96,7 @@ class jojo_plugin_Jojo_cart_shipped extends JOJO_Plugin
         $smarty->assign('tracking_message', $tracking_message);
 
         /* hook for plugins to make custom actions */
-        Jojo::runHook('jojo_cart_shipped_hook', $cart);
+        Jojo::runHook('jojo_cart_shipped_hook', $cart->token);
 
         $smarty->assign('token',            $cart->token);
         $smarty->assign('actioncode',       $cart->actioncode);
