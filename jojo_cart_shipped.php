@@ -94,6 +94,10 @@ class jojo_plugin_Jojo_cart_shipped extends JOJO_Plugin
         call_user_func(array(Jojo_Cart_Class, 'saveCart'));
         $tracking_message = isset($cart->tracking_message) ? $cart->tracking_message : Jojo::getOption('cart_shipped_tracking_message', '');
         $smarty->assign('tracking_message', $tracking_message);
+
+        /* hook for plugins to make custom actions */
+        Jojo::runHook('jojo_cart_shipped_hook', $cart);
+
         $smarty->assign('token',            $cart->token);
         $smarty->assign('actioncode',       $cart->actioncode);
         $smarty->assign('fields',           $cart->fields);
