@@ -362,9 +362,11 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
                 $cart->items[$k]['quantity'] >= $cart->discount['minorder']) {
                 if (isset($cart->discount['custom'][$item['id']])) {
                     if (preg_match('/^(\\d+)%$/', $cart->discount['custom'][$item['id']], $match)) {
+                        /* Per item Percentage discount */
                         $percentage = $match[1];
                         $cart->items[$k]['netprice'] -= $item['price'] * $percentage / 100;
                     } elseif (preg_match('/^(\\d+)$/', $cart->discount['custom'][$item['id']], $match)) {
+                        /* Per item Fixed discount */
                         $fixed = $match[1];
                         $cart->items[$k]['netprice'] -= $fixed;
                     }
@@ -375,6 +377,8 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
                     /* Fixed discount */
                     $cart->items[$k]['netprice'] -= $cart->discount['fixed'];
                 }
+
+/** This looks like custom code for a specific site?
                 if (preg_match('/^(.*?)-T(\\d*)$/i', $item['id'], $match)) {
                     $newid = $match[1];
                     foreach ($cart->discount['custom'] as $c_id => $c_v) {
@@ -387,9 +391,11 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
                         }
                     }
                 }
+**/
             }
 
             $cart->items[$k]['linetotal'] = $cart->items[$k]['netprice'] * $cart->items[$k]['quantity'];
+            $cart->items[$k]['linetotal'] = Jojo::applyFilter('cart_linetotal', $cart->items[$k]['linetotal'], array($item['id'], $item['quantity']));
             $subtotal += $cart->items[$k]['linetotal'] ;
         }
 
