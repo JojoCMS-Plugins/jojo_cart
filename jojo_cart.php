@@ -150,8 +150,8 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
        if(!isset($cart->id)) $cart->id = 0;
 
         /* Save */
-        Jojo::updateQuery("REPLACE INTO {cart} SET id=?, token=?, data=?, status=?, ip=?, updated=?, handler=?, amount=?, actioncode=?, shipped=?",
-                          array($cart->id, $token, serialize($cart), $status, Jojo::getIp(), time(), $cart->handler, $cart->order['amount'], $actioncode, $cart->shipped));
+        Jojo::updateQuery("REPLACE INTO {cart} SET id=?, token=?, data=?, status=?, ip=?, userid = ?, updated=?, handler=?, amount=?, actioncode=?, shipped=?",
+            array($cart->id, $token, serialize($cart), $status, Jojo::getIp(), isset($_SESSION['userid']) ? $_SESSION['userid'] : '', time(), $cart->handler, $cart->order['amount'], $actioncode, $cart->shipped));
         return true;
     }
 
