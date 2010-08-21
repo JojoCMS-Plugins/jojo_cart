@@ -26,7 +26,7 @@ $query = "
       `status` enum('pending','abandoned','complete','payment_pending') NOT NULL DEFAULT 'pending',
       `shipped` INT NOT NULL DEFAULT '-1',
       `ip` VARCHAR( 255 ) NOT NULL ,
-      `userid` INT ,
+      `userid` INT(11) ,
       `updated` INT NOT NULL ,
       `actioncode` VARCHAR( 40 ),
       `testmode` ENUM('yes','no','') NOT NULL DEFAULT '' ,
