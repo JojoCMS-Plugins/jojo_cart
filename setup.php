@@ -113,8 +113,8 @@ if (!$data) {
 $data = Jojo::selectRow("SELECT pageid FROM {page} WHERE pg_link = ?", array('jojo_plugin_jojo_cart_country_admin'));
 if (!$data) {
    echo "Adding <b>Cart Countries</b> Page to menu<br />";
-   Jojo::insertQuery('INSERT INTO {page} SET pg_title = ?, pg_url = ?, pg_body_code = ?, pg_link = ?, pg_order = ?, pg_parent = ?, pg_contentcache = ?',
-        array("Cart Countries", "admin/cart/country", "[editor:html]\n", "jojo_plugin_jojo_cart_country_admin", "3", $_ADMIN_SHOPPING_ID, "no"));
+   Jojo::insertQuery('INSERT INTO {page} SET pg_title = ?, pg_url = ?, pg_body_code = ?, pg_link = ?, pg_order = ?, pg_parent = ?, pg_contentcache = ?, pg_sitemapnav = ?, pg_xmlsitemapnav = ?',
+        array("Cart Countries", "admin/cart/country", "[editor:html]\n", "jojo_plugin_jojo_cart_country_admin", "3", $_ADMIN_SHOPPING_ID, "no", "no", "no"));
 }
 
 // Cart transaction report
