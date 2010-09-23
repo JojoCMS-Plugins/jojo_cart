@@ -150,6 +150,10 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
                 $smarty->assign('status', 'complete');
             } else {
                 $smarty->assign('status', 'payment_pending');
+                /* allow plugins to replace the 'payment pending' text for both admin and customer emails with their own */
+                $pending_template = array('admin' => 'jojo_cart_admin_email_pending.tpl', 'customer' => 'jojo_cart_customer_email_pending.tpl');
+                $pending_template = Jojo::applyFilter('jojo_cart_process:pending_template', $pending_template, $cart);
+                $smarty->assign('pending_template', $pending_template);
             }
 
             if (defined('_CONTACTADDRESS') && (_CONTACTADDRESS != _WEBMASTERADDRESS)) {

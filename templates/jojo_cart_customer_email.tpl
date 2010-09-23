@@ -6,14 +6,11 @@ This email is an order confirmation for an order placed recently on {$sitetitle}
 {$message}
 {/if}
 {if $status=='payment_pending'}
-
-PAYMENT PENDING
-===============
-This order will not be completed/delivered until payment has been made.
-
-{$OPTIONS.cart_manual_payment_instructions}
-
-Please quote the order number "{$id}" when making any payments, so we can track your payment.
+{if $pending_template.customer}
+{include file=$pending_template.customer}
+{else}
+{include file='jojo_cart_customer_email_pending.tpl'}
+{/if}
 {/if}
 
 {include file="jojo_cart_checkout_customer_email.tpl"}

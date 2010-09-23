@@ -1,14 +1,11 @@
 An order has been placed on {$sitetitle}.
 
 {if $status=='payment_pending'}
-PAYMENT PENDING
-===============
-This order is awaiting payment from the customer, which should be expected to happen manually (eg cheque / bank deposit).
-
-Once payment has been made, please dispatch the order and click the following link to update the payment status of the order.
-
-{$SITEURL}/cart/paid/{$token}/{$actioncode}/
-
+{if $pending_template.admin}
+{include file=$pending_template.admin}
+{else}
+{include file='jojo_cart_admin_email_pending.tpl'}
+{/if}
 {else}
 Payment Method: {if $activeplugin=='jojo_plugin_jojo_cart_emailorder'}Email Order (Invoice for payment){else}Online Transaction using {$activeplugin}{/if}
 
