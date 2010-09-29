@@ -252,6 +252,10 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         /* Remove the product */
         $cart = self::getCart();
         unset($cart->items[$item['id']]);
+
+        /* Run hook */
+        Jojo::runHook('jojo_cart_quantity_updated', array());
+
         return true;
     }
 
@@ -312,6 +316,9 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         /* Get the cart */
         $cart = self::getCart();
         $cart->items[$id] = $item;
+
+        /* Run hook */
+        Jojo::runHook('jojo_cart_quantity_updated', array());
 
         /* Update subtotal / total */
         $cart->order['subtotal'] = self::subTotal();
