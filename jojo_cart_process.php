@@ -101,7 +101,7 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
             } elseif (!empty($cart->fields['shipping_email'])) {
                 $email = $cart->fields['shipping_email'];
             } else {
-                $email = '';
+                $email = Jojo::either(_CONTACTADDRESS,_FROMADDRESS,_WEBMASTERADDRESS);
             }
 
             if (!empty($cart->fields['billing_firstname'])) {
@@ -111,7 +111,6 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
             } else {
                 $name = '';
             }
-
 
             $smarty->assign('token',      $cart->token);
             $smarty->assign('actioncode', $cart->actioncode);
@@ -189,6 +188,7 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
               $message     = $smarty->fetch('jojo_cart_admin_email.tpl') . Jojo::emailFooter();
               Jojo::simpleMail($to_name, $to_email, $subject, $message, $name, $email);
             }
+
             /* Email client */
             $from_name   = Jojo::either(_CONTACTNAME, _FROMNAME,_SITETITLE);
             $from_email  = Jojo::either(_CONTACTADDRESS,_FROMADDRESS,_WEBMASTERADDRESS);
