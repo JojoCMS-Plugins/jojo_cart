@@ -30,7 +30,7 @@ class jojo_plugin_Jojo_cart_update extends JOJO_Plugin
 
         /* Remove item */
         if ($action == 'remove') {
-            call_user_func(array(Jojo_Cart_Class, 'removeFromCart'), Jojo::getFormData('id'));
+            call_user_func(array(Jojo_Cart_Class, 'removeFromCart'), urldecode(Jojo::getFormData('id')));
         }
 
         /* Update Quantities */
