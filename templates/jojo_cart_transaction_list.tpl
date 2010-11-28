@@ -4,7 +4,7 @@ Order ID = {$id}
   <thead>
     <tr>
       <th>Item</th>
-      <th>Quan</th>
+      <th>Quantity</th>
       <th>Price</th>
       <th>Total</th>
     </tr>
@@ -21,13 +21,13 @@ Order ID = {$id}
     {/if}
   {/foreach}
 <tr>
-  <td>Subtotal</td><td colspan="2">&nbsp;</td><td align="right">{$order.subtotal|string_format:"%01.2f"}</td>
+  <td colspan="3">Subtotal</td><td align="right">{$order.subtotal|string_format:"%01.2f"}</td>
 </tr>
 <tr>
-  <td>Freight</td><td colspan="2">&nbsp;</td><td align="right">{$order.freight|string_format:"%01.2f"}</td>
+  <td colspan="3">Freight</td><td align="right">{$order.freight|string_format:"%01.2f"}</td>
 </tr>
 <tr>
-  <td>Amount</td><td colspan="2">&nbsp;</td><td align="right">{$currency}{$currencysymbol}{$order.amount|string_format:"%01.2f"}</td>
+  <td colspan="3">Amount</td><td align="right">{$currency}{$currencysymbol}{$order.amount|string_format:"%01.2f"}</td>
 </tr>
 
 </tbody>

@@ -6,7 +6,7 @@
   <script type="text/javascript">
 {literal}
 $(document).ready(function() {
-$('a.info').cluetip({activation:"click", closePosition: 'top',closeText: '<img src="images/cross.png" alt="" />',sticky:true,ajaxCache: true,showTitle:false});
+$('a.info').cluetip({activation:"click", closePosition: 'top',closeText: '<img src="images/cross.png" alt="" />',sticky:true,ajaxCache: true,width:600,showTitle:false});
 $('a.paid').cluetip({activation:"click", closePosition: 'top',closeText: '<img src="images/cross.png" alt="" />',sticky:true,width:380,showTitle:false});
 $('a.shipped').cluetip({activation:"click", closePosition: 'top',closeText: '<img src="images/cross.png" alt="" />',sticky:true,width:380,showTitle:false});
 });
@@ -35,7 +35,7 @@ $('a.shipped').cluetip({activation:"click", closePosition: 'top',closeText: '<im
       <td>{$transaction.datetime|date_format:"%d %b %Y"}</td>
       <td>{$transaction.datetime|date_format:"%H:%M"}</td>
       <td><a class="info" href="{$ADMIN}/cart/transactionlist/{$transaction.token}/" rel="{$ADMIN}/cart/transaction_list/{$transaction.token}/">{$transaction.FirstName} {$transaction.LastName}</a></td>
-      <td>{$transaction.currencysymbol}{$transaction.amount}</td>
+      <td>{$transaction.currencysymbol}{$transaction.amount|string_format:"%0.2f"}</td>
       <td>{if $transaction.currency}{$transaction.currency}{/if}</td>
       <td>
       {if $transaction.status=='payment_pending' || $transaction.status=='pending' || $transaction.status=='abandoned'}<a class="paid" target="_blank" href="cart/paidadmin_complete/{$transaction.token}/{$transaction.actioncode}/" rel="cart/paidadmin_complete/{$transaction.token}/{$transaction.actioncode}/">{$transaction.status} - click to complete</a>{else}{$transaction.status}{/if}
