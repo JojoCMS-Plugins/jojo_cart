@@ -22,11 +22,13 @@ class jojo_plugin_Jojo_cart_payment extends JOJO_Plugin
         global $smarty, $_USERGROUPS, $_USERID;
 
         $content = array();
+        
+        $languageurlprefix = $this->page['pageid'] ? Jojo::getPageUrlPrefix($this->page['pageid']) : $_SESSION['languageurlprefix'];
 
         /* Make sure there's something in the cart */
         $cart = call_user_func(array(Jojo_Cart_Class, 'getCart'));
         if (!count($cart->items)) {
-            Jojo::redirect(_SECUREURL . '/cart/');
+            Jojo::redirect(_SECUREURL . '/' .$languageurlprefix. 'cart/');
             exit;
         }
 
@@ -68,7 +70,7 @@ class jojo_plugin_Jojo_cart_payment extends JOJO_Plugin
         $breadcrumb                       = array();
         $breadcrumb['name']               = 'Checkout';
         $breadcrumb['rollover']           = 'Checkout';
-        $breadcrumb['url']                = 'cart/payment/';
+        $breadcrumb['url']                = $languageurlprefix.'cart/payment/';
         $breadcrumbs[count($breadcrumbs)] = $breadcrumb;
         $content['breadcrumbs']           = $breadcrumbs;
 
@@ -83,8 +85,8 @@ class jojo_plugin_Jojo_cart_payment extends JOJO_Plugin
         /* hook for plugins to make custom actions */
         Jojo::runHook('jojo_cart_checkout', array());
 
-        $content['title']      = 'Checkout';
-        $content['seotitle']   = 'Checkout';
+        $content['title']      = '##Checkout##';
+        $content['seotitle']   = '##Checkout##';
         $content['content']    = $smarty->fetch('jojo_cart_payment.tpl');
         $content['javascript'] = $smarty->fetch('jojo_cart_payment_js.tpl');
         $content['head']       = $smarty->fetch('jojo_cart_payment_head.tpl');

@@ -33,3 +33,11 @@ if (class_exists(Jojo_Cart_Class)) {
 }
 
 if(!defined('_CART_SHIPPED_EMAIL')) define('_CART_SHIPPED_EMAIL',Jojo::getOption('cart_shipped_email', ''));
+
+//set cart language prefix
+$languageurlprefix = Jojo::getPageUrlPrefix($page->page['pageid']);
+$_SESSION['languageurlprefix'] = $languageurlprefix;
+$smarty->assign('languageurlprefix', $languageurlprefix);
+
+//only session variable can be used for ajax requests
+$_SESSION['sectiondata'] = $sectiondata;

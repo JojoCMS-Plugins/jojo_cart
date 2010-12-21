@@ -2,7 +2,7 @@
 {if $changestatus}{$changestatus}{else}
   <p>The order has been marked as "paid". You can optionally use the form below to email the client and notify them that their payment has been received.</p>
 
-  <form method="post" action="{$SITEURL}/cart/paid/{$token}/{$actioncode}/">
+  <form method="post" action="{$SITEURL}/{$languageurlprefix}cart/paid/{$token}/{$actioncode}/">
     <h2>Send message to client:</h2>
     <label>To:<br />
     <input type="text" size="30" name="email" value="{if $fields.billing_email}{$fields.billing_email}{else}{$fields.shipping_email}{/if}" /></label><br />

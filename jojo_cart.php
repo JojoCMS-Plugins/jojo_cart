@@ -585,6 +585,8 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         $testmode = self::isTestMode();
 
         $content = array();
+        
+        $languageurlprefix = Jojo::getPageUrlPrefix($this->page['pageid']);
 
         /* Read GET variables */
         $action   = Util::getFormData('action',      '');
@@ -626,8 +628,8 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
                 if (isset($savedcart->handler)) $smarty->assign('handler', $savedcart->handler);
             }
 
-            $content['title']    = 'Transaction complete';
-            $content['seotitle'] = 'Transaction complete';
+            $content['title']    = '##Transaction complete##';
+            $content['seotitle'] = '##Transaction complete##';
             $content['content']  = $smarty->fetch('jojo_cart_complete.tpl');
 
             /* empty the cart from session - this may not have happened at process stage if done via remote call */
@@ -638,7 +640,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
             $breadcrumb                       = array();
             $breadcrumb['name']               = 'Complete';
             $breadcrumb['rollover']           = 'Complete';
-            $breadcrumb['url']                = 'cart/complete/';
+            $breadcrumb['url']                = $languageurlprefix.'cart/complete/';
             $breadcrumbs[count($breadcrumbs)] = $breadcrumb;
             $content['breadcrumbs']           = $breadcrumbs;
 
@@ -664,7 +666,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
             $breadcrumb                       = array();
             $breadcrumb['name']               = 'Payment Information';
             $breadcrumb['rollover']           = 'Payment Information';
-            $breadcrumb['url']                = 'cart/payment-info/';
+            $breadcrumb['url']                = $languageurlprefix.'cart/payment-info/';
             $breadcrumbs[count($breadcrumbs)] = $breadcrumb;
             $content['breadcrumbs']           = $breadcrumbs;
 
@@ -700,10 +702,11 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         $action   = Jojo::getFormData('action',   '');
         $id       = Jojo::getFormData('id',       false);
         $discount = Jojo::getFormData('discount', false);
+        $languageurlprefix = Jojo::getPageUrlPrefix($this->page['pageid']);        
 
         switch ($action) {
         case 'cheque':
-            $expectedurl = _SECUREURL.'/cart/cheque/';
+            $expectedurl = _SECUREURL.'/'.$languageurlprefix.'cart/cheque/';
             break;
         case 'complete':
            $expectedurl =  _PROTOCOL.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
@@ -722,7 +725,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
                     return _PROTOCOL.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
                 }
             }
-            $expectedurl = _SECUREURL.'/cart/';
+            $expectedurl = _SECUREURL.'/'.$languageurlprefix.'cart/';
         }
 
         return $expectedurl;

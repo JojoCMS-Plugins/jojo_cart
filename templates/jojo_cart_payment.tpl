@@ -9,14 +9,14 @@
 
 <div class="box">
 
-<h2>Order information</h2>
+<h2>##Order information##</h2>
 <table id="shoppingcart">
   <thead>
   <tr>
-    <th  style="text-align:left">Item</th>
-    <th>Qty</th>
-    <th>Price</th>
-    <th>Line Total</th>
+    <th  style="text-align:left">##Item##</th>
+    <th>##Qty##</th>
+    <th>##Price##</th>
+    <th>##Line Total##</th>
   </tr>
   </thead>
   <tbody>
@@ -32,35 +32,35 @@
 </table>
   {* Subtotal *}
    <div id="cart-subtotal">
-        Sub-total: <span>{$order.currency_symbol|default:' '}{$order.subtotal|string_format:"%01.2f"}</span>
+        ##Sub-total##: <span>{$order.currency_symbol|default:' '}{$order.subtotal|string_format:"%01.2f"}</span>
    </div>
 
    <div id="cart-freight">
-        Freight: {if $order.freight}{$order.currency_symbol|default:' '}{$order.freight|string_format:"%01.2f"}{else}n/a{/if}
+        ##Freight##: {if $order.freight}{$order.currency_symbol|default:' '}{$order.freight|string_format:"%01.2f"}{else}n/a{/if}
    </div>
 
     <div id="cart-total">
-        Total: <span>{$order.currency|default:$OPTIONS.cart_default_currency}{$order.currency_symbol|default:' '}{$order.amount|string_format:"%01.2f"}</span>
-        {if $OPTIONS.cart_show_gst != 'no' && (($order.currency=='NZD') || ($order.currency=='' && $OPTIONS.cart_default_currency=='NZD'))}<p class="note">includes GST of {$order.currency_symbol|default:' '}{$order.amount/7.66666|string_format:"%01.2f"}</p>{/if}
+        ##Total##: <span>{$order.currency|default:$OPTIONS.cart_default_currency}{$order.currency_symbol|default:' '}{$order.amount|string_format:"%01.2f"}</span>
+        {if $OPTIONS.cart_show_gst != 'no' && (($order.currency=='NZD') || ($order.currency=='' && $OPTIONS.cart_default_currency=='NZD'))}<p class="note">##includes GST of## {$order.currency_symbol|default:' '}{$order.amount/7.66666|string_format:"%01.2f"}</p>{/if}
     </div>
 {if $usediscount}
     <div id="cart-discountcode">
     {if !$discount.code}
-       <p>If you have a discount code, enter it on the <a href="cart/" class="cart-button" title="Edit the quantities, or remove items from the order">Change Order</a> page</p>
+       <p>If you have a discount code, enter it on the <a href="{$languageurlprefix}cart/" class="cart-button" title="Edit the quantities, or remove items from the order">Change Order</a> page</p>
     {else}
       <p>Using Discount Code: {$discount.code}</p>
     {/if}
      </div>
 {/if}
 
-<p><a href="cart/" class="cart-button" title="Edit the quantities, or remove items from the order">Change Order</a></p>
+<p><a href="{$languageurlprefix}cart/" class="cart-button" title="##Edit the quantities, or remove items from the order##">##Change Order##</a></p>
 
 
 </div>
 
 {if count($paymentoptions) > 1}
   <div class="box" id="payment_option_radios">
-    <h3>Payment options</h3>
+    <h3>##Payment options##</h3>
     <ul>
     {foreach from=$paymentoptions key=k item=option}
     <li style="list-style:none">

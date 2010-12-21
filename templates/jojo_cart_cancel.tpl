@@ -1,2 +1,2 @@
 <h3>Transaction cancelled</h3>
-<p>This transaction has been cancelled or an an error has occurred - no charges have been made. If you wish to retry the transaction, please return to the <a href="cart/checkout/" rel="nofollow">checkout page</a>, or contact the <a href="mailto:{$OPTIONS.webmasteraddress}">webmaster</a> if you feel this is a technical error.</p>
+<p>This transaction has been cancelled or an an error has occurred - no charges have been made. If you wish to retry the transaction, please return to the <a href="{$languageurlprefix}cart/checkout/" rel="nofollow">checkout page</a>, or contact the <a href="mailto:{$OPTIONS.webmasteraddress}">webmaster</a> if you feel this is a technical error.</p>

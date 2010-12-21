@@ -35,11 +35,13 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
         global $smarty, $_USERGROUPS, $_USERID;
         $token = Jojo::getGet('token');
         $content = array();
+        
+        $languageurlprefix = $this->page['pageid'] ? Jojo::getPageUrlPrefix($this->page['pageid']) : $_SESSION['languageurlprefix'];
 
         /* Make sure there's something in the cart */
         $cart = call_user_func(array(Jojo_Cart_Class, 'getCart'), $token);
         if (!count($cart->items)) {
-            Jojo::redirect(_SECUREURL . '/cart/');
+            Jojo::redirect(_SECUREURL . '/' .$languageurlprefix. 'cart/');
         }
 
         /* Which payment plugin are we using? */
@@ -214,9 +216,9 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
 
             /* redirect to complete page */
             if ($result['paid']) {
-                Jojo::redirect(_SECUREURL.'/cart/complete/'.$token.'/');
+                Jojo::redirect(_SECUREURL.'/' .$languageurlprefix. 'cart/complete/'.$token.'/');
             } else {
-                Jojo::redirect(_SECUREURL.'/cart/payment-info/'.$token.'/');
+                Jojo::redirect(_SECUREURL.'/' .$languageurlprefix. 'cart/payment-info/'.$token.'/');
             }
         } else {
             /* email webmaster / admin */
@@ -224,8 +226,8 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
             /* display error */
 
         }
-        $content['title']    = 'Payment error';
-        $content['seotitle'] = 'Payment error';
+        $content['title']    = '##Payment error##';
+        $content['seotitle'] = '##Payment error##';
         $content['content']  = $smarty->fetch('jojo_cart_process.tpl');
         return $content;
     }

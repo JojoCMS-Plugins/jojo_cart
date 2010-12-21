@@ -10,7 +10,7 @@
 </p>
 {/if}
 
-<p>This transaction has not been processed and no charges have been made. Please return to the <a href="cart/checkout/" rel="nofollow">checkout page</a> and correct the errors, or contact the <a href="mailto:{$OPTIONS.webmasteraddress}">webmaster</a> if you feel this is a technical error.</p>
+<p>This transaction has not been processed and no charges have been made. Please return to the <a href="{$languageurlprefix}cart/checkout/" rel="nofollow">checkout page</a> and correct the errors, or contact the <a href="mailto:{$OPTIONS.webmasteraddress}">webmaster</a> if you feel this is a technical error.</p>
 
 {if $receipt}
 <div class="receipt">

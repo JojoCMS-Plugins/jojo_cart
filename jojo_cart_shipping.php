@@ -18,10 +18,13 @@
 class jojo_plugin_Jojo_cart_shipping extends JOJO_Plugin
 {
     public function _getContent() {
+      
+        $languageurlprefix = $this->page['pageid'] ? Jojo::getPageUrlPrefix($this->page['pageid']) : $_SESSION['languageurlprefix'];
+      
         /* Is there something in the cart? */
         $cart = call_user_func(array(Jojo_Cart_Class, 'getCart'));
         if (!count($cart->items)) {
-            Jojo::redirect(_SECUREURL . '/cart/');
+            Jojo::redirect(_SECUREURL .'/' .$languageurlprefix. 'cart/');
             exit;
         }
 
@@ -44,14 +47,14 @@ class jojo_plugin_Jojo_cart_shipping extends JOJO_Plugin
             /* Only one option so auto choose this one */
             $shippingMethod = array_pop(array_keys($commonMethods));
             call_user_func(array(Jojo_Cart_Class, 'setShippingMethod'), array_pop(array_keys($commonMethods)));
-            Jojo::redirect(_SECUREURL . '/cart/payment/');
+            Jojo::redirect(_SECUREURL . '/' .$languageurlprefix. 'cart/payment/');
         } else {
             /* Multiple options */
             $method = Jojo::getFormData('shippingmethod');
             if (isset($commonMethods[$method])) {
                 /* User has choosen a valid method */
                 call_user_func(array(Jojo_Cart_Class, 'setShippingMethod'), $method);
-                Jojo::redirect(_SECUREURL . '/cart/payment/');
+                Jojo::redirect(_SECUREURL . '/' .$languageurlprefix. 'cart/payment/');
             }
 
             /* Display shipping selection page */
