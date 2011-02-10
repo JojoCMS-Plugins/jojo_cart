@@ -90,6 +90,9 @@ class jojo_plugin_Jojo_cart_paid extends JOJO_Plugin
 
             call_user_func(array(Jojo_Cart_Class, 'saveCart'));
 
+            /* hook for plugins to make custom actions */
+            Jojo::runHook('jojo_cart_paid_hook', $cart->token);
+
             $smarty->assign('token',      $cart->token);
             $smarty->assign('actioncode', $cart->actioncode);
             $smarty->assign('fields',     $cart->fields);
