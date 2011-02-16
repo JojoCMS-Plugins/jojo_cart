@@ -38,11 +38,13 @@ class jojo_plugin_jojo_cart_transaction_report extends JOJO_Plugin
             $transaction['status'] = $transaction['status'];
             $transaction['handler'] = str_replace('jojo_plugin_jojo_cart_','', $transaction['handler']);
             if (is_array($cart)) {
+                $transaction['fields'] = $cart['fields'];
                 $transaction['FirstName'] = $cart['fields']['FirstName'];
                 $transaction['LastName']  = $cart['fields']['LastName'];
                 $transaction['amount']    = $cart['order']['amount'];
                 $transaction['currency'] = isset($cart['order']['currency']) ? $cart['order']['currency'] : '';
             } elseif (is_object($cart) ) {
+                $transaction['fields'] = isset($cart->fields) ? $cart->fields : '';
                 $transaction['FirstName'] = !empty($cart->fields['billing_firstname']) ? $cart->fields['billing_firstname'] : $cart->fields['shipping_firstname'];
                 $transaction['LastName']  = !empty($cart->fields['billing_lastname']) ? $cart->fields['billing_lastname'] : $cart->fields['shipping_lastname'];
                 $transaction['amount']    = $cart->order['amount'];
