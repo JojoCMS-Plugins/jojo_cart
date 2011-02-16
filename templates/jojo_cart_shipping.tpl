@@ -1,4 +1,4 @@
-<p>##There are multiple shipping methods available for your order. Please select your prefered shipping method below.##</p>
+<p>##There are multiple shipping methods available for your order. Please select your preferred shipping method below.##</p>
 
 <form action="{$languageurlprefix}cart/shipping/" method="POST">
 
