@@ -42,7 +42,7 @@
         {else}
                         <input type="text" class="cart-quantity" name="quantity[{$i.id}]" id="quantity[{$i.id}]" size="3" value="{$i.quantity}" />
         {/if}
-                        <a class="cart-remove" title="remove this item" href="{$languageurlprefix}cart/remove/{$i.id}/" rel="nofollow">x</a>
+                        <a class="cart-remove" title="remove this item" href="{$languageurlprefix}cart/remove/{$i.id|escape:'url'}/" rel="nofollow">x</a>
                     </td>
                     <td class="cart-price">{if $i.netprice != $i.price}<strike>{$i.price|string_format:"%01.2f"}</strike> {$i.netprice|string_format:"%01.2f"}{else}{$i.netprice|string_format:"%01.2f"}{/if}</td>
                     <td class="cart-linetotal"><span>{$i.linetotal|string_format:"%01.2f"}</span></td>
