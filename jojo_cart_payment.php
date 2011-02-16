@@ -22,7 +22,7 @@ class jojo_plugin_Jojo_cart_payment extends JOJO_Plugin
         global $smarty, $_USERGROUPS, $_USERID;
 
         $content = array();
-        
+
         $languageurlprefix = $this->page['pageid'] ? Jojo::getPageUrlPrefix($this->page['pageid']) : $_SESSION['languageurlprefix'];
 
         /* Make sure there's something in the cart */
@@ -83,7 +83,7 @@ class jojo_plugin_Jojo_cart_payment extends JOJO_Plugin
         $smarty->assign('paymentoptions', $paymentoptions);
 
         /* hook for plugins to make custom actions */
-        Jojo::runHook('jojo_cart_checkout', array());
+        Jojo::runHook('jojo_cart_checkout', array($cart));
 
         $content['title']      = '##Checkout##';
         $content['seotitle']   = '##Checkout##';
