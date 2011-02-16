@@ -18,9 +18,9 @@
 class jojo_plugin_Jojo_cart_shipping extends JOJO_Plugin
 {
     public function _getContent() {
-      
+
         $languageurlprefix = $this->page['pageid'] ? Jojo::getPageUrlPrefix($this->page['pageid']) : $_SESSION['languageurlprefix'];
-      
+
         /* Is there something in the cart? */
         $cart = call_user_func(array(Jojo_Cart_Class, 'getCart'));
         if (!count($cart->items)) {
@@ -74,6 +74,8 @@ class jojo_plugin_Jojo_cart_shipping extends JOJO_Plugin
             $smarty->assign('currency', $currency);
             $smarty->assign('currencysymbol', call_user_func(array(Jojo_Cart_Class, 'getCurrencySymbol'), $currency));
             $smarty->assign('shippingMethods', $commonMethods);
+
+            Jojo::runHook('jojo_cart_shipping', array($cart));
             return array('content' => $smarty->fetch('jojo_cart_shipping.tpl'));
         }
         exit;
