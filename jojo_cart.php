@@ -560,6 +560,8 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
                 $cart->discount['custom'][trim($parts[0])] = trim($parts[1]);
             }
         }
+        
+        Jojo::runHook('jojo_cart_apply_discount_code', array($cart, $discount));
 
         self::total();
         return true;
