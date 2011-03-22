@@ -22,6 +22,7 @@ $query = "
       `region` varchar(255) NOT NULL,
       `defaultregion` varchar(255) NOT NULL,
       `special` enum('yes','no') NOT NULL DEFAULT 'no',
+      `applytax` enum('yes','no') NOT NULL DEFAULT 'yes',
       `hasstates` enum('yes','no') NOT NULL DEFAULT 'yes',
       PRIMARY KEY  (`countrycode`)
     ) ENGINE=MyISAM DEFAULT CHARSET=latin1;";

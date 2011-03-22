@@ -27,7 +27,7 @@ Order ID = {$id}
   <td colspan="3">Freight</td><td align="right">{$order.freight|string_format:"%01.2f"}</td>
 </tr>
 <tr>
-  <td colspan="3">Amount</td><td align="right">{$currency}{$currencysymbol}{$order.amount|string_format:"%01.2f"}</td>
+  <td colspan="3">Amount</td><td align="right">{$currency}{$currencysymbol}{$order.amount|string_format:"%01.2f"} ({if $order.apply_tax}inc {$OPTIONS.cart_tax_name|default:'Tax'}{else}no {$OPTIONS.cart_tax_name|default:'Tax'}{/if})</td>
 </tr>
 
 </tbody>

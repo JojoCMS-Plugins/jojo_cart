@@ -13,7 +13,8 @@
         <th>Country Name</th>
         <th>Region</th>
         <th title="Popular countries are listed first in the drop down">Popular Country?</th>
-        <td></td>
+        <th title="Whether tax is added / removed from orders delivered to this country">Apply Tax?</th>
+        <td>&nbsp;</td>
     </tr>
 </thead>
 <tbody>
@@ -29,6 +30,9 @@
     </td>
     <td style="text-align: center">
         <input type="checkbox"{if $c.special == 'yes'} checked="checked"{/if} onchange="$.get('json/jojo_cart_country_togglespecial.php', {ldelim} c: '{$c.countrycode|strtolower}',{rdelim}, function(data){ldelim}$('#status_{$c.countrycode|strtolower}').html(data).fadeIn('fast').animate({ldelim}opacity: 1.0{rdelim}, 1000).fadeOut(3000);{rdelim});"/>
+    </td>
+    <td style="text-align: center">
+        <input type="checkbox"{if $c.applytax == 'yes'} checked="checked"{/if} onchange="$.get('json/jojo_cart_country_toggleapplytax.php', {ldelim} c: '{$c.countrycode|strtolower}',{rdelim}, function(data){ldelim}$('#status_{$c.countrycode|strtolower}').html(data).fadeIn('fast').animate({ldelim}opacity: 1.0{rdelim}, 1000).fadeOut(3000);{rdelim});"/>
     </td>
     <td style="background: none;"><div id="status_{$c.countrycode|strtolower}"></div></td>
   </tr>

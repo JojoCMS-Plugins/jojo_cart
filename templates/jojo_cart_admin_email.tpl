@@ -49,6 +49,11 @@ Sub-total: {$order.subtotal|string_format:"%01.2f"}
 Freight: {$order.freight|string_format:"%01.2f"}
 {/if}
 Total: {$order.currency|default:$OPTIONS.cart_default_currency}{$order.currency_symbol|default:' '}{$order.amount|string_format:"%01.2f"}
+{if $OPTIONS.cart_tax_amount}
+{if $order.apply_tax}includes {$OPTIONS.cart_tax_amount}% {$OPTIONS.cart_tax_name|default:'Tax'}
+{else}
+{$OPTIONS.cart_tax_name|default:'Tax'} not applicable
+{/if}{/if}
 {if $discount && $discount.code != ''}
 
 Customer used discount code: {$discount.code}

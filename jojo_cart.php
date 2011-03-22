@@ -26,6 +26,57 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
      * An array or class names of payment handlers
      */
     static $paymentHandlers;
+    
+    /**
+     * gets the tax portion of a price. $type indicates whether $amount is an exclusive or inclusive amount
+     */
+    public static function getTax($amount, $type)
+    {
+        $tax_percentage = Jojo::getOption('cart_tax_amount', 0);
+        if (in_array(strtolower($type), array('e', 'ex', 'exc', 'excl', 'exclusive', 'excluding'))) {
+            $tax_amount = $amount * ($tax_percentage / 100);
+        } elseif (in_array(strtolower($type), array('i', 'in', 'inc', 'incl', 'inclusive', 'including'))) {
+            $excluding = $amount / (1 + ($tax_percentage / 100));
+            $tax_amount = $amount - $excluding;
+        }
+        return $tax_amount;
+    }
+    
+    /**
+     * Add tax to an exclusive price
+     */
+    public static function addTax($exclusive)
+    {
+        return $exclusive + self::getTax($exclusive, 'exc');
+    }
+    
+    /**
+     * Removes tax from an inclusive amount
+     */
+    public static function removeTax($inclusive)
+    {
+        return $inclusive - self::getTax($inclusive, 'inc');
+    }
+    
+    /**
+     * returns boolean value indicating whether the cart should show add tax to line items and totals. This depends whether the order is being sent to an 'applytax' country (as per the shipping country field and 'Cart Countries' settings), and if this is not yet known the 'cart_tax_pricing_type' default is used instead
+     */
+    public static function getApplyTax()
+    {
+        $cart = self::getCart();
+        
+        if (!empty($cart->fields['shipping_country'])) {
+            $data = Jojo::selectRow("SELECT applytax FROM {cart_country} WHERE countrycode=?", $cart->fields['shipping_country']);
+            if (!empty($data['applytax'])) {
+                $cart->order['apply_tax'] = Jojo::yes2True($data['applytax']);
+                return $cart->order['apply_tax'];
+            }
+        }
+        /* if we don't yet know the shipping country, assume the site default */
+        $type = Jojo::getOption('cart_tax_pricing_type', 'inclusive');
+        $cart->order['apply_tax'] = ($type == 'inclusive') ? true : false;
+        return $cart->order['apply_tax'];
+    }   
 
     /**
      * Is this cart in test mode?
@@ -292,6 +343,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         if (isset($item['min_quantity']) && $item['min_quantity'] && $item['quantity']) {
             $item['quantity'] = max($item['min_quantity'], $item['quantity']);
         }
+        $item['baseprice']  = $item['price']; //baseprice is the original prices as stored in the DB, before tax calculations are applied (this value is exclusive or inclusive as per 'cart_tax_pricing_type' option)
         $item['netprice']   = $item['price']; //price is the price before discounts - netprice is the price after discounts
         $item['linetotal']  = $item['netprice'] * $qty;
         $item['currency']   = empty($item['currency']) ? Jojo::getOption('cart_default_currency', 'USD') : $item['currency'];
@@ -361,7 +413,8 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
 
         $subtotal = 0;
         foreach ($cart->items as $k => $item) {
-            $cart->items[$k]['netprice'] = $item['price'];
+            $cart->items[$k]['price'] = $cart->items[$k]['baseprice'];
+            $cart->items[$k]['netprice'] = $cart->items[$k]['price'];
 
             /* Apply discounts */
             if (!in_array($item['id'], $cart->discount['exclusions']) &&
@@ -371,7 +424,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
                     if (preg_match('/^(\\d+)%$/', $cart->discount['custom'][$item['id']], $match)) {
                         /* Per item Percentage discount */
                         $percentage = $match[1];
-                        $cart->items[$k]['netprice'] -= $item['price'] * $percentage / 100;
+                        $cart->items[$k]['netprice'] -= $cart->items[$k]['price'] * $percentage / 100;
                     } elseif (preg_match('/^(\\d+)$/', $cart->discount['custom'][$item['id']], $match)) {
                         /* Per item Fixed discount */
                         $fixed = $match[1];
@@ -379,26 +432,23 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
                     }
                 } elseif ($cart->discount['percent']) {
                     /* Percentage discount */
-                    $cart->items[$k]['netprice'] -= $item['price'] * $cart->discount['percent'] / 100;
+                    $cart->items[$k]['netprice'] -= $cart->items[$k]['price'] * $cart->discount['percent'] / 100;
                 } elseif ($cart->discount['fixed']) {
                     /* Fixed discount */
                     $cart->items[$k]['netprice'] -= $cart->discount['fixed'];
                 }
+            }
 
-/** This looks like custom code for a specific site?
-                if (preg_match('/^(.*?)-T(\\d*)$/i', $item['id'], $match)) {
-                    $newid = $match[1];
-                    foreach ($cart->discount['custom'] as $c_id => $c_v) {
-                        if (preg_match('/^(\\d+)%$/', $cart->discount['custom'][$newid], $match)) {
-                            $percentage = $match[1];
-                            $cart->items[$k]['netprice'] -= $item['price'] * $percentage / 100;
-                        } elseif (preg_match('/^(\\d+)$/', $cart->discount['custom'][$item['id']], $match)) {
-                            $fixed = $match[1];
-                            $cart->items[$k]['netprice'] -= $fixed;
-                        }
-                    }
-                }
-**/
+            /* add of remove tax to line items before totalling */
+            $cart_tax_pricing_type = Jojo::getOption('cart_tax_pricing_type', 'inclusive');
+            if (($cart_tax_pricing_type == 'exclusive') && self::getApplyTax()) {
+                /* need to add tax to all amounts */
+                $cart->items[$k]['price']    = self::addTax($cart->items[$k]['price']);
+                $cart->items[$k]['netprice'] = self::addTax($cart->items[$k]['netprice']);
+            } elseif (($cart_tax_pricing_type == 'inclusive') && !self::getApplyTax()) {
+                /* need to remove tax from all amounts */
+                $cart->items[$k]['price']    = self::removeTax($cart->items[$k]['price']);
+                $cart->items[$k]['netprice'] = self::removeTax($cart->items[$k]['netprice']);
             }
 
             $cart->items[$k]['linetotal'] = $cart->items[$k]['netprice'] * $cart->items[$k]['quantity'];
@@ -485,6 +535,17 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         }
         $total = max($total, Jojo_Cart_Freight::getRegionMinimum($region, $method));
         $total = Jojo::applyFilter('jojo_cart:getFreight:total', $total, $cart);
+        
+        /* add of remove tax to final freight price */
+        $cart_tax_pricing_type = Jojo::getOption('cart_tax_pricing_type', 'inclusive');
+        if (($cart_tax_pricing_type == 'exclusive') && self::getApplyTax()) {
+            /* need to add tax to all amounts */
+            $total    = self::addTax($total);
+        } elseif (($cart_tax_pricing_type == 'inclusive') && !self::getApplyTax()) {
+            /* need to remove tax from all amounts */
+            $total    = self::removeTax($total);
+        }
+        
         return $total;
     }
 

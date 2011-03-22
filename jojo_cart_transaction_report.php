@@ -49,6 +49,7 @@ class jojo_plugin_jojo_cart_transaction_report extends JOJO_Plugin
                 $transaction['LastName']  = !empty($cart->fields['billing_lastname']) ? $cart->fields['billing_lastname'] : $cart->fields['shipping_lastname'];
                 $transaction['amount']    = $cart->order['amount'];
                 $transaction['currency'] = isset($cart->order['currency']) ? $cart->order['currency'] : '';
+                $transaction['apply_tax'] = isset($cart->order['apply_tax']) ? $cart->order['apply_tax'] : 'unknown';
             }
             $transaction['data']=$cart;
             $transaction['currency'] = !empty($transaction['currency']) ? $transaction['currency'] : call_user_func(array(Jojo_Cart_Class, 'getCartCurrency'), $transaction['token']);

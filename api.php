@@ -202,16 +202,7 @@ $_options[] = array(
     'options'     => 'yes,no',
     'plugin'      => 'jojo_cart'
 );
-$_options[] = array(
-    'id'          => 'cart_show_gst',
-    'category'    => 'Cart',
-    'label'       => 'Show GST value on orders',
-    'description' => 'Shows the GST value on NZD transactions (and not on foreign currency), or dont mention GST at all.',
-    'type'        => 'radio',
-    'default'     => 'yes',
-    'options'     => 'yes,no',
-    'plugin'      => 'jojo_cart'
-);
+
 $_options[] = array(
     'id'          => 'cart_webmaster_copy',
     'category'    => 'Cart',
@@ -241,5 +232,49 @@ $_options[] = array(
     'type'        => 'text',
     'default'     => '150',
     'options'     => '',
+    'plugin'      => 'jojo_cart'
+);
+
+$_options[] = array(
+    'id'          => 'cart_show_gst',
+    'category'    => 'Cart',
+    'label'       => 'Tax - Show GST value on orders',
+    'description' => 'Shows the GST value on NZD transactions (and not on foreign currency), or dont mention GST at all.',
+    'type'        => 'radio',
+    'default'     => 'yes',
+    'options'     => 'yes,no',
+    'plugin'      => 'jojo_cart'
+);
+
+$_options[] = array(
+    'id'          => 'cart_tax_name',
+    'category'    => 'Cart',
+    'label'       => 'Tax name or type',
+    'description' => 'The name of the sales tax that is applied, eg GST or VAT',
+    'type'        => 'text',
+    'default'     => 'Tax',
+    'options'     => '',
+    'plugin'      => 'jojo_cart'
+);
+
+$_options[] = array(
+    'id'          => 'cart_tax_amount',
+    'category'    => 'Cart',
+    'label'       => 'Tax amount (%)',
+    'description' => 'The amount of tax to charge, as a percentage (eg 15 or 19). A value of 0 means tax messages will not display. Do not include the % symbol here.',
+    'type'        => 'text',
+    'default'     => '0',
+    'options'     => '',
+    'plugin'      => 'jojo_cart'
+);
+
+$_options[] = array(
+    'id'          => 'cart_tax_pricing_type',
+    'category'    => 'Cart',
+    'label'       => 'Tax pricing type',
+    'description' => 'Whether product pricing is stored as tax inclusive or exclusive',
+    'type'        => 'radio',
+    'default'     => 'inclusive',
+    'options'     => 'inclusive,exclusive',
     'plugin'      => 'jojo_cart'
 );
