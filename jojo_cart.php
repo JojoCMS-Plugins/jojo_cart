@@ -410,6 +410,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         $cart->discount['minorder']   = isset($cart->discount['minorder'])   ? $cart->discount['minorder']   : 0;
         $cart->discount['percent']    = isset($cart->discount['percent'])    ? $cart->discount['percent']    : 0;
         $cart->discount['fixed']      = isset($cart->discount['fixed'])      ? $cart->discount['fixed']      : 0;
+        $cart->discount['singleuse']  = isset($cart->discount['singleuse'])  ? $cart->discount['singleuse']  : false;
 
         $subtotal = 0;
         foreach ($cart->items as $k => $item) {
@@ -586,6 +587,10 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
             unset($cart->discount);
             $cart->errors[] = 'This discount code is not yet active';
             return false;
+        } elseif (($discount['singleuse'] == 'yes') && ($discount['usedby'] != '')) {
+            unset($cart->discount);
+            $cart->errors[] = 'This discount code has already been used';
+            return false;
         }
 
         /* Add discount details to the cart */
@@ -596,6 +601,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         $cart->discount['minorder']   = $discount['minorder'];
         $cart->discount['products']   = array();
         $cart->discount['exclusions'] = array();
+        $cart->discount['singleuse']   = ($discount['singleuse'] == 'yes') ? true : false;
 
         /* Clean up codes and remove empty ones */
         foreach (explode("\n", str_replace(',', "\n", $discount['products'])) as $k => $v) {

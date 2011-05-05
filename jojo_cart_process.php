@@ -130,6 +130,11 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
             if ($data['numdiscounts'] > 0) {
                 $smarty->assign('discount', $cart->discount);
             }
+            
+            /* update the status of single-use discount codes */
+            if (isset($cart->discount['singleuse']) && $cart->discount['singleuse']) {
+                Jojo::updateQuery("UPDATE {discount} SET usedby=? WHERE discountcode=?", array($cart->token, $cart->discount['code']));
+            }
 
             /* log transaction */
             $log             = new Jojo_Eventlog();

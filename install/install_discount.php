@@ -28,6 +28,8 @@ $query = "
       `products` text NOT NULL,
       `exclusions` text NOT NULL,
       `custom` text NOT NULL,
+      `singleuse` enum('yes','no') NOT NULL default 'no',
+      `usedby` varchar(255) NOT NULL,
       PRIMARY KEY  (`discountcode`)
     ) ENGINE=MyISAM DEFAULT CHARSET=latin1;";
 

@@ -116,3 +116,23 @@ $default_fd['discount']['custom'] = array(
         'fd_order' => "10",
         'fd_help'  => "Use the custom field when you need one discount code to apply different discount amounts to different products. One entry per line. eg to apply a $10 discount to product ID 123, enter the following: '123=10'.",
     );
+
+// Single Use Field
+$default_fd['discount']['singleuse'] = array(
+        'fd_name'    => "Single Use Code",
+        'fd_type'    => "radio",
+        'fd_order'   => "11",
+        'fd_default' => "no",
+        'fd_options' => "yes\nno",
+        'fd_help'    => "Regular discount codes can be used multiple times. Single use codes expire after they have been used.",
+    );
+
+// Used By Field
+$default_fd['discount']['usedby'] = array(
+        'fd_name'    => "Used by",
+        'fd_type'    => "readonly",
+        'fd_order'   => "12",
+        'fd_default' => "",
+        'fd_options' => "",
+        'fd_help'    => "The Transaction token / ID if this code has been used.",
+    );
