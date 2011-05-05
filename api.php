@@ -44,6 +44,12 @@ $_provides['fieldTypes'] = array(
         'minfreight' => 'Jojo Cart - Country Min Freight'
         );
 
+/* a new payment handler for FREE transactions */
+if (class_exists(Jojo_Cart_Class)) {
+    call_user_func(array(Jojo_Cart_Class, 'setPaymentHandler'), 'jojo_plugin_jojo_cart_free');
+}
+
+
 /* Register URI patterns */
 Jojo::registerURI("cart/[action:process]/[token:[a-zA-Z0-9]{20}]",                              'jojo_plugin_Jojo_cart_process'); // "cart/process/VUvx2v7beGA5QWUlydU1/"
 Jojo::registerURI("cart/[action:complete|payment-info]/[token:[a-zA-Z0-9]{20}]",                Jojo_Cart_Class);                 // "cart/complete/da9fdd0cd8175bd247bd04bdebe90fe6133572b2/"
@@ -272,7 +278,7 @@ $_options[] = array(
     'id'          => 'cart_tax_pricing_type',
     'category'    => 'Cart',
     'label'       => 'Tax pricing type',
-    'description' => 'Whether product pricing is stored as tax inclusive or exclusive',
+    'description' => 'Whether product and freight pricing is stored as tax inclusive or exclusive. Warning, frontend templates may need to be edited to honor this setting.',
     'type'        => 'radio',
     'default'     => 'inclusive',
     'options'     => 'inclusive,exclusive',

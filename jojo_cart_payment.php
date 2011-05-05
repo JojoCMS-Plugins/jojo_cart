@@ -76,9 +76,20 @@ class jojo_plugin_Jojo_cart_payment extends JOJO_Plugin
 
         /* display a checkout form for each payment method */
         $paymentoptions = array();
-        foreach (call_user_func(array(Jojo_Cart_Class, 'getPaymentHandlers')) as $ph) {
-            $options = call_user_func(array($ph, 'getPaymentOptions'));
+        
+        
+        if ($cart->order['amount'] <= 0) {
+            /* for free orders (where 100% or more discount has been applied) only offer the free processor */
+            $options = call_user_func(array('jojo_plugin_jojo_cart_free', 'getPaymentOptions'));
             $paymentoptions = array_merge($paymentoptions, $options);
+        } else {
+            /* otherwise offer the regular choice of payment options */
+            foreach (call_user_func(array(Jojo_Cart_Class, 'getPaymentHandlers')) as $ph) {
+                if ($ph != 'jojo_plugin_jojo_cart_free') {
+                    $options = call_user_func(array($ph, 'getPaymentOptions'));
+                    $paymentoptions = array_merge($paymentoptions, $options);
+                }
+            }
         }
         $smarty->assign('paymentoptions', $paymentoptions);
 
