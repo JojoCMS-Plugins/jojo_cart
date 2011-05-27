@@ -25,7 +25,11 @@ class jojo_plugin_Jojo_cart_update extends JOJO_Plugin
 
         /* Add item */
         if ($action == 'add') {
-            call_user_func(array(Jojo_Cart_Class, 'addToCart'), Jojo::getFormData('id'));
+            $ids = Jojo::getFormData('id');
+            if (!is_array($ids)) $ids = array($ids);
+            foreach ($ids as $id) {
+                call_user_func(array(Jojo_Cart_Class, 'addToCart'), $id);
+            }
         }
 
         /* Remove item */
