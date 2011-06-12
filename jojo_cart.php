@@ -337,6 +337,10 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
             /* Product doesn't exist */
             return false;
         }
+        
+        if ($qty == 0) {
+            return self::removeFromCart($id);
+        }
 
         /* Get the item details */
         $item['quantity']   = isset($item['quantity_fixed']) && $item['quantity_fixed'] ? 1 : $qty;
