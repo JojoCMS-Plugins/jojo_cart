@@ -37,7 +37,7 @@ Order Details
 Order no: {$id}
 {foreach from=$items key=k item=i}
 {if $i.quantity > 0}
-    Name: {$i.name}
+    Name: {$i.name|escape:'html':$charset}
     Quantity: {$i.quantity}
     Price (each): {if $i.netprice != $i.price}{$i.netprice|string_format:"%01.2f"} (Discounted from {$i.price|string_format:"%01.2f"}){else}{$i.netprice|string_format:"%01.2f"}{/if}
     Line total: {$i.linetotal|string_format:"%01.2f"}
