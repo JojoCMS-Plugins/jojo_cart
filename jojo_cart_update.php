@@ -65,7 +65,7 @@ class jojo_plugin_Jojo_cart_update extends JOJO_Plugin
         
         /* Redirect to the Checkout */
         if (Jojo::getFormData('checkout')) {
-            Jojo::redirect(_SECUREURL . '/' .$languageurlprefix. 'cart/checkout/');
+            Jojo::redirect(_SECUREURL . '/' .$languageurlprefix. 'cart/checkout/', 302);
         }
 
         /* Redirect back to the cart */
@@ -85,9 +85,9 @@ class jojo_plugin_Jojo_cart_update extends JOJO_Plugin
                 $smarty->display('analytics_cross_domain_redirect.tpl');
                 exit;
             } else {
-                Jojo::redirect($url);
+                Jojo::redirect($url, 302);
             }
         }
-        Jojo::redirect(_SECUREURL .'/' .$languageurlprefix. 'cart/');
+        Jojo::redirect(_SECUREURL .'/' .$languageurlprefix. 'cart/', 302);
     }
 }
