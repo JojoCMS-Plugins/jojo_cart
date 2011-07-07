@@ -54,7 +54,7 @@
             ##Sub-total##: <span>{$order.currency_symbol|default:' '}{$order.subtotal|string_format:"%01.2f"}</span>
         </div>
        <div id="cart-freight">
-            ##Freight## (##confirmed on next page##): {if $order.freight}{$order.freight|string_format:"%01.2f"}{else}To be calculated{/if}
+            ##Freight##: {if $order.freight}{$order.freight|string_format:"%01.2f"} (##based on current delivery address##){else}(##to be calculated##){/if}
        </div>
         <div id="cart-total">
              ##Total##: <span>{$order.currency|default:$OPTIONS.cart_default_currency}{$order.currency_symbol|default:' '}{$order.amount|string_format:"%01.2f"}</span>

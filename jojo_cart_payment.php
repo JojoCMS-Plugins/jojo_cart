@@ -65,18 +65,8 @@ class jojo_plugin_Jojo_cart_payment extends JOJO_Plugin
         $smarty->assign('order',     $cart->order);
         $smarty->assign('discount',  $cart->discount);
 
-        /* Add checkout breadcrumb */
-        $breadcrumbs                      = $this->_getBreadCrumbs();
-        $breadcrumb                       = array();
-        $breadcrumb['name']               = 'Checkout';
-        $breadcrumb['rollover']           = 'Checkout';
-        $breadcrumb['url']                = $languageurlprefix.'cart/payment/';
-        $breadcrumbs[count($breadcrumbs)] = $breadcrumb;
-        $content['breadcrumbs']           = $breadcrumbs;
-
         /* display a checkout form for each payment method */
         $paymentoptions = array();
-        
         
         if ($cart->order['amount'] <= 0) {
             /* for free orders (where 100% or more discount has been applied) only offer the free processor */
@@ -95,9 +85,6 @@ class jojo_plugin_Jojo_cart_payment extends JOJO_Plugin
 
         /* hook for plugins to make custom actions */
         Jojo::runHook('jojo_cart_checkout', array($cart));
-
-        $content['title']      = '##Checkout##';
-        $content['seotitle']   = '##Checkout##';
         $content['content']    = $smarty->fetch('jojo_cart_payment.tpl');
         $content['javascript'] = $smarty->fetch('jojo_cart_payment_js.tpl');
         $content['head']       = $smarty->fetch('jojo_cart_payment_head.tpl');
