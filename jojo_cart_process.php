@@ -214,6 +214,9 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
 
             /* make doubly sure that complete status is being saved - I'm finding cases where it's not */
             Jojo::updateQuery("UPDATE {cart} SET status=? WHERE token=? LIMIT 1", array($cart->cartstatus, $token));
+            
+            /* Hook for plugins to make custom actions */
+            Jojo::runHook('jojo_cart_success_2', array('cart' => $cart));
 
             /* empty cart and clear token */
             call_user_func(array(Jojo_Cart_Class, 'emptyCart'));
