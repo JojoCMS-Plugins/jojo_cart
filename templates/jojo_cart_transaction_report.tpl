@@ -35,7 +35,7 @@ $('a.shipped').cluetip({activation:"click", closePosition: 'top',closeText: '<im
       <td>{$transaction.datetime|date_format:"%d %b %Y"}</td>
       <td>{$transaction.datetime|date_format:"%H:%M"}</td>
       <td><a class="info" href="{$ADMIN}/cart/transactionlist/{$transaction.token}/" rel="{$ADMIN}/cart/transaction_list/{$transaction.token}/">{$transaction.FirstName} {$transaction.LastName}</a></td>
-      <td>{$transaction.currencysymbol}{$transaction.amount|string_format:"%0.2f"} ({if $transaction.apply_tax === "unknown"}{$OPTIONS.cart_tax_name|default:'Tax'} unknown{elseif $transaction.apply_tax}inc {$OPTIONS.cart_tax_name|default:'Tax'}{else}no {$OPTIONS.cart_tax_name|default:'Tax'}{/if})</td>
+      <td>{$transaction.currencysymbol}{$transaction.amount|string_format:"%0.2f"} {if $OPTIONS.cart_show_gst|default:'yes'=='yes'}({if $transaction.apply_tax === "unknown"}{$OPTIONS.cart_tax_name|default:'Tax'} unknown{elseif $transaction.apply_tax}inc {$OPTIONS.cart_tax_name|default:'Tax'}{else}no {$OPTIONS.cart_tax_name|default:'Tax'}{/if}){/if}</td>
       <td>{if $transaction.currency}{$transaction.currency}{/if}</td>
       <td>
       {if $transaction.status=='payment_pending' || $transaction.status=='pending' || $transaction.status=='abandoned'}<a class="paid" target="_blank" href="cart/paidadmin_complete/{$transaction.token}/{$transaction.actioncode}/" rel="cart/paidadmin_complete/{$transaction.token}/{$transaction.actioncode}/">{$transaction.status} - click to complete</a>{else}{$transaction.status}{/if}
