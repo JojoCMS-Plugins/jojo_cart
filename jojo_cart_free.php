@@ -35,8 +35,7 @@ class JOJO_Plugin_jojo_cart_free extends JOJO_Plugin
 
     function process()
     {
-        
-        $receipt = array('Info' => '');
+        $receipt = (Jojo::getOption('cart_free_message')) == '' ? array() : array('Info' => Jojo::getOption('cart_free_message'));
         $errors  = array();
 
         return array(
