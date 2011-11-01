@@ -24,6 +24,7 @@ $query = "
       `finishdate` int(11) NOT NULL,
       `discountpercent` decimal(10,0) NOT NULL,
       `discountfixed` decimal(10,0) NOT NULL,
+      `fixedorder` decimal(10,0) NOT NULL,
       `minorder` int(11) NOT NULL,
       `products` text NOT NULL,
       `exclusions` text NOT NULL,

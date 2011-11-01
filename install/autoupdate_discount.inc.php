@@ -78,6 +78,15 @@ $default_fd['discount']['discountfixed'] = array(
         'fd_name' => "Discount fixed",
         'fd_type' => "decimal",
         'fd_order' => "7",
+        'fd_help'  => "Fixed $ discount per item",
+    );
+
+// Discount fixed per order Field
+$default_fd['discount']['fixedorder'] = array(
+        'fd_name' => "Discount order",
+        'fd_type' => "decimal",
+        'fd_order' => "7",
+        'fd_help'  => "Fixed $ discount per order",
     );
 
 // Minimum order Field
@@ -106,7 +115,7 @@ $default_fd['discount']['exclusions'] = array(
         'fd_order' => "10",
         'fd_help'  => "Enter the product IDs of any products you wish to exclude from this discount code, comma separated.",
     );
-    
+
 // Custom Field
 $default_fd['discount']['custom'] = array(
         'fd_name'  => "Custom Discount",

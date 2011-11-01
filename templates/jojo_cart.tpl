@@ -50,6 +50,10 @@
     {/foreach}
             </tbody>
         </table>
+{if $order.fixedorder}
+        <div id="cart-fixedorder"> ##Discount##: <span>{$order.currency_symbol|default:' '}{$order.fixedorder|string_format:"%01.2f"}<br /></span>
+        </div>
+{/if}
         <div id="cart-subtotal">
             ##Sub-total##: <span>{$order.currency_symbol|default:' '}{$order.subtotal|string_format:"%01.2f"}</span>
         </div>

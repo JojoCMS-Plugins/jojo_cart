@@ -32,6 +32,7 @@
 </table>
   {* Subtotal *}
    <div id="cart-subtotal">
+        {if $order.fixedorder}##Discount##: {$order.fixedorder|string_format:"%01.2f"}<br />{/if}
         ##Sub-total##: <span>{$order.currency_symbol|default:' '}{$order.subtotal|string_format:"%01.2f"}</span>
    </div>
 

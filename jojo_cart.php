@@ -26,7 +26,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
      * An array or class names of payment handlers
      */
     static $paymentHandlers;
-    
+
     /**
      * gets the tax portion of a price. $type indicates whether $amount is an exclusive or inclusive amount
      */
@@ -41,7 +41,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         }
         return $tax_amount;
     }
-    
+
     /**
      * Add tax to an exclusive price
      */
@@ -49,7 +49,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
     {
         return $exclusive + self::getTax($exclusive, 'exc');
     }
-    
+
     /**
      * Removes tax from an inclusive amount
      */
@@ -57,14 +57,14 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
     {
         return $inclusive - self::getTax($inclusive, 'inc');
     }
-    
+
     /**
      * returns boolean value indicating whether the cart should show add tax to line items and totals. This depends whether the order is being sent to an 'applytax' country (as per the shipping country field and 'Cart Countries' settings), and if this is not yet known the 'cart_tax_pricing_type' default is used instead
      */
     public static function getApplyTax()
     {
         $cart = self::getCart();
-        
+
         if (!empty($cart->fields['shipping_country'])) {
             $data = Jojo::selectRow("SELECT applytax FROM {cart_country} WHERE countrycode=?", $cart->fields['shipping_country']);
             if (!empty($data['applytax'])) {
@@ -76,7 +76,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         $type = Jojo::getOption('cart_tax_pricing_type', 'inclusive');
         $cart->order['apply_tax'] = ($type == 'inclusive') ? true : false;
         return $cart->order['apply_tax'];
-    }   
+    }
 
     /**
      * Is this cart in test mode?
@@ -337,7 +337,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
             /* Product doesn't exist */
             return false;
         }
-        
+
         if ($qty == 0) {
             return self::removeFromCart($id);
         }
@@ -414,6 +414,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         $cart->discount['minorder']   = isset($cart->discount['minorder'])   ? $cart->discount['minorder']   : 0;
         $cart->discount['percent']    = isset($cart->discount['percent'])    ? $cart->discount['percent']    : 0;
         $cart->discount['fixed']      = isset($cart->discount['fixed'])      ? $cart->discount['fixed']      : 0;
+        $cart->discount['fixedorder'] = isset($cart->discount['fixedorder']) ? $cart->discount['fixedorder'] : 0;
         $cart->discount['singleuse']  = isset($cart->discount['singleuse'])  ? $cart->discount['singleuse']  : false;
 
         $subtotal = 0;
@@ -460,7 +461,8 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
             $cart->items[$k]['linetotal'] = Jojo::applyFilter('cart_linetotal', $cart->items[$k]['linetotal'], array($item['id'], $item['quantity']));
             $subtotal += $cart->items[$k]['linetotal'] ;
         }
-
+        $cart->order['fixedorder'] = $cart->discount['fixedorder'];
+        $subtotal -= $cart->order['fixedorder'];
         $cart->order['subtotal'] = $subtotal;
         return $subtotal;
     }
@@ -540,7 +542,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         }
         $total = max($total, Jojo_Cart_Freight::getRegionMinimum($region, $method));
         $total = Jojo::applyFilter('jojo_cart:getFreight:total', $total, $cart);
-        
+
         /* add of remove tax to final freight price */
         $cart_tax_pricing_type = Jojo::getOption('cart_tax_pricing_type', 'inclusive');
         if (($cart_tax_pricing_type == 'exclusive') && self::getApplyTax()) {
@@ -550,7 +552,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
             /* need to remove tax from all amounts */
             $total    = self::removeTax($total);
         }
-        
+
         return $total;
     }
 
@@ -602,10 +604,11 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         $cart->discount['code']       = $discount['discountcode'];
         $cart->discount['percent']    = $discount['discountpercent'];
         $cart->discount['fixed']      = $discount['discountfixed'];
+        $cart->discount['fixedorder'] = $discount['fixedorder'];
         $cart->discount['minorder']   = $discount['minorder'];
         $cart->discount['products']   = array();
         $cart->discount['exclusions'] = array();
-        $cart->discount['singleuse']   = ($discount['singleuse'] == 'yes') ? true : false;
+        $cart->discount['singleuse']  = ($discount['singleuse'] == 'yes') ? true : false;
 
         /* Clean up codes and remove empty ones */
         foreach (explode("\n", str_replace(',', "\n", $discount['products'])) as $k => $v) {
@@ -631,7 +634,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
                 $cart->discount['custom'][trim($parts[0])] = trim($parts[1]);
             }
         }
-        
+
         Jojo::runHook('jojo_cart_apply_discount_code', array($cart, $discount));
 
         self::total();
@@ -658,7 +661,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         $testmode = self::isTestMode();
 
         $content = array();
-        
+
         $languageurlprefix = Jojo::getPageUrlPrefix($this->page['pageid']);
 
         /* Read GET variables */
@@ -775,7 +778,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         $action   = Jojo::getFormData('action',   '');
         $id       = Jojo::getFormData('id',       false);
         $discount = Jojo::getFormData('discount', false);
-        $languageurlprefix = Jojo::getPageUrlPrefix($this->page['pageid']);        
+        $languageurlprefix = Jojo::getPageUrlPrefix($this->page['pageid']);
 
         switch ($action) {
         case 'cheque':

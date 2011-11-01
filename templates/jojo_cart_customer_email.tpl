@@ -29,6 +29,8 @@ Order no: {$id}
 
 {/if}
 {/foreach}
+{if $order.fixedorder}Discount: {$order.fixedorder|string_format:"%01.2f"}
+{/if}
 Sub-total: {$order.subtotal|string_format:"%01.2f"}
 {if $order.freight}
 Freight: {$order.freight|string_format:"%01.2f"}

@@ -11,7 +11,7 @@ Payment Method: {if $activeplugin=='jojo_plugin_jojo_cart_emailorder'}Email Orde
 
 Errors: {if $errors}{$errors}{else}None{/if}
 
-{if $rawreceipt}Receipt: 
+{if $rawreceipt}Receipt:
 {foreach from=$rawreceipt key=k item=i}
 {$k}: {$i}
 {/foreach}
@@ -44,6 +44,8 @@ Order no: {$id}
 
 {/if}
 {/foreach}
+{if $order.fixedorder}Discount: {$order.fixedorder|string_format:"%01.2f"}
+{/if}
 Sub-total: {$order.subtotal|string_format:"%01.2f"}
 {if $order.freight}
 Freight: {$order.freight|string_format:"%01.2f"}

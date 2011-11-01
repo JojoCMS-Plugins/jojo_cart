@@ -82,6 +82,11 @@ div.contact-form label[for='same_as_shipping'] {
   padding-top: 4px;
 }
 
+#cart-fixedorder {
+  text-align: right;
+  padding-top: 4px;
+}
+
 #cart-freight, #cart-discountcode, #shoppingcart td.cart-price, #shoppingcart td.cart-linetotal {
   text-align: right;
   padding: 4px 5px;

@@ -49,6 +49,8 @@ class jojo_plugin_Jojo_cart_shipping extends JOJO_Plugin
             call_user_func(array(Jojo_Cart_Class, 'setShippingMethod'), array_pop(array_keys($commonMethods)));
             Jojo::redirect(_SECUREURL . '/' .$languageurlprefix. 'cart/payment/');
         } else {
+            /* if nil order, then no freight */
+            if($cart->order['subtotal']==0) Jojo::redirect(_SECUREURL . '/' .$languageurlprefix. 'cart/payment/');
             /* Multiple options */
             $method = Jojo::getFormData('shippingmethod');
             if (isset($commonMethods[$method])) {

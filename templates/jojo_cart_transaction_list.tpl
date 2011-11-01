@@ -20,6 +20,11 @@ Order ID = {$id}
     </tr>
     {/if}
   {/foreach}
+{if $order.fixedorder}
+<tr>
+  <td colspan="3">Discount</td><td align="right">{$order.fixedorder|string_format:"%01.2f"}</td>
+</tr>
+{/if}
 <tr>
   <td colspan="3">Subtotal</td><td align="right">{$order.subtotal|string_format:"%01.2f"}</td>
 </tr>
