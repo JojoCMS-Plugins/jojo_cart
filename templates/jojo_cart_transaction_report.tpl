@@ -8,7 +8,7 @@
 $(document).ready(function() {
 $('a.info').cluetip({activation:"click", closePosition: 'top',closeText: '<img src="images/cross.png" alt="" />',sticky:true,ajaxCache: true,width:600,showTitle:false});
 $('a.paid').cluetip({activation:"click", closePosition: 'top',closeText: '<img src="images/cross.png" alt="" />',sticky:true,width:380,showTitle:false});
-$('a.shipped').cluetip({activation:"click", closePosition: 'top',closeText: '<img src="images/cross.png" alt="" />',sticky:true,width:380,showTitle:false});
+$('a.shipped').cluetip({activation:"click", closePosition: 'top',closeText: '<img src="images/cross.png" alt="" />',sticky:true,width:380,showTitle:false,onHide:function(){window.location.reload();}});
 });
 {/literal}
 </script>
