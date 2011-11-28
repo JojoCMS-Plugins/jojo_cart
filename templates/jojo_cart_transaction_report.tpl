@@ -13,7 +13,7 @@ $('a.shipped').cluetip({activation:"click", closePosition: 'top',closeText: '<im
 {/literal}
 </script>
 
-<table class="adminZebraTable">
+<table class="sortabletable">
   <thead>
     <tr>
       <th>ID</th>
@@ -30,7 +30,7 @@ $('a.shipped').cluetip({activation:"click", closePosition: 'top',closeText: '<im
   </thead>
   <tbody>
     {foreach from=$transactions item=transaction}
-    <tr class="{cycle values='row1,row2'} {$transaction.status}">
+    <tr class="{$transaction.status}">
       <td>{$transaction.id}</td>
       <td>{$transaction.datetime|date_format:"%d %b %Y"}</td>
       <td>{$transaction.datetime|date_format:"%H:%M"}</td>
