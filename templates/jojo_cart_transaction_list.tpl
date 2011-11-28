@@ -12,7 +12,7 @@ Order ID = {$id}
   <tbody>
   {foreach from=$items key=k item=i}
     {if $i.quantity > 0}
-    <tr class="{cycle values='row1,row2'} {$i.status}">
+    <tr class="{cycle values='row1,row2'}{if $i.status} {$i.status}{/if}">
       <td>{$i.name}</td>
       <td>{$i.quantity}</td>
       <td>{if $i.netprice != $i.price}{$i.netprice|string_format:"%01.2f"} (Discounted from {$i.price|string_format:"%01.2f"}){else}{$i.netprice|string_format:"%01.2f"}{/if}</td>

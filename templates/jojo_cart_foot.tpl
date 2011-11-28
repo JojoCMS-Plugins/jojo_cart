@@ -8,9 +8,9 @@ _gaq.push(['_addTrans',
     "{$order.amount|string_format:"%01.2f"}",    {* Total *}
     "0",                                         {* Tax *}
     "{$order.freight|string_format:"%01.2f"}",   {* Shipping *}
-    "{$fields.City}",                            {* City *}
-    "{$fields.State}",                           {* State *}
-    "{$fields.Country}"                          {* Country *}
+    "{if $fields.City}{$fields.City}{/if}",                            {* City *}
+    "{if $fields.State}{$fields.State}{/if}",                           {* State *}
+    "{if $fields.Country}{$fields.Country}{/if}"                          {* Country *}
   ]);
 
 {foreach from=$items key=k item=i}
@@ -40,9 +40,9 @@ pageTracker._addTrans(
     "{$order.amount|string_format:"%01.2f"}",    {* Total *}
     "0",                                         {* Tax *}
     "{$order.freight|string_format:"%01.2f"}",   {* Shipping *}
-    "{$fields.City}",                            {* City *}
-    "{$fields.State}",                           {* State *}
-    "{$fields.Country}"                          {* Country *}
+    "{if $fields.City}{$fields.City}{/if}",                            {* City *}
+    "{if $fields.State}{$fields.State}{/if}",                           {* State *}
+    "{if $fields.Country}{$fields.Country}{/if}"                          {* Country *}
   );
 
 {foreach from=$items key=k item=i}
