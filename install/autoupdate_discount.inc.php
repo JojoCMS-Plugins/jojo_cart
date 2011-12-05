@@ -88,6 +88,16 @@ $default_fd['discount']['fixedorder'] = array(
         'fd_order' => "7",
         'fd_help'  => "Fixed $ discount per order",
     );
+    
+// Freeshipping
+$default_fd['discount']['freeshipping'] = array(
+        'fd_name'    => "Free shipping",
+        'fd_type'    => "radio",
+        'fd_order'   => "7",
+        'fd_default' => "no",
+        'fd_options' => "yes\nno",
+        'fd_help'    => "If selected, the discount code will remove all freight charges.",
+    );
 
 // Minimum order Field
 $default_fd['discount']['minorder'] = array(

@@ -463,6 +463,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         }
         $cart->order['fixedorder'] = $cart->discount['fixedorder'];
         $subtotal -= $cart->order['fixedorder'];
+        $subtotal = max(0, $subtotal); //ensure discounts don't bring the total below 0
         $cart->order['subtotal'] = $subtotal;
         return $subtotal;
     }
@@ -505,6 +506,11 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
           if (self::getCartCurrency() != Jojo::getOption('cart_default_currency', 'USD')) {
             return false;
           }
+        }
+        
+        /* Check for free shipping via a discount code */
+        if (isset($cart->discount['freeshipping']) && ($cart->discount['freeshipping'] == true)) {
+            return 0;
         }
 
         /* Check for a shipping region */
@@ -609,6 +615,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         $cart->discount['products']   = array();
         $cart->discount['exclusions'] = array();
         $cart->discount['singleuse']  = ($discount['singleuse'] == 'yes') ? true : false;
+        $cart->discount['freeshipping']  = (isset($discount['freeshipping']) && ($discount['freeshipping'] == 'yes')) ? true : false;
 
         /* Clean up codes and remove empty ones */
         foreach (explode("\n", str_replace(',', "\n", $discount['products'])) as $k => $v) {
