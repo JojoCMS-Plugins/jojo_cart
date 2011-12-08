@@ -41,17 +41,34 @@ Order ID = {$id}
 <table class="adminTransactionList">
   <thead>
     <tr>
-      <th>Shipping Address</th>
+      <th>Delivery Details</th>
     </tr>
   </thead>
   <tbody>
     <tr class="row1'}">
       <td colspan="3">
-      {foreach from=$fields key=k item=i}
+      {foreach from=$shipping key=k item=i}
           {if $i}{$i}<br />{/if}
       {/foreach}
       </td>
       </tr>
   </tbody>
 </table>
+<table class="adminTransactionList">
+  <thead>
+    <tr>
+      <th>Billing Details</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="row1'}">
+      <td colspan="3">
+      {foreach from=$billing key=k item=i}
+          {if $i}{$i}<br />{/if}
+      {/foreach}
+      </td>
+      </tr>
+  </tbody>
+</table>
+{if $receipt}{$receipt}{/if}
 </div>

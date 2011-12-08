@@ -33,8 +33,20 @@ class jojo_plugin_jojo_cart_transaction_list extends JOJO_Plugin
           $transaction = Jojo::selectRow("SELECT * FROM {cart} WHERE token=? ",$token);
               $cart = unserialize($transaction['data']);
               $smarty->assign('items',        $cart->items);
+              $shipping = array();
+              $billing = array();
+              foreach ($cart->fields as $k => $f) {
+               if (strpos($k, 'shipping')!==false) {
+                   $shipping[$k] = $f;
+               } elseif (strpos($k, 'billing')!==false) {
+                   $billing[$k] = $f;
+               }
+              }
+              $smarty->assign('shipping',       $shipping);
+              $smarty->assign('billing',       $billing);
               $smarty->assign('fields',       $cart->fields);
               $smarty->assign('order',        $cart->order);
+              $smarty->assign('receipt',        $cart->receipt);
               $smarty->assign('id',           $transaction['id']);
               $currency = isset($cart->order['currency']) ? $cart->order['currency'] : call_user_func(array(Jojo_Cart_Class, 'getCartCurrency'), $transaction['token']);
               $smarty->assign('currency', $currency);
