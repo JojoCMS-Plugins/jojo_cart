@@ -46,6 +46,8 @@ Total: {$order.currency|default:$OPTIONS.cart_default_currency}{$order.currency_
 {/if}{/if}
 {if $discount && $discount.code != ''}
 This order used discount code: {$discount.code}
+{/if}{if $order.giftwrap}
+Please giftwrap the items on this order
 {/if}
 
 {jojoHook hook="jojo_cart_customer_email_bottom"}

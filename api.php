@@ -295,3 +295,14 @@ $_options[] = array(
     'options'     => '',
     'plugin'      => 'jojo_cart'
 );
+
+$_options[] = array(
+    'id'          => 'cart_free_gift_wrap',
+    'category'    => 'Cart',
+    'label'       => 'Free gift wrapping option',
+    'description' => 'If enabled, offers the customer a checkbox which they can tick to receive free gift wrapping.',
+    'type'        => 'radio',
+    'default'     => 'no',
+    'options'     => 'yes,no',
+    'plugin'      => 'jojo_cart'
+);

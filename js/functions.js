@@ -11,6 +11,13 @@ $(document).ready(function(){
           $(this).val('');
       }
   });
+  $('input#giftwrap').click(function(){
+      $('#nogiftwrap').remove();
+      if ($(this).is(':checked')) {
+      }else{
+          $(this).after('<input type="hidden" name="nogiftwrap" id="nogiftwrap" value="1"/>');
+      }
+  });
 });
 
 function change_quantity_callback(data)

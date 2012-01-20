@@ -76,6 +76,13 @@
             <input type="submit" name="applyDiscount" id="applyDiscount" value="Apply" />
         </div>
     {/if}
+    
+    {if $OPTIONS.cart_free_gift_wrap == 'yes'}
+        <div id="cart-giftwrap">
+            <label for="giftwrap">Free gift wrapping:</label>
+            <input type="checkbox" name="giftwrap" id="giftwrap" value="1" {if $order.giftwrap==true}checked="checked"{/if} />
+        </div>
+    {/if}
     </div>
     {jojoHook hook="jojo_cart_before_buttons"}
     <div id="cart-updatebuttons">

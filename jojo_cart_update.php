@@ -59,6 +59,14 @@ class jojo_plugin_Jojo_cart_update extends JOJO_Plugin
             call_user_func(array(Jojo_Cart_Class, 'applyDiscountCode'), Jojo::getFormData('discount'));
         }
         
+        /* Apply GiftWrap */
+        if (Jojo::getFormData('nogiftwrap')) {
+            call_user_func(array(Jojo_Cart_Class, 'setGiftWrap'), false);
+        }
+        if (Jojo::getFormData('giftwrap')) {
+            call_user_func(array(Jojo_Cart_Class, 'setGiftWrap'), true);
+        }
+        
         Jojo::runHook('jojo_cart_update:bottom');
         
         $languageurlprefix = $_SESSION['languageurlprefix'];

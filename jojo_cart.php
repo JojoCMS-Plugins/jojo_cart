@@ -569,6 +569,15 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
     {
         return self::subTotal() + self::getFreight();
     }
+    
+    /**
+     * Set gift wrapping options for this order
+     */
+    function setGiftWrap($giftwrap=true)
+    {
+        $cart = self::getCart();
+        $cart->order['giftwrap'] = $giftwrap;
+    }
 
     /**
      * Set the discount code to use for this cart

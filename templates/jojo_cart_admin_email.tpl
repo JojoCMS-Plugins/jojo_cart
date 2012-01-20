@@ -54,6 +54,8 @@ Freight: {$order.freight|string_format:"%01.2f"}
 {if $discount && $discount.code != ''}
 
 Customer used discount code: {$discount.code}
+{/if}{if $order.giftwrap}
+Please giftwrap the items on this order
 {/if}
 {jojoHook hook="jojo_cart_admin_email_bottom"}
 {include file="jojo_cart_checkout_admin_email.tpl"}
