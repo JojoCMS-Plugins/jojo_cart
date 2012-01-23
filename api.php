@@ -306,3 +306,14 @@ $_options[] = array(
     'options'     => 'yes,no',
     'plugin'      => 'jojo_cart'
 );
+
+$_options[] = array(
+    'id'          => 'cart_lifetime',
+    'category'    => 'Cart',
+    'label'       => 'Cart Lifetime',
+    'description' => 'The number of days to keep the cart active after the visitor leaves the site. A zero value means the cart expires at the end of the session.',
+    'type'        => 'integer',
+    'default'     => '0',
+    'options'     => '',
+    'plugin'      => 'jojo_cart'
+);

@@ -67,6 +67,11 @@ class jojo_plugin_Jojo_cart_update extends JOJO_Plugin
             call_user_func(array(Jojo_Cart_Class, 'setGiftWrap'), true);
         }
         
+        /* save to database after any changes */
+        if ($action != 'empty' && !Jojo::getFormData('empty', false)) {
+            call_user_func(array(Jojo_Cart_Class, 'saveCart'));
+        }
+        
         Jojo::runHook('jojo_cart_update:bottom');
         
         $languageurlprefix = $_SESSION['languageurlprefix'];

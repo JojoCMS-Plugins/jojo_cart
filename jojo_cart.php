@@ -141,7 +141,19 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         if ($token && $data = Jojo::selectRow("SELECT * FROM {cart} WHERE token = ?", $token)) {
             /* Return a database cart */
             $_SESSION['jojo_cart'] = unserialize($data['data']);
+            /* save token to cookie */
+            if (Jojo::getOption('cart_lifetime', 0)) {
+                setcookie("jojo_cart_token", $token, time() + (60 * 60 * 24 * Jojo::getOption('cart_lifetime', 0)), '/' . _SITEFOLDER);
+            }
             return $_SESSION['jojo_cart'];
+        }
+        
+        /* Attempt to load the cart from a cookie */
+        $cart_lifetime = Jojo::getOption('cart_lifetime', 0);
+        if ($cart_lifetime && (!isset($_SESSION['jojo_cart']) || !is_object($_SESSION['jojo_cart']))) {
+            if (!empty($_COOKIE['jojo_cart_token']) && $data = Jojo::selectRow("SELECT * FROM {cart} WHERE token = ? AND updated > ? AND status='pending'", array($_COOKIE['jojo_cart_token'], strtotime('-'.$cart_lifetime.' day')))) {
+                $_SESSION['jojo_cart'] = unserialize($data['data']);
+            }
         }
 
         /* Check that the session cart has all the fields */
@@ -203,6 +215,10 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         /* Save */
         Jojo::updateQuery("REPLACE INTO {cart} SET id=?, token=?, data=?, status=?, ip=?, userid = ?, updated=?, handler=?, amount=?, actioncode=?, shipped=?",
             array($cart->id, $token, serialize($cart), $status, Jojo::getIp(), isset($_SESSION['userid']) ? $_SESSION['userid'] : '', time(), $cart->handler, $cart->order['amount'], $actioncode, $cart->shipped));
+        /* save token to cookie */
+        if (Jojo::getOption('cart_lifetime', 0)) {
+            setcookie("jojo_cart_token", $token, time() + (60 * 60 * 24 * Jojo::getOption('cart_lifetime', 0)), '/' . _SITEFOLDER);
+        }
         return true;
     }
 
@@ -315,6 +331,15 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
      */
     function emptyCart() {
         unset($_SESSION['jojo_cart']);
+        setcookie("jojo_cart_token", '', time() + (60 * 60 * 24 * Jojo::getOption('cart_lifetime', 0)), '/' . _SITEFOLDER);
+        return true;
+    }
+    
+    /**
+     * Empty just the items out of the cart
+     */
+    function emptyCartItems() {
+        unset($_SESSION['jojo_cart']->items);
         return true;
     }
 
