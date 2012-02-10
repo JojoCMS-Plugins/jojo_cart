@@ -167,7 +167,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         $_SESSION['jojo_cart']->handler    = isset($_SESSION['jojo_cart']->handler)     ? $_SESSION['jojo_cart']->handler     : '';
         $_SESSION['jojo_cart']->amount     = isset($_SESSION['jojo_cart']->amount)      ? $_SESSION['jojo_cart']->amount      : '';
         $_SESSION['jojo_cart']->shipped    = isset($_SESSION['jojo_cart']->shipped)     ? $_SESSION['jojo_cart']->shipped     : 0;
-        $_SESSION['jojo_cart']->cartstatus    = isset($_SESSION['jojo_cart']->cartstatus)     ? $_SESSION['jojo_cart']->cartstatus     : 'pending';
+        $_SESSION['jojo_cart']->cartstatus = isset($_SESSION['jojo_cart']->cartstatus)  ? $_SESSION['jojo_cart']->cartstatus  : 'pending';
 
         /* Create unique action code for use in admin emails, ensure they are not already in the database for another order */
         if (empty($_SESSION['jojo_cart']->actioncode)) {
@@ -187,17 +187,19 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
      * Save a cart instance to the database
      */
     public function saveCart($cart = false) {
-        $cart = self::getCart($cart);
+        if ($cart === false) {
+            $cart = self::getCart();
+        }
         $token = $cart->token;
 
         /* clear credit card fields - don't want those saved in the database */
-        unset($cart->order['cardType']);
-        unset($cart->order['cardNumber']);
-        unset($cart->order['cardExpiryMonth']);
-        unset($cart->order['cardExpiryYear']);
-        unset($cart->order['cardName']);
+        if (isset($cart->order['cardType']))        unset($cart->order['cardType']);
+        if (isset($cart->order['cardNumber']))      unset($cart->order['cardNumber']);
+        if (isset($cart->order['cardExpiryMonth'])) unset($cart->order['cardExpiryMonth']);
+        if (isset($cart->order['cardExpiryYear']))  unset($cart->order['cardExpiryYear']);
+        if (isset($cart->order['cardName']))        unset($cart->order['cardName']);
 
-        $status = isset($cart->cartstatus) ? $cart->cartstatus : 'pending'; //default to pending
+        $status = (isset($cart->cartstatus)) ? $cart->cartstatus : 'pending'; //default to pending
 
         /* Create unique action code for use in admin emails, ensure they are not already in the database for another order */
         if (!empty($cart->actioncode)) {
@@ -319,6 +321,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         /* Remove the product */
         $cart = self::getCart();
         unset($cart->items[$item['id']]);
+        self::saveCart();
 
         /* Run hook */
         Jojo::runHook('jojo_cart_quantity_updated', array());
@@ -404,6 +407,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         /* Update subtotal / total */
         $cart->order['subtotal'] = self::subTotal();
         $cart->order['amount']   = self::total();
+        self::saveCart();
         return true;
     }
 

@@ -87,7 +87,7 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
         }
         $cart->receipt = $result['receipt'];
 
-        call_user_func(array(Jojo_Cart_Class, 'saveCart'));
+        call_user_func(array(Jojo_Cart_Class, 'saveCart'), $cart);
 
         $smarty->assign('errors',  $result['errors']);
         $smarty->assign('success', $result['success']);
@@ -211,10 +211,7 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
             } else {
                 $cart->cartstatus = 'payment_pending';
             }
-            call_user_func(array(Jojo_Cart_Class, 'saveCart'));
-
-            /* make doubly sure that complete status is being saved - I'm finding cases where it's not */
-            Jojo::updateQuery("UPDATE {cart} SET status=? WHERE token=? LIMIT 1", array($cart->cartstatus, $token));
+            call_user_func(array(Jojo_Cart_Class, 'saveCart'), $cart);
             
             /* Hook for plugins to make custom actions */
             Jojo::runHook('jojo_cart_success_2', array('cart' => $cart));
