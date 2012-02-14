@@ -162,8 +162,8 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
                 $smarty->assign('pending_template', $pending_template);
             }
 
-            $from_name   = Jojo::either(_CONTACTNAME, _FROMNAME,_SITETITLE);
-            $from_email  = Jojo::either(_CONTACTADDRESS,_FROMADDRESS,_WEBMASTERADDRESS);
+            $contact_name   = Jojo::either(_CONTACTNAME, _FROMNAME,_SITETITLE);
+            $contact_email  = Jojo::either(_CONTACTADDRESS,_FROMADDRESS,_WEBMASTERADDRESS);
 
             if (defined('_CART_ORDER_EMAIL')) {
                 /* Email admin - if defined in the cart options */
@@ -171,21 +171,21 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
                 $to_email    = _CART_ORDER_EMAIL;
                 $subject     = 'Order on '.Jojo::getOption('sitetitle') . ' by ' . $name;
                 $message     = $smarty->fetch('jojo_cart_admin_email.tpl') . Jojo::emailFooter();
-                Jojo::simpleMail($to_name, $to_email, $subject, $message, $from_name, $from_email);
+                Jojo::simpleMail($to_name, $to_email, $subject, $message, $name, $email);
             } elseif (Jojo::getOption('cart_order_email', false)) {
                 /* Email admin - if defined in the cart options */
                 $to_name     = Jojo::getOption('cart_order_name', '');
                 $to_email    = Jojo::getOption('cart_order_email', false);
                 $subject     = 'Order on '.Jojo::getOption('sitetitle') . ' by ' . $name;
                 $message     = $smarty->fetch('jojo_cart_admin_email.tpl') . Jojo::emailFooter();
-                Jojo::simpleMail($to_name, $to_email, $subject, $message, $from_name, $from_email);
+                Jojo::simpleMail($to_name, $to_email, $subject, $message, $name, $email);
             } elseif (defined('_CONTACTADDRESS') && (_CONTACTADDRESS != _WEBMASTERADDRESS)) {
                 /* Email admin */
                 $to_name     = Jojo::either(_CONTACTNAME, _FROMNAME,_SITETITLE);
                 $to_email    = Jojo::either(_CONTACTADDRESS,_FROMADDRESS,_WEBMASTERADDRESS);
                 $subject     = 'Order on '.Jojo::getOption('sitetitle') . ' by ' . $name;
                 $message     = $smarty->fetch('jojo_cart_admin_email.tpl') . Jojo::emailFooter();
-                Jojo::simpleMail($to_name, $to_email, $subject, $message, $from_name, $from_email);
+                Jojo::simpleMail($to_name, $to_email, $subject, $message, $name, $email);
             }
 
             /* Email webmaster */
@@ -194,13 +194,13 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
               $to_email    = _WEBMASTERADDRESS;
                 $subject     = 'Order on '.Jojo::getOption('sitetitle') . ' by ' . $name;
               $message     = $smarty->fetch('jojo_cart_admin_email.tpl') . Jojo::emailFooter();
-              Jojo::simpleMail($to_name, $to_email, $subject, $message, $from_name, $from_email);
+              Jojo::simpleMail($to_name, $to_email, $subject, $message, $name, $email);
             }
 
             /* Email client */
             $subject     = 'Order confirmation from '.Jojo::getOption('sitetitle');
             $message     = $smarty->fetch('jojo_cart_customer_email.tpl');
-            Jojo::simpleMail($name, $email, $subject, $message, $from_name, $from_email);
+            Jojo::simpleMail($name, $email, $subject, $message, $contact_name, $contact_email);
 
             /* Hook for plugins to make custom actions */
             Jojo::runHook('jojo_cart_success', array('cart' => $cart));
