@@ -213,6 +213,8 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         }
 
        if(!isset($cart->id)) $cart->id = 0;
+       
+       if (empty($cart->order['amount'])) $cart->order['amount'] = 0;
 
         /* Save */
         Jojo::updateQuery("REPLACE INTO {cart} SET id=?, token=?, data=?, status=?, ip=?, userid = ?, updated=?, handler=?, amount=?, actioncode=?, shipped=?",
