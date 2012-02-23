@@ -516,6 +516,8 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
     {
         $cart = self::getCart();
         $cart->fields['shippingMethod'] = $method;
+        $data = Jojo::selectRow("SELECT longname FROM {cart_freightmethod} WHERE id=?", $method);
+        $cart->fields['shippingMethodName'] = $data['longname'];
         self::saveCart();
     }
 
