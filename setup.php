@@ -156,3 +156,15 @@ if (!$data) {
    Jojo::insertQuery('INSERT INTO {page} SET pg_title = ?, pg_url = ?, pg_body_code = ?, pg_link = ?, pg_order = ?, pg_parent = ?, pg_index = ?, pg_followto = ?, pg_contentcache = ?, pg_sitemapnav = ?, pg_xmlsitemapnav = ?',
         array("Shared freight models", "admin/edit/cart_freight_model", "[editor:html]\n", "jojo_plugin_admin_edit", "5", $_ADMIN_SHOPPING_ID, "no", "no", "no", "no", "no"));
 }
+
+/* new fields for storing logged-in user data */
+if (Jojo::tableExists('user')) {
+    $new_fields = array('us_company', 'us_phone', 'us_address1', 'us_address2', 'us_address3', 'us_suburb', 'us_city', 'us_state', 'us_postcode', 'us_country');
+    
+    foreach ($new_fields as $new_field) {
+        if (!Jojo::fieldexists('user', $new_field)) {
+            echo "Add <b>".$new_field."</b> to <b>user</b><br />";
+            Jojo::structureQuery("ALTER TABLE {user} ADD `".$new_field."` VARCHAR( 255 ) NOT NULL;");
+        }
+    }
+}
