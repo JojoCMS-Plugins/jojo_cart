@@ -201,7 +201,11 @@ class Jojo_Cart_Freight {
         }
 
         /* Get Methods descriptions */
-        $methodNames = Jojo::selectAssoc('SELECT * FROM {cart_freightmethod} ORDER BY longname');
+        if (Jojo::fieldExists('cart_freightmethod', 'displayorder')) { //ensure this new field exists to avoid a potential cart breakage for sites that forgot to run setup
+            $methodNames = Jojo::selectAssoc('SELECT * FROM {cart_freightmethod} ORDER BY displayorder, longname');
+        } else {
+            $methodNames = Jojo::selectAssoc('SELECT * FROM {cart_freightmethod} ORDER BY longname');
+        }
 
         /* Default pricing */
         $methods = array();
