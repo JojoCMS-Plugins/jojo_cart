@@ -67,7 +67,15 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
         $data = Jojo::selectQuery("SELECT * FROM {cart} WHERE token=? AND status='pending'", $token);
         if (!count($data)) {
             $errors[] = 'This transaction has already been processed.';
+        } else {
+            /* pause execution and check again after 0.5 - 1.5 seconds - this aloows other scripts to complete processing*/
+            usleep(mt_rand(500000,1500000));
+            $data = Jojo::selectQuery("SELECT * FROM {cart} WHERE token=? AND status='pending'", $token);
+            if (!count($data)) {
+                $errors[] = 'This transaction has already been processed.';
+            }
         }
+        
 
         /* Attempt to process the payment */
         if (!count($errors)) {
