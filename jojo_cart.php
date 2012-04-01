@@ -132,15 +132,36 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
     public static function getPaymentHandlers() {
         return is_array(self::$paymentHandlers) ? self::$paymentHandlers : array();
     }
+    
+    /**
+     * Ensures the cart has a data_blob field - in case setup hasn't been run recently
+     */
+    public function addDataBlobField()
+    {
+        static $has_blob;
+        if (isset($has_blob)) return true;
+        if (!Jojo::fieldExists('cart', 'data_blob')) {
+            Jojo::structureQuery("ALTER TABLE `cart` ADD `data_blob` BLOB NOT NULL AFTER `data`");
+        }
+        $has_blob = true;
+        return true; 
+    }
 
     /**
      * Retrieve a cart instance. If $token is supplied then return it from the
      * database, else return the one in the session.
      */
     public function getCart($token = false) {
-        if ($token && $data = Jojo::selectRow("SELECT * FROM {cart} WHERE token = ?", $token)) {
+        self::addDataBlobField();
+        if ($token && $data = Jojo::selectRow("SELECT *, OCTET_LENGTH(data_blob) AS blobsize FROM {cart} WHERE token = ?", $token)) {
             /* Return a database cart */
-            $_SESSION['jojo_cart'] = unserialize($data['data']);
+            //$_SESSION['jojo_cart'] = unserialize($data['data']);
+            if ($data['blobsize'] > 0) {
+                $_SESSION['jojo_cart'] = unserialize($data['data_blob']);
+            } else {
+                $_SESSION['jojo_cart'] = unserialize($data['data']);
+            }
+                
             /* save token to cookie */
             if (Jojo::getOption('cart_lifetime', 0)) {
                 setcookie("jojo_cart_token", $token, time() + (60 * 60 * 24 * Jojo::getOption('cart_lifetime', 0)), '/' . _SITEFOLDER);
@@ -151,8 +172,12 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         /* Attempt to load the cart from a cookie */
         $cart_lifetime = Jojo::getOption('cart_lifetime', 0);
         if ($cart_lifetime && (!isset($_SESSION['jojo_cart']) || !is_object($_SESSION['jojo_cart']))) {
-            if (!empty($_COOKIE['jojo_cart_token']) && $data = Jojo::selectRow("SELECT * FROM {cart} WHERE token = ? AND updated > ? AND status='pending'", array($_COOKIE['jojo_cart_token'], strtotime('-'.$cart_lifetime.' day')))) {
-                $_SESSION['jojo_cart'] = unserialize($data['data']);
+            if (!empty($_COOKIE['jojo_cart_token']) && $data = Jojo::selectRow("SELECT *, OCTET_LENGTH(data_blob) AS blobsize FROM {cart} WHERE token = ? AND updated > ? AND status='pending'", array($_COOKIE['jojo_cart_token'], strtotime('-'.$cart_lifetime.' day')))) {
+                if ($data['blobsize'] > 0) {
+                    $_SESSION['jojo_cart'] = unserialize($data['data_blob']);
+                } else {
+                    $_SESSION['jojo_cart'] = unserialize($data['data']);
+                }
             }
         }
 
@@ -217,8 +242,9 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
        if (empty($cart->order['amount'])) $cart->order['amount'] = 0;
 
         /* Save */
-        Jojo::updateQuery("REPLACE INTO {cart} SET id=?, token=?, data=?, status=?, ip=?, userid = ?, updated=?, handler=?, amount=?, actioncode=?, shipped=?",
-            array($cart->id, $token, serialize($cart), $status, Jojo::getIp(), isset($_SESSION['userid']) ? $_SESSION['userid'] : '', time(), $cart->handler, $cart->order['amount'], $actioncode, $cart->shipped));
+        self::addDataBlobField();
+        Jojo::updateQuery("REPLACE INTO {cart} SET id=?, token=?, data=?, data_blob=?, status=?, ip=?, userid = ?, updated=?, handler=?, amount=?, actioncode=?, shipped=?",
+            array($cart->id, $token, serialize($cart), serialize($cart), $status, Jojo::getIp(), isset($_SESSION['userid']) ? $_SESSION['userid'] : '', time(), $cart->handler, $cart->order['amount'], $actioncode, $cart->shipped));
         /* save token to cookie */
         if (Jojo::getOption('cart_lifetime', 0)) {
             setcookie("jojo_cart_token", $token, time() + (60 * 60 * 24 * Jojo::getOption('cart_lifetime', 0)), '/' . _SITEFOLDER);
