@@ -777,6 +777,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
             if ($token) {
                 $savedcart = self::getCart($token);
                 if (isset($savedcart->receipt)) $smarty->assign('receipt', $savedcart->receipt);
+                if (isset($savedcart->handler)) $smarty->assign('handler', $savedcart->handler);
             }
             $smarty->assign('id', $savedcart->id);
             $content['title']    = 'Payment Information';
