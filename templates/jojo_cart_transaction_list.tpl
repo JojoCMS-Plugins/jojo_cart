@@ -1,5 +1,6 @@
 <div id="adminTransactionList">
 Order ID = {$id}
+{jojoHook hook="jojo_cart_transaction_list_above_order_details"}
 <table border="1" class="adminTransactionList">
   <thead>
     <tr>
@@ -38,6 +39,8 @@ Order ID = {$id}
 </tbody>
 </table>
 
+{jojoHook hook="jojo_cart_transaction_list_below_order_details"}
+
 <table class="adminTransactionList">
   <thead>
     <tr>
@@ -45,7 +48,7 @@ Order ID = {$id}
     </tr>
   </thead>
   <tbody>
-    <tr class="row1'}">
+    <tr class="row1">
       <td colspan="3">
       {foreach from=$shipping key=k item=i}
           {if $i}{$i}<br />{/if}
@@ -61,7 +64,7 @@ Order ID = {$id}
     </tr>
   </thead>
   <tbody>
-    <tr class="row1'}">
+    <tr class="row1">
       <td colspan="3">
       {foreach from=$billing key=k item=i}
           {if $i}{$i}<br />{/if}
@@ -70,5 +73,6 @@ Order ID = {$id}
       </tr>
   </tbody>
 </table>
+{jojoHook hook="jojo_cart_transaction_list_bottom"}
 {if $receipt}{$receipt}{/if}
 </div>
