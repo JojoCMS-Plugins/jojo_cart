@@ -20,7 +20,7 @@ $query = "
             `id` INT NOT NULL auto_increment,
             `shortname` VARCHAR( 20 ) NOT NULL ,
             `longname` VARCHAR( 255 ) NOT NULL,
-            `displayorder` INT(11) NOT NULL DEFAULT 99,
+            `displayorder` INT(11) NOT NULL DEFAULT '99',
             PRIMARY KEY  (`id`)
         ) ENGINE = MYISAM ";
 
