@@ -394,6 +394,9 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
             return false;
         }
 
+        /* Get the cart */
+        $cart = self::getCart();
+
         if ($qty == 0) {
             return self::removeFromCart($id);
         }
@@ -425,8 +428,6 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
             }
         }
 
-        /* Get the cart */
-        $cart = self::getCart();
         $cart->items[$id] = $item;
 
         /* Run hook */
