@@ -132,11 +132,11 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
     public static function getPaymentHandlers() {
         return is_array(self::$paymentHandlers) ? self::$paymentHandlers : array();
     }
-    
+
     /**
      * Ensures the cart has a data_blob field - in case setup hasn't been run recently
      */
-    public function addDataBlobField()
+    public static function addDataBlobField()
     {
         static $has_blob;
         if (isset($has_blob)) return true;
@@ -144,14 +144,14 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
             Jojo::structureQuery("ALTER TABLE `cart` ADD `data_blob` BLOB NOT NULL AFTER `data`");
         }
         $has_blob = true;
-        return true; 
+        return true;
     }
 
     /**
      * Retrieve a cart instance. If $token is supplied then return it from the
      * database, else return the one in the session.
      */
-    public function getCart($token = false) {
+    public static function getCart($token = false) {
         self::addDataBlobField();
         if ($token && $data = Jojo::selectRow("SELECT *, OCTET_LENGTH(data_blob) AS blobsize FROM {cart} WHERE token = ?", $token)) {
             /* Return a database cart */
@@ -161,14 +161,14 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
             } else {
                 $_SESSION['jojo_cart'] = unserialize($data['data']);
             }
-                
+
             /* save token to cookie */
             if (Jojo::getOption('cart_lifetime', 0)) {
                 setcookie("jojo_cart_token", $token, time() + (60 * 60 * 24 * Jojo::getOption('cart_lifetime', 0)), '/' . _SITEFOLDER);
             }
             return $_SESSION['jojo_cart'];
         }
-        
+
         /* Attempt to load the cart from a cookie */
         $cart_lifetime = Jojo::getOption('cart_lifetime', 0);
         if ($cart_lifetime && (!isset($_SESSION['jojo_cart']) || !is_object($_SESSION['jojo_cart']))) {
@@ -238,7 +238,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         }
 
        if(!isset($cart->id)) $cart->id = 0;
-       
+
        if (empty($cart->order['amount'])) $cart->order['amount'] = 0;
 
         /* Save */
@@ -255,7 +255,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
     /**
      * Get the currency for the shopping cart.
      */
-    public function getCartCurrency($token=false)
+    public static function getCartCurrency($token=false)
     {
         /* If forcing a default currency, use that */
         if (Jojo::getOption('cart_force_default_currency', 'yes') == 'yes') {
@@ -297,7 +297,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
      *
      * var $id mixed  The id of the product to add
      */
-    function addToCart($id, $quantity = false) {
+    public static function addToCart($id, $quantity = false) {
 
         /* Get product details from the product plugin */
         $found = false;
@@ -331,7 +331,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
     /**
      * Remove a product from the cart
      */
-    function removeFromCart($id) {
+    public static function removeFromCart($id) {
         /* get product details from the product plugin */
         $found = false;
         foreach (self::getProductHandlers() as $productHandler) {
@@ -360,16 +360,16 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
     /**
      * Empty all the details out of the cart
      */
-    function emptyCart() {
+    public static function emptyCart() {
         unset($_SESSION['jojo_cart']);
         setcookie("jojo_cart_token", '', time() + (60 * 60 * 24 * Jojo::getOption('cart_lifetime', 0)), '/' . _SITEFOLDER);
         return true;
     }
-    
+
     /**
      * Empty just the items out of the cart
      */
-    function emptyCartItems() {
+    public static function emptyCartItems() {
         unset($_SESSION['jojo_cart']->items);
         return true;
     }
@@ -378,7 +378,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
      * Set the quantity of a product in the cart
      *
      */
-    function setQuantity($id, $qty) {
+    public static function setQuantity($id, $qty) {
         /* get product details from the product plugin */
         $found = false;
         foreach (self::getProductHandlers() as $productHandler) {
@@ -463,7 +463,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
     /**
      * Calculate the sub total for the current cart
      */
-    function subTotal()
+    public static function subTotal()
     {
         $cart = self::getCart();
         $cart->discount['exclusions'] = isset($cart->discount['exclusions']) ? $cart->discount['exclusions'] : array();
@@ -528,7 +528,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
     /**
      * Set the shipping region for this order
      */
-    function setShippingRegion($region)
+    public static function setShippingRegion($region)
     {
         $cart = self::getCart();
         $cart->fields['shippingRegion'] = $region;
@@ -538,7 +538,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
     /**
      * Set the shipping method for this order
      */
-    function setShippingMethod($method)
+    public static function setShippingMethod($method)
     {
         $cart = self::getCart();
         $cart->fields['shippingMethod'] = $method;
@@ -550,13 +550,13 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
     /**
      * Get the shipping method for this order
      */
-    function getShippingMethod()
+    public static function getShippingMethod()
     {
         $cart = self::getCart();
         return isset($cart->fields['shippingMethod']) ? $cart->fields['shippingMethod'] : -1;
     }
 
-    function getFreight()
+    public static function getFreight()
     {
         $cart = self::getCart();
 
@@ -566,7 +566,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
             return false;
           }
         }
-        
+
         /* Check for free shipping via a discount code */
         if (isset($cart->discount['freeshipping']) && ($cart->discount['freeshipping'] == true)) {
             return 0;
@@ -624,15 +624,15 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
     /**
      * Calculate the total cost of this cart
      */
-    function total()
+    public static function total()
     {
         return self::subTotal() + self::getFreight();
     }
-    
+
     /**
      * Set gift wrapping options for this order
      */
-    function setGiftWrap($giftwrap=true)
+    public static function setGiftWrap($giftwrap=true)
     {
         $cart = self::getCart();
         $cart->order['giftwrap'] = $giftwrap;
@@ -641,7 +641,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
     /**
      * Set the discount code to use for this cart
      */
-    function applyDiscountCode($code)
+    public static function applyDiscountCode($code)
     {
         $cart = self::getCart();
        /* If empty then clear last code */
@@ -719,7 +719,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
     /**
      * Generates a new unique token
      */
-    function newToken()
+    public static function newToken()
     {
         while (true) {
             $token = Jojo::randomstring(20);
@@ -897,7 +897,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
     /**
      * If on the 'transaction complete' page, add Google Analytics tracking code
      */
-    function foot()
+    public static function foot()
     {
         global $smarty;
         $action = Jojo::getFormData('action', '');

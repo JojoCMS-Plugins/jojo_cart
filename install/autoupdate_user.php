@@ -24,7 +24,7 @@ $new_fields = array('us_company' => 'Company', 'us_phone' => 'Phone', 'us_addres
         'fd_required' => "yes",
         'fd_size' => "30",
         'fd_order' => $o++,
-        'fd_tabname' => "Details",
+        'fd_tabname' => "Contact",
         'fd_flags' => "REGISTER,PROFILE,PRIVACY",
     );
 
