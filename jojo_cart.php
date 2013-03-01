@@ -211,7 +211,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
     /**
      * Save a cart instance to the database
      */
-    public function saveCart($cart = false) {
+    public static function saveCart($cart = false) {
         if ($cart === false) {
             $cart = self::getCart();
         }
