@@ -280,11 +280,11 @@ class Jojo_Cart_Freight {
         }
 
         /* Combine items together? */
-        if (isset($this->combine[$method])) {
+        if (isset($this->combine[$method]) && $this->combine[$method]) {
             $combine = max(1, $this->combine[$method]);
             $quantity = ceil($quantity / $combine);
         }
-        $totalPrice = $priceBase + ($pricePerUnit * $quantity);
+         $totalPrice = $priceBase + ($pricePerUnit * $quantity);
 
         /* Default Minimum Price */
         $priceMinimum = isset($this->minimum['default'][$method]) ? $this->minimum['default'][$method] : 0;

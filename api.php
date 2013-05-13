@@ -166,6 +166,50 @@ $_options[] = array(
 
 
 $_options[] = array(
+    'id'          => 'cart_freight_in_multiple_currencies',
+    'category'    => 'Cart',
+    'label'       => 'Allow freight in multiple currencies',
+    'description' => 'Allow freight in multiple currencies, or if multiple currencies, dont have freight for other currencies.',
+    'type'        => 'radio',
+    'default'     => 'no',
+    'options'     => 'yes,no',
+    'plugin'      => 'jojo_cart'
+);
+
+$_options[] = array(
+    'id'          => 'cart_freight_rounding',
+    'category'    => 'Cart',
+    'label'       => 'Round freight units',
+    'description' => 'Round freight units up to nearest integer when calculating freight quantities.',
+    'type'        => 'radio',
+    'default'     => 'yes',
+    'options'     => 'yes,no',
+    'plugin'      => 'jojo_cart'
+);
+
+$_options[] = array(
+    'id'          => 'cart_confirm_shipped',
+    'category'    => 'Cart',
+    'label'       => 'Confirm orders have shipped',
+    'description' => 'Order admin emails will contain a confirmation link which marks the order as being shipped.',
+    'type'        => 'radio',
+    'default'     => 'no',
+    'options'     => 'yes,no',
+    'plugin'      => 'jojo_cart'
+);
+
+$_options[] = array(
+    'id'          => 'cart_shipped_tracking_message',
+    'category'    => 'Cart',
+    'label'       => 'Tracking information',
+    'description' => 'A default block of text used to record tracking information for orders.',
+    'type'        => 'textarea',
+    'default'     => "Tracking Information:\nTicket number: xxxxxxxxx\nPhone: 555-5555\nWebsite: www.example.com",
+    'options'     => '',
+    'plugin'      => 'jojo_cart'
+);
+
+$_options[] = array(
     'id'          => 'cart_order_name',
     'category'    => 'Cart',
     'label'       => 'Order name',
@@ -188,28 +232,6 @@ $_options[] = array(
 );
 
 $_options[] = array(
-    'id'          => 'cart_freight_in_multiple_currencies',
-    'category'    => 'Cart',
-    'label'       => 'Allow freight in multiple currencies',
-    'description' => 'Allow freight in multiple currencies, or if multiple currencies, dont have freight for other currencies.',
-    'type'        => 'radio',
-    'default'     => 'no',
-    'options'     => 'yes,no',
-    'plugin'      => 'jojo_cart'
-);
-
-$_options[] = array(
-    'id'          => 'cart_confirm_shipped',
-    'category'    => 'Cart',
-    'label'       => 'Confirm orders have shipped',
-    'description' => 'Order admin emails will contain a confirmation link which marks the order as being shipped.',
-    'type'        => 'radio',
-    'default'     => 'no',
-    'options'     => 'yes,no',
-    'plugin'      => 'jojo_cart'
-);
-
-$_options[] = array(
     'id'          => 'cart_webmaster_copy',
     'category'    => 'Cart',
     'label'       => 'Send a copy of order emails to webmaster',
@@ -217,17 +239,6 @@ $_options[] = array(
     'type'        => 'radio',
     'default'     => 'yes',
     'options'     => 'yes,no'
-);
-
-$_options[] = array(
-    'id'          => 'cart_shipped_tracking_message',
-    'category'    => 'Cart',
-    'label'       => 'Tracking information',
-    'description' => 'A default block of text used to record tracking information for orders.',
-    'type'        => 'textarea',
-    'default'     => "Tracking Information:\nTicket number: xxxxxxxxx\nPhone: 555-5555\nWebsite: www.example.com",
-    'options'     => '',
-    'plugin'      => 'jojo_cart'
 );
 
 $_options[] = array(

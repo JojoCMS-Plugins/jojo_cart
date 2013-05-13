@@ -604,7 +604,8 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
 
         /* Get the shipping for the shared models */
         foreach ($sharedModelQuantities as $modelid => $quantity) {
-            $total += $sharedModel[$modelid]->getFreight($region, $method, ceil($quantity));
+            $quantity = Jojo::getOption('cart_freight_rounding', 'yes')=='yes' ? ceil($quantity) : $quantity;
+            $total += $sharedModel[$modelid]->getFreight($region, $method, $quantity);
         }
         $total = max($total, Jojo_Cart_Freight::getRegionMinimum($region, $method));
         $total = Jojo::applyFilter('jojo_cart:getFreight:total', $total, $cart);
