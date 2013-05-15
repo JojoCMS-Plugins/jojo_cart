@@ -610,12 +610,13 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         $total = max($total, Jojo_Cart_Freight::getRegionMinimum($region, $method));
         $total = Jojo::applyFilter('jojo_cart:getFreight:total', $total, $cart);
 
-        /* add of remove tax to final freight price */
+        /* add or remove tax to final freight price */
         $cart_tax_pricing_type = Jojo::getOption('cart_tax_pricing_type', 'inclusive');
-        if (($cart_tax_pricing_type == 'exclusive') && self::getApplyTax()) {
+        $cart_tax_shipping = (boolean)(Jojo::getOption('cart_tax_pricing_type_shipping', 'no')=='yes');
+        if ($cart_tax_pricing_type == 'exclusive' && (self::getApplyTax() || $cart_tax_shipping)) {
             /* need to add tax to all amounts */
             $total    = self::addTax($total);
-        } elseif (($cart_tax_pricing_type == 'inclusive') && !self::getApplyTax()) {
+        } elseif ($cart_tax_pricing_type == 'inclusive' && !self::getApplyTax() && !$cart_tax_shipping) {
             /* need to remove tax from all amounts */
             $total    = self::removeTax($total);
         }
@@ -623,12 +624,26 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         return $total;
     }
 
+    public static function getSurcharge()
+    {
+        /* check if we're using surcharges */
+		if (!Jojo::getOption('cart_freight_surcharge', 0)) {
+			return false;
+		} 
+        /* check if the subtotal is more than the surcharge trigger amount */
+        $cart = self::getCart();
+  		if ($cart->order['subtotal'] < (int)(Jojo::getOption('cart_freight_surcharge_at', 0))) {
+			return false;
+		}
+		return (int)(Jojo::getOption('cart_freight_surcharge', 0));
+    }
+
     /**
      * Calculate the total cost of this cart
      */
     public static function total()
     {
-        return self::subTotal() + self::getFreight();
+        return self::subTotal() + self::getFreight() + self::getSurcharge();
     }
 
     /**
@@ -755,8 +770,12 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         /* calculate freight */
         $cart->order['freight'] = self::getFreight();
 
-        /* calculate total */
-        $cart->order['amount'] = $cart->order['subtotal'] + $cart->order['freight'];
+         /* calculate surcharge */
+        $cart->order['surcharge'] = self::getSurcharge();
+        $cart->order['surchargedescription'] = Jojo::getOption('cart_freight_surcharge_description', '');
+
+       /* calculate total */
+        $cart->order['amount'] = $cart->order['subtotal'] + $cart->order['freight'] + $cart->order['surcharge'];
 
         /* Assign vars to Smarty */
         $smarty->assign('items', self::getItems());

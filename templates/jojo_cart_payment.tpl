@@ -40,6 +40,11 @@
         ##Freight##: {if $order.freight}{$order.currency_symbol|default:' '}{$order.freight|string_format:"%01.2f"}{else}n/a{/if}
    </div>
 
+   {if $order.surcharge}<div id="cart-surcharge">
+		##{$order.surchargedescription}##: {$order.currency_symbol|default:' '}{$order.surcharge|string_format:"%01.2f"}
+   </div>
+	{/if}
+
     <div id="cart-total">
         ##Total##: <span>{$order.currency|default:$OPTIONS.cart_default_currency}{$order.currency_symbol|default:' '}{$order.amount|string_format:"%01.2f"}</span>
         {*{if $OPTIONS.cart_show_gst != 'no' && (($order.currency=='NZD') || ($order.currency=='' && $OPTIONS.cart_default_currency=='NZD'))}<p class="note">##includes GST of## {$order.currency_symbol|default:' '}{$order.amount/7.66666|string_format:"%01.2f"}</p>{/if}*}

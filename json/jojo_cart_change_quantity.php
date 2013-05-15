@@ -28,6 +28,8 @@ $response = array();
 $response['code'] = $code;
 $response['quantity'] = $cart->items[$code]['quantity'];
 $response['linetotal'] = $cart->items[$code]['linetotal'];
+$response['freight'] = call_user_func(array(Jojo_Cart_Class, 'getFreight'));
+$response['surcharge'] = call_user_func(array(Jojo_Cart_Class, 'getSurcharge'));
 $response['subtotal'] = call_user_func(array(Jojo_Cart_Class, 'subTotal'));
 $response['total'] = call_user_func(array(Jojo_Cart_Class, 'total'));
 

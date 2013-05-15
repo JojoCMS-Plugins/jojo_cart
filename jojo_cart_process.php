@@ -30,14 +30,27 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
         return false;
     }
 
-    function _getContent()
+     private static function getToken()
+    {
+        foreach (call_user_func(array(Jojo_Cart_Class, 'getPaymentHandlers')) as $handler) {
+            if (method_exists($handler, 'getToken') && $token = call_user_func($handler . '::getToken')) {
+                return $token;
+            }
+        }
+        return false;
+    }
+
+   function _getContent()
     {
         global $smarty, $_USERGROUPS, $_USERID;
-        $token = Jojo::getGet('token');
+        /* if there's no token in GET, see if a payment plugin knows what it is (because it's being passed back by some other method) */
+        $token = Jojo::getGet('token') ? Jojo::getGet('token') : self::getToken();
+
         $content = array();
         
         $languageurlprefix = $this->page['pageid'] ? Jojo::getPageUrlPrefix($this->page['pageid']) : $_SESSION['languageurlprefix'];
 
+		
         /* Make sure there's something in the cart */
         $cart = call_user_func(array(Jojo_Cart_Class, 'getCart'), $token);
         if (!count($cart->items)) {

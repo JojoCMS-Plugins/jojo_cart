@@ -154,62 +154,6 @@ $_options[] = array(
 );
 
 $_options[] = array(
-    'id'          => 'cart_shipped_email',
-    'category'    => 'Cart',
-    'label'       => 'Admin Shipped email address',
-    'description' => 'Order shipped emails will be copied to this email address rather than the normal contact address.',
-    'type'        => 'text',
-    'default'     => '',
-    'options'     => '',
-    'plugin'      => 'jojo_cart'
-);
-
-
-$_options[] = array(
-    'id'          => 'cart_freight_in_multiple_currencies',
-    'category'    => 'Cart',
-    'label'       => 'Allow freight in multiple currencies',
-    'description' => 'Allow freight in multiple currencies, or if multiple currencies, dont have freight for other currencies.',
-    'type'        => 'radio',
-    'default'     => 'no',
-    'options'     => 'yes,no',
-    'plugin'      => 'jojo_cart'
-);
-
-$_options[] = array(
-    'id'          => 'cart_freight_rounding',
-    'category'    => 'Cart',
-    'label'       => 'Round freight units',
-    'description' => 'Round freight units up to nearest integer when calculating freight quantities.',
-    'type'        => 'radio',
-    'default'     => 'yes',
-    'options'     => 'yes,no',
-    'plugin'      => 'jojo_cart'
-);
-
-$_options[] = array(
-    'id'          => 'cart_confirm_shipped',
-    'category'    => 'Cart',
-    'label'       => 'Confirm orders have shipped',
-    'description' => 'Order admin emails will contain a confirmation link which marks the order as being shipped.',
-    'type'        => 'radio',
-    'default'     => 'no',
-    'options'     => 'yes,no',
-    'plugin'      => 'jojo_cart'
-);
-
-$_options[] = array(
-    'id'          => 'cart_shipped_tracking_message',
-    'category'    => 'Cart',
-    'label'       => 'Tracking information',
-    'description' => 'A default block of text used to record tracking information for orders.',
-    'type'        => 'textarea',
-    'default'     => "Tracking Information:\nTicket number: xxxxxxxxx\nPhone: 555-5555\nWebsite: www.example.com",
-    'options'     => '',
-    'plugin'      => 'jojo_cart'
-);
-
-$_options[] = array(
     'id'          => 'cart_order_name',
     'category'    => 'Cart',
     'label'       => 'Order name',
@@ -297,6 +241,17 @@ $_options[] = array(
 );
 
 $_options[] = array(
+    'id'          => 'cart_tax_pricing_type_shipping',
+    'category'    => 'Cart',
+    'label'       => 'Always tax shipping',
+    'description' => 'Always add tax to exclusive pricing, don\'t remove it from inclusive. In taxed countries freight will be taxed locally even if the customer is in a non-taxed destination.',
+    'type'        => 'radio',
+    'default'     => 'no',
+    'options'     => 'no,yes',
+    'plugin'      => 'jojo_cart'
+);
+
+$_options[] = array(
     'id'          => 'cart_free_message',
     'category'    => 'Cart',
     'label'       => 'Message when total purchase is Free',
@@ -328,3 +283,93 @@ $_options[] = array(
     'options'     => '',
     'plugin'      => 'jojo_cart'
 );
+
+$_options[] = array(
+    'id'          => 'cart_freight_in_multiple_currencies',
+    'category'    => 'Cart - Shipping',
+    'label'       => 'Allow freight in multiple currencies',
+    'description' => 'Allow freight in multiple currencies, or if multiple currencies, dont have freight for other currencies.',
+    'type'        => 'radio',
+    'default'     => 'no',
+    'options'     => 'yes,no',
+    'plugin'      => 'jojo_cart'
+);
+
+$_options[] = array(
+    'id'          => 'cart_freight_rounding',
+    'category'    => 'Cart - Shipping',
+    'label'       => 'Round freight units',
+    'description' => 'Round freight units up to nearest integer when calculating freight quantities.',
+    'type'        => 'radio',
+    'default'     => 'yes',
+    'options'     => 'yes,no',
+    'plugin'      => 'jojo_cart'
+);
+
+$_options[] = array(
+    'id'          => 'cart_freight_surcharge',
+    'category'    => 'Cart - Shipping',
+    'label'       => 'Freight surcharge',
+    'description' => 'Add this amount to freight for orders valued at or above the trigger amount',
+    'type'        => 'integer',
+    'default'     => '0',
+    'options'     => '',
+    'plugin'      => 'jojo_cart'
+);
+
+$_options[] = array(
+    'id'          => 'cart_freight_surcharge_at',
+    'category'    => 'Cart - Shipping',
+    'label'       => 'Freight surcharge trigger',
+    'description' => 'The minimum subtotal before apply the surcharge (0 means always apply it)',
+    'type'        => 'integer',
+    'default'     => '0',
+    'options'     => '',
+    'plugin'      => 'jojo_cart'
+);
+
+$_options[] = array(
+    'id'          => 'cart_freight_surcharge_description',
+    'category'    => 'Cart - Shipping',
+    'label'       => 'Freight surcharge title',
+    'description' => 'Decription to display next to the charge',
+    'type'        => 'text',
+    'default'     => '',
+    'options'     => '',
+    'plugin'      => 'jojo_cart'
+);
+
+$_options[] = array(
+    'id'          => 'cart_shipped_email',
+    'category'    => 'Cart - Shipping',
+    'label'       => 'Admin Shipped email address',
+    'description' => 'Order shipped emails will be copied to this email address rather than the normal contact address.',
+    'type'        => 'text',
+    'default'     => '',
+    'options'     => '',
+    'plugin'      => 'jojo_cart'
+);
+
+
+$_options[] = array(
+    'id'          => 'cart_confirm_shipped',
+    'category'    => 'Cart - Shipping',
+    'label'       => 'Confirm orders have shipped',
+    'description' => 'Order admin emails will contain a confirmation link which marks the order as being shipped.',
+    'type'        => 'radio',
+    'default'     => 'no',
+    'options'     => 'yes,no',
+    'plugin'      => 'jojo_cart'
+);
+
+$_options[] = array(
+    'id'          => 'cart_shipped_tracking_message',
+    'category'    => 'Cart - Shipping',
+    'label'       => 'Tracking information',
+    'description' => 'A default block of text used to record tracking information for orders.',
+    'type'        => 'textarea',
+    'default'     => "Tracking Information:\nTicket number: xxxxxxxxx\nPhone: 555-5555\nWebsite: www.example.com",
+    'options'     => '',
+    'plugin'      => 'jojo_cart'
+);
+

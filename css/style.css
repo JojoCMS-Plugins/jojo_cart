@@ -79,7 +79,7 @@ div.contact-form label[for='same_as_shipping'] {
 #cart-subtotal {
   text-align: right;
   border-top: 1px solid black;
-  padding-top: 4px;
+  padding: 4px 0 2px;
 }
 
 #cart-fixedorder {
@@ -87,9 +87,9 @@ div.contact-form label[for='same_as_shipping'] {
   padding-top: 4px;
 }
 
-#cart-freight, #cart-discountcode, #shoppingcart td.cart-price, #shoppingcart td.cart-linetotal, #cart-giftwrap {
+#cart-freight, #cart-surcharge, #cart-discountcode, #shoppingcart td.cart-price, #shoppingcart td.cart-linetotal, #cart-giftwrap {
   text-align: right;
-  padding: 4px 5px;
+  padding: 2px 5px;
 }
 
 #cart-giftwrap label {
@@ -103,6 +103,7 @@ div.contact-form label[for='same_as_shipping'] {
   font-weight: bold;
   text-align: right;
   margin: 7px 0px;
+  padding: 7px 0 0;
 }
 
 #cart-updatebuttons {

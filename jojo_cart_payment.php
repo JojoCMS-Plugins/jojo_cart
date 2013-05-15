@@ -45,14 +45,16 @@ class jojo_plugin_Jojo_cart_payment extends JOJO_Plugin
         /* Calculate totals */
         $cart->order['subtotal'] = call_user_func(array(Jojo_Cart_Class, 'subTotal'));
         $cart->order['freight']  = call_user_func(array(Jojo_Cart_Class, 'getFreight'));
+        $cart->order['surcharge']  = call_user_func(array(Jojo_Cart_Class, 'getSurcharge'));
         $cart->order['amount']   = call_user_func(array(Jojo_Cart_Class, 'total'));
         if ($cart->order['subtotal']==0) {
           $cart->order['freight']=0;
-          $cart->order['amount']=0;
+          $cart->order['surcharge']=0;
+         $cart->order['amount']=0;
         }
         if (isset($cart->fields['shipping_rd'])) {
-            $surcharge = !empty($cart->fields['shipping_rd']) ? Jojo::selectRow("SELECT rural_surcharge FROM {cart_region} WHERE regioncode = ?", array($cart->fields['shippingRegion'])) : '';
-            $cart->order['surcharge'] = $surcharge ? $surcharge['rural_surcharge'] : '';
+            $rdsurcharge = !empty($cart->fields['shipping_rd']) ? Jojo::selectRow("SELECT rural_surcharge FROM {cart_region} WHERE regioncode = ?", array($cart->fields['shippingRegion'])) : '';
+            $cart->order['rdsurcharge'] = $rdsurcharge ? $rdsurcharge['rural_surcharge'] : '';
         }
         call_user_func(array(Jojo_Cart_Class, 'saveCart'));
 
