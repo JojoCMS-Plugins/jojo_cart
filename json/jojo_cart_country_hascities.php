@@ -20,6 +20,6 @@ if (!$country) {
 }
 
 /* Get the current special status */
-$country = Jojo::selectRow("SELECT hasstates FROM {cart_country} WHERE countrycode = ?", strtoupper($country));
-echo json_encode((boolean)(isset($country['hasstates']) && $country['hasstates'] != 'no'));
+$cities = Jojo::selectRow("SELECT * FROM {cart_city} WHERE countrycode = ?", strtoupper($country));
+echo json_encode((boolean)(!empty($cities)));
 
