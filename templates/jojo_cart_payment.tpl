@@ -64,7 +64,7 @@
      </div>
 {/if}
 
-<p><a href="{$languageurlprefix}cart/" class="cart-button" title="##Edit the quantities, or remove items from the order##">##Change Order##</a></p>
+<p><a href="{$languageurlprefix}cart/" class="cart-button button btn btn-small" title="##Edit the quantities, or remove items from the order##">##Change Order##</a></p>
 
 
 </div>
@@ -75,7 +75,7 @@
     <ul>
     {foreach from=$paymentoptions key=k item=option}
     <li style="list-style:none">
-      <label><input type="radio" id="payment_option_radio_{$option.id}" name="paymentoption" value="{$option.id}" /> {$option.label}</label>
+      <label><input type="radio" id="payment_option_radio_{$option.id}" name="paymentoption" value="{$option.id}" />{$option.label}</label>
     </li>
     {/foreach}
     </ul>

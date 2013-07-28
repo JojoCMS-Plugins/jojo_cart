@@ -13,7 +13,7 @@ $('a.shipped').cluetip({activation:"click", closePosition: 'top',closeText: '<im
 {/literal}
 </script>
 
-<table class="sortabletable">
+<table class="sortabletable table table-striped table-bordered">
   <thead>
     <tr>
       <th>ID</th>

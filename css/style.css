@@ -32,27 +32,6 @@ div.contact-form label[for='same_as_shipping'] {
   width: auto;
 }
 
-#shoppingcart th {
-  font-weight: bold;
-  border-bottom: 1px solid black;
-  font-size: 90%;
-  text-align: right;
-}
-
-#shoppingcart td {
-  text-align: right;
-}
-
-#shoppingcart td.cart-subhead, #shoppingcart th.cart-subhead {
-  text-align: left;
-}
-
-#shoppingcart td.cart-item, #shoppingcart th.cart-item {
-  font-weight: bold;
-  line-height: 125%;
-  text-align: left;
-}
-
 #shoppingcart td.cart-item span.cart-itemdescription {
   font-weight: normal;
   font-size: 90%;
@@ -61,6 +40,7 @@ div.contact-form label[for='same_as_shipping'] {
 #shoppingcart td.cart-quantity input {
   width: 20px;
   text-align: right;
+  display: inline;
 }
 
 #shoppingcart a.cart-remove {
@@ -87,9 +67,12 @@ div.contact-form label[for='same_as_shipping'] {
   padding-top: 4px;
 }
 
-#cart-freight, #cart-surcharge, #cart-discountcode, #shoppingcart td.cart-price, #shoppingcart td.cart-linetotal, #cart-giftwrap {
+#shoppingcart .cart-quantity {
+  text-align: center;
+}
+
+#cart-freight, #cart-surcharge, #cart-discountcode, #shoppingcart .cart-price, #shoppingcart .cart-linetotal, #cart-giftwrap {
   text-align: right;
-  padding: 2px 5px;
 }
 
 #cart-giftwrap label {
@@ -125,6 +108,11 @@ div.contact-form label[for='same_as_shipping'] {
   margin-bottom:3px;
   margin-right:5px;
   width:150px;
+}
+
+#payment_option_radios label {
+    float: none;
+    width: auto;
 }
 
 .jojo_cart input, .jojo_cart select, .jojo_cart textarea {

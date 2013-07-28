@@ -42,11 +42,12 @@ class jojo_plugin_Jojo_cart_shipping extends JOJO_Plugin
 
         if ($commonMethods == false || count($commonMethods) == 0) {
             /* No common freight options */
-            return array('content' => "There is no common shipping option for the items in your shopping cart");
+            return array('content' => "##There is no common shipping option for the items in your shopping cart##");
         } elseif (count($commonMethods) == 1) {
             /* Only one option so auto choose this one */
-            $shippingMethod = array_pop(array_keys($commonMethods));
-            call_user_func(array(Jojo_Cart_Class, 'setShippingMethod'), array_pop(array_keys($commonMethods)));
+            $shippingMethod = array_keys($commonMethods);
+            $shippingMethod = array_pop($shippingMethod);
+            call_user_func(array(Jojo_Cart_Class, 'setShippingMethod'), $shippingMethod);
             Jojo::redirect(_SECUREURL . '/' .$languageurlprefix. 'cart/payment/');
         } else {
             /* if nil order, then no freight */

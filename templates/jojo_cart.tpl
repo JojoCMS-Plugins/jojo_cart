@@ -21,20 +21,20 @@
 {else}
     <div class="box">
         <h2>##Items in cart##</h2>
-        <table id="shoppingcart">
+        <table id="shoppingcart" class="table">
             <thead>
                 <tr>
                     <th>&nbsp;</th>
                     <th class="cart-item">##Item##</th>
-                    <th>##Qty##</th>
-                    <th>##Price##</th>
-                    <th>##Total##</th>
+                    <th class="cart-quantity">##Qty##</th>
+                    <th class="cart-price">##Price##</th>
+                    <th class="cart-linetotal">##Total##</th>
                 </tr>
             </thead>
             <tbody>
     {foreach from=$items key=k item=i}
                 <tr id="row_{$i.id}">
-                    <td>{if $i.image}<img class="boxed" src="{$i.image}" alt="{$i.name}" />{else}&nbsp;{/if}</td>
+                    <td class="cart-image">{if $i.image}<img class="boxed" src="{$i.image}" alt="{$i.name}" />{else}&nbsp;{/if}</td>
                     <td class="cart-item">{$i.name}{if $i.description}<br /><span class="cart-itemdescription">{$i.description}</span>{/if}</td>
                     <td class="cart-quantity">
         {if $i.quantity_fixed}
@@ -70,7 +70,7 @@
             {if $OPTIONS.cart_tax_amount}
             {if $order.apply_tax}<p class="note">##includes## {$OPTIONS.cart_tax_amount}% {$OPTIONS.cart_tax_name|default:'Tax'}</p>
             {else}
-            <p class="note">##excluding## {$OPTIONS.cart_tax_amount}% {$OPTIONS.cart_tax_name|default:'Tax'} (##if applicable##))</p>
+            <p class="note">##excluding## {$OPTIONS.cart_tax_amount}% {$OPTIONS.cart_tax_name|default:'Tax'} (##if applicable##)</p>
             {/if}{/if}
         </div>
     {if $usediscount}
@@ -90,9 +90,9 @@
     </div>
     {jojoHook hook="jojo_cart_before_buttons"}
     <div id="cart-updatebuttons">
-        <input type="submit" name="update"   id="update"   value="##Update##"     title="##Updates the totals if you have modified quantities for any items##" />
-        <input type="submit" name="empty"    id="empty"    value="##Empty Cart##" title="##Removes all items from your cart##" />
-        <input type="submit" name="checkout" id="checkout" value="##Checkout##"   title="##Proceed to the checkout page where you can pay for this order##" />
+        <input type="submit" name="update"   id="update"   value="##Update##"     class="btn btn-small" title="##Updates the totals if you have modified quantities for any items##" />
+        <input type="submit" name="empty"    id="empty"    value="##Empty Cart##" class="btn btn-small" title="##Removes all items from your cart##" />
+        <input type="submit" name="checkout" id="checkout" value="##Checkout##"   class="btn btn-primary"           title="##Proceed to the checkout page where you can pay for this order##" />
     </div>
 {/if}
 </form>
