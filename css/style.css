@@ -5,10 +5,6 @@ div.receipt {
   font-family: courier, serif;
 }
 
-div.contact-form label[for='same_as_shipping'] {
-  width: auto;
-}
-
 #shoppingcart .cart-item span.cart-itemdescription {
   font-weight: normal;
   font-size: 90%;
@@ -16,6 +12,7 @@ div.contact-form label[for='same_as_shipping'] {
 
 #shoppingcart .cart-quantity {
     text-align: center;
+    white-space: nowrap;
     input {
       width: 20px;
       text-align: right;
