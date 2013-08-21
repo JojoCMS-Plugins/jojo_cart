@@ -16,14 +16,14 @@
                 </tr>
             </thead>
             <tbody>
-    {foreach from=$items key=k item=i}
+    {foreach from=$items key=k item=i}{if $i.linetotal > 0}
               <tr class="cart-items">
                 <td class="cart-item">{$i.name}</td>
                 <td class="cart-quantity">{$i.quantity}</td>
                 <td class="cart-price">{if $i.netprice != $i.price}<strike>{$i.price|string_format:"%01.2f"}</strike> {$i.netprice|string_format:"%01.2f"}{else}{$i.netprice|string_format:"%01.2f"}{/if}</td>
                 <td class="cart-linetotal">{$i.linetotal|string_format:"%01.2f"}</td>
               </tr>
-    {/foreach}
+    {/if}{/foreach}
       {* Subtotal *}
             <tr>
                 <td colspan="5" id="cart-subtotal">

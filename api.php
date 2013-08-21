@@ -285,6 +285,17 @@ $_options[] = array(
 );
 
 $_options[] = array(
+    'id'          => 'cart_zero_quantities',
+    'category'    => 'Cart',
+    'label'       => 'Allow zero quantities',
+    'description' => 'Don\'t remove items set to quantity zero - used for pre-populated carts',
+    'type'        => 'radio',
+    'default'     => 'no',
+    'options'     => 'yes,no',
+    'plugin'      => 'jojo_cart'
+);
+
+$_options[] = array(
     'id'          => 'cart_freight_in_multiple_currencies',
     'category'    => 'Cart - Shipping',
     'label'       => 'Allow freight in multiple currencies',

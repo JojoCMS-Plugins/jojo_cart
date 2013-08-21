@@ -397,7 +397,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         /* Get the cart */
         $cart = self::getCart();
 
-        if ($qty == 0) {
+        if ($qty == 0 && Jojo::getOption('cart_zero_quantities', 'no')=='no') {
             return self::removeFromCart($id);
         }
 

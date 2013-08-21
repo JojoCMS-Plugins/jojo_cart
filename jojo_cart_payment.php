@@ -93,7 +93,7 @@ class jojo_plugin_Jojo_cart_payment extends JOJO_Plugin
         Jojo::runHook('jojo_cart_checkout', array($cart));
         $content['content']    = $smarty->fetch('jojo_cart_payment.tpl');
         $content['javascript'] = $smarty->fetch('jojo_cart_payment_js.tpl');
-        $content['head']       = $smarty->fetch('jojo_cart_payment_head.tpl');
+        $content['head']       = Jojo::getOption('customhead', '') . (isset($this->page["pg_head"]) ? $this->page["pg_head"] . "\n" : '') . $smarty->fetch('jojo_cart_payment_head.tpl');
         return $content;
     }
 }
