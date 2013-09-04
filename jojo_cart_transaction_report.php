@@ -85,7 +85,7 @@ class jojo_plugin_jojo_cart_transaction_report extends JOJO_Plugin
 				
 				$items = $cart->items;
 				foreach($items as $itemkey => $itemvalue){
-					$transactions[$k]['items'] = $transaction[$k]['items'] . $itemvalue['quantity'] . " " . $itemvalue['name'] . " : ";
+					$transactions[$k]['items'] .= $transaction[$k]['items'] . $itemvalue['quantity'] . " " . $itemvalue['name'] . " : ";
 				}
 				
 				foreach ($cart->fields as $ck => $cv) {
@@ -95,7 +95,7 @@ class jojo_plugin_jojo_cart_transaction_report extends JOJO_Plugin
 					   		$transactions[$k][$sk] = trim(str_replace(array("\n", "\r"), ' ', $sv));
 					   }
 	                } elseif (strpos($ck, 'billing')!==false) {
-	                   $billing[$k] = $cv;
+	                   $billing[$ck] = $cv;
 					   foreach($billing as $sk => $sv){
 					   		$transactions[$k][$sk] = trim(str_replace(array("\n", "\r"), ' ', $sv));
 					   }
