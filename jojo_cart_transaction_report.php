@@ -84,8 +84,9 @@ class jojo_plugin_jojo_cart_transaction_report extends JOJO_Plugin
 				$transactions[$k]['data'] = $cart;
 				
 				$items = $cart->items;
+				$transactions[$k]['items'] = '';
 				foreach($items as $itemkey => $itemvalue){
-					$transactions[$k]['items'] .= $transaction[$k]['items'] . $itemvalue['quantity'] . " " . $itemvalue['name'] . " : ";
+					$transactions[$k]['items'] .= $itemvalue['quantity'] . " " . $itemvalue['name'] . " : ";
 				}
 				
 				foreach ($cart->fields as $ck => $cv) {

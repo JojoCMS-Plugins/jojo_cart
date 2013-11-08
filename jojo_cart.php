@@ -740,7 +740,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         return true;
     }
 
-    public static function applyPoints($points)
+    public static function applyPoints($points=false)
     {
         global $_USERID;
         $cart = self::getCart();
@@ -752,8 +752,8 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
             return true;
         }
 
-        /* Check the user actually has points availble */
-        if ($cart->points['balance'] && $cart->points['balance']>0) {
+        /* Check the user actually has points available */
+        if (isset($cart->points) && $cart->points['balance'] && $cart->points['balance']>0) {
             /* Add details to the cart */
             $cart->points['used'] = $points;
             $cart->points['currentbalance'] = $cart->points['balance'] - $cart->points['used'];
@@ -816,7 +816,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
             $smarty->assign('pointsavailable', $pointsavailable);
             if (isset($cart->points['used'])) {
                 $smarty->assign('pointsused', $cart->points['used']);
-                $smarty->assign('pointsdiscount', $cart->points['discount']);
+                $smarty->assign('pointsdiscount', isset($cart->points['discount']) ? $cart->points['discount'] : '');
             }
         }
         /* calculate freight */
