@@ -8,6 +8,11 @@
 </div>
 {/if}
 {if $OPTIONS.cart_tracking_code}{$OPTIONS.cart_tracking_code}{/if}
+{if $pointsbalance}
+<div class="pointsupdate">
+  <p>Your points balance is now <span>{$pointsbalance}</span>.</p>
+</div>
+{/if}
 {jojoHook hook="jojo_cart_complete_bottom"}
 
 </div>

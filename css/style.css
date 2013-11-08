@@ -30,6 +30,10 @@ div.receipt {
     }
 }
 
+@media only screen and (max-width: 767px) {
+    #shoppingcart .cart-quantity { white-space: normal; }
+}
+
 #cart-fixedorder, #cart-total, #cart-subtotal, #cart-freight, #cart-surcharge, #cart-discountcode, #shoppingcart .cart-price, #shoppingcart .cart-linetotal, #cart-giftwrap {
   text-align: right;
 }

@@ -20,7 +20,7 @@ $('a.shipped').cluetip({activation:"click", closePosition: 'top',closeText: '<im
       <th>ID</th>
       <th>Date</th>
       <th>Time</th>
-      <th>Customer</th>
+      <th>Details</th>
       <th>Amount</th>
       <th>Currency</th>
       <th>Status</th>

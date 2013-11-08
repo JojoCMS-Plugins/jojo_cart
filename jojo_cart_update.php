@@ -59,6 +59,11 @@ class jojo_plugin_Jojo_cart_update extends JOJO_Plugin
             call_user_func(array(Jojo_Cart_Class, 'applyDiscountCode'), Jojo::getFormData('discount'));
         }
         
+        /* Apply Discount */
+        if (Jojo::getFormData('points')) {
+            call_user_func(array(Jojo_Cart_Class, 'applyPoints'), Jojo::getFormData('points'));
+        }
+
         /* Apply GiftWrap */
         if (Jojo::getFormData('nogiftwrap')) {
             call_user_func(array(Jojo_Cart_Class, 'setGiftWrap'), false);

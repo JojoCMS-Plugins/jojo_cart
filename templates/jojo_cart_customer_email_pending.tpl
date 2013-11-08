@@ -1,4 +1,3 @@
-
 PAYMENT PENDING
 ===============
 This order will not be completed/delivered until payment has been made.

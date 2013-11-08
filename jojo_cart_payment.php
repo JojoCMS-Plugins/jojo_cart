@@ -63,6 +63,12 @@ class jojo_plugin_Jojo_cart_payment extends JOJO_Plugin
         $usediscount = ($data['numdiscounts'] > 0) ? true : false;
         $smarty->assign('usediscount', $usediscount);
 
+        /* are we using the loyalty code functionality? No need to show the UI if the discount table is empty or if discount has already been set */
+        $useloyalty = (boolean)(isset($cart->points['balance']) &&  $cart->points['balance']> 0);
+        $smarty->assign('useloyalty', $useloyalty);
+        $smarty->assign('pointsused', isset($cart->points['used']) ? $cart->points['used'] : 0);
+        $smarty->assign('pointsdiscount', isset($cart->points['discount']) ? $cart->points['discount'] : 0);
+
         /* Assign vars to Smarty */
         $smarty->assign('countries', Jojo::selectQuery("SELECT cc.countrycode AS code, cc.name, 0 AS special FROM {cart_country} AS cc ORDER BY name"));
         $smarty->assign('token',     $cart->token);

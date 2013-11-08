@@ -89,3 +89,29 @@ foreach ($rows as $row) {
 
 /* This change is too important to ignore - so manual query required */
 Jojo::structureQuery("ALTER TABLE {cart} CHANGE `status` `status` ENUM('pending','abandoned','complete','payment_pending') NOT NULL DEFAULT 'pending';");
+
+
+// ****************************
+$table = 'cart_points';
+
+$query = "
+   CREATE TABLE {cart_points} (
+      `userid` int(11) NOT NULL,
+      `points` int(5) NOT NULL
+       ) ENGINE = InnoDB ";
+/* Output result */
+
+$result = Jojo::checkTable($table, $query);
+
+if (isset($result['created'])) {
+    echo sprintf("jojo_cart: Table <b>%s</b> Does not exist - created empty table.<br />", $table);
+}
+
+if (isset($result['added'])) {
+    foreach ($result['added'] as $col => $v) {
+        echo sprintf("jojo_cart: Table <b>%s</b> column <b>%s</b> Does not exist - added.<br />", $table, $col);
+    }
+}
+if (isset($result['different'])) Jojo::printTableDifference($table, $result['different']);
+
+

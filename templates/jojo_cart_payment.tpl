@@ -24,6 +24,11 @@
                 <td class="cart-linetotal">{$i.linetotal|string_format:"%01.2f"}</td>
               </tr>
     {/if}{/foreach}
+    {if $pointsused}
+            <tr>
+                <td colspan="5" id="cart-fixedorder">##Points Discount##: <span>{$order.currency_symbol|default:' '}{$pointsdiscount|string_format:"%01.2f"}<br /></span></td>
+            </tr>
+    {/if}
       {* Subtotal *}
             <tr>
                 <td colspan="5" id="cart-subtotal">
@@ -58,6 +63,10 @@
         {else}
           <p>Using Discount Code: {$discount.code}</p>
         {/if}
+         </div>
+    {/if}{if $useloyalty && !$pointsused}
+        <div id="cart-loyalty">
+           <p>You have points available, use them on the <a href="{$languageurlprefix}cart/" class="cart-button btn btn-small" title="Edit the quantities, or remove items from the order">Change Order</a> page</p>
          </div>
     {/if}
 

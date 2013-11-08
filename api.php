@@ -384,3 +384,24 @@ $_options[] = array(
     'plugin'      => 'jojo_cart'
 );
 
+$_options[] = array(
+    'id'          => 'cart_loyalty_value',
+    'category'    => 'Cart',
+    'label'       => 'Loyalty Point Value',
+    'description' => 'How much (in default currency) each point can be redeemed for.',
+    'type'        => 'text',
+    'default'     => '0',
+    'options'     => '',
+    'plugin'      => 'jojo_cart'
+);
+
+$_options[] = array(
+    'id'          => 'cart_loyalty_cost',
+    'category'    => 'Cart',
+    'label'       => 'Loyalty Point Cost',
+    'description' => 'How much (in default currency) must be spent to earn one point.',
+    'type'        => 'text',
+    'default'     => '0',
+    'options'     => '',
+    'plugin'      => 'jojo_cart'
+);

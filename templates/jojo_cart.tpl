@@ -52,6 +52,10 @@
         <tr>
             <td colspan="5" id="cart-fixedorder">##Discount##: <span>{$order.currency_symbol|default:' '}{$order.fixedorder|string_format:"%01.2f"}<br /></span></td>
         </tr>
+{/if}{if $pointsused}
+        <tr>
+            <td colspan="5" id="cart-fixedorder">##Points Discount##: <span>{$order.currency_symbol|default:' '}{$pointsdiscount|string_format:"%01.2f"}<br /></span></td>
+        </tr>
 {/if}
         <tr>
             <td colspan="5"  id="cart-subtotal">##Sub-total##: <span>{$order.currency_symbol|default:' '}{$order.subtotal|string_format:"%01.2f"}</span></td>
@@ -81,6 +85,12 @@
             <label for="discountCode">Discount Code:</label>
             <input type="text" size="10" name="discountCode" id="discountCode" value="{if $discount.code}{$discount.code}{/if}" />
             <input type="submit" name="applyDiscount" id="applyDiscount" value="Apply" class="btn btn-small"/>
+        </div>
+    {/if}
+    {if $pointsavailable}
+        <div id="cart-points">
+            <label for="points">Your Points</label>
+            <div class="form-controls"><span class="note">Use </span><input type="text" size="10" name="points" id="points" value="{if $pointsused}{$pointsused}{elseif $pointsavailable}{$pointsavailable}{/if}" /><span class="note"> out of {$pointsavailable}</span><input type="submit" name="applyPoints" id="applyPoints" value="Apply" class="btn btn-small"/></div>
         </div>
     {/if}
     
