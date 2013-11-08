@@ -21,20 +21,20 @@
 {else}
     <div class="box">
         <h2>##Items in cart##</h2>
-        <table id="shoppingcart">
+        <table id="shoppingcart" class="table">
             <thead>
                 <tr>
                     <th>&nbsp;</th>
                     <th class="cart-item">##Item##</th>
-                    <th>##Qty##</th>
-                    <th>##Price##</th>
-                    <th>##Total##</th>
+                    <th class="cart-quantity">##Qty##</th>
+                    <th class="cart-price">##Price##</th>
+                    <th class="cart-linetotal">##Total##</th>
                 </tr>
             </thead>
             <tbody>
     {foreach from=$items key=k item=i}
-                <tr id="row_{$i.id}">
-                    <td>{if $i.image}<img class="boxed" src="{$i.image}" alt="{$i.name}" />{else}&nbsp;{/if}</td>
+                <tr id="row_{$i.id}" class="cart-items">
+                    <td class="cart-image">{if $i.image}<img class="boxed" src="{$i.image}" alt="{$i.name}" />{else}&nbsp;{/if}</td>
                     <td class="cart-item">{$i.name}{if $i.description}<br /><span class="cart-itemdescription">{$i.description}</span>{/if}</td>
                     <td class="cart-quantity">
         {if $i.quantity_fixed}
@@ -48,36 +48,49 @@
                     <td class="cart-linetotal"><span>{$i.linetotal|string_format:"%01.2f"}</span></td>
                 </tr>
     {/foreach}
-            </tbody>
-        </table>
 {if $order.fixedorder}
-        <div id="cart-fixedorder"> ##Discount##: <span>{$order.currency_symbol|default:' '}{$order.fixedorder|string_format:"%01.2f"}<br /></span>
-        </div>
+        <tr>
+            <td colspan="5" id="cart-fixedorder">##Discount##: <span>{$order.currency_symbol|default:' '}{$order.fixedorder|string_format:"%01.2f"}<br /></span></td>
+        </tr>
+{/if}{if $pointsused}
+        <tr>
+            <td colspan="5" id="cart-fixedorder">##Points Discount##: <span>{$order.currency_symbol|default:' '}{$pointsdiscount|string_format:"%01.2f"}<br /></span></td>
+        </tr>
 {/if}
-        <div id="cart-subtotal">
-            ##Sub-total##: <span>{$order.currency_symbol|default:' '}{$order.subtotal|string_format:"%01.2f"}</span>
-        </div>
-       <div id="cart-freight">
-            ##Freight##: {if $order.freight}<span>{$order.freight|string_format:"%01.2f"}</span> (##based on current delivery address##){else}(##to be calculated##){/if}
-       </div>
-       {if $order.surcharge}<div id="cart-surcharge">
-            ##{$order.surchargedescription}##: {$order.currency_symbol|default:' '}<span>{$order.surcharge|string_format:"%01.2f"}</span>
-       </div>
-    	{/if}
-        <div id="cart-total">
+        <tr>
+            <td colspan="5"  id="cart-subtotal">##Sub-total##: <span>{$order.currency_symbol|default:' '}{$order.subtotal|string_format:"%01.2f"}</span></td>
+        </tr>
+       <tr>
+            <td colspan="5"  id="cart-freight">##Freight##: {if $order.freight}<span>{$order.freight|string_format:"%01.2f"}</span> (##based on current delivery address##){else}(##to be calculated##){/if}
+           {if $order.surcharge}<div id="cart-surcharge">##{$order.surchargedescription}##: {$order.currency_symbol|default:' '}<span>{$order.surcharge|string_format:"%01.2f"}</span></div>
+           {/if}
+           </td>
+       </tr>
+    	
+        <tr>
+            <td colspan="5"  id="cart-total">
              ##Total##: <span>{$order.currency|default:$OPTIONS.cart_default_currency}{$order.currency_symbol|default:' '}{$order.amount|string_format:"%01.2f"}</span>
             {*{if $OPTIONS.cart_show_gst != 'no' && (($order.currency=='NZD') || ($order.currency=='' && $OPTIONS.cart_default_currency=='NZD'))}<p class="note">##includes GST of## {$order.currency_symbol|default:' '}{$order.amount/7.66666|string_format:"%01.2f"}</p>{/if}*}
             {if $OPTIONS.cart_tax_amount}
             {if $order.apply_tax}<p class="note">##includes## {$OPTIONS.cart_tax_amount}% {$OPTIONS.cart_tax_name|default:'Tax'}</p>
             {else}
-            <p class="note">##excluding## {$OPTIONS.cart_tax_amount}% {$OPTIONS.cart_tax_name|default:'Tax'} (##if applicable##))</p>
+            <p class="note">##excluding## {$OPTIONS.cart_tax_amount}% {$OPTIONS.cart_tax_name|default:'Tax'} (##if applicable##)</p>
             {/if}{/if}
-        </div>
+            </td>
+        </tr>
+       </tbody>
+    </table>
     {if $usediscount}
         <div id="cart-discountcode">
             <label for="discountCode">Discount Code:</label>
             <input type="text" size="10" name="discountCode" id="discountCode" value="{if $discount.code}{$discount.code}{/if}" />
-            <input type="submit" name="applyDiscount" id="applyDiscount" value="Apply" />
+            <input type="submit" name="applyDiscount" id="applyDiscount" value="Apply" class="btn btn-small"/>
+        </div>
+    {/if}
+    {if $pointsavailable}
+        <div id="cart-points">
+            <label for="points">Your Points</label>
+            <div class="form-controls"><span class="note">Use </span><input type="text" size="10" name="points" id="points" value="{if $pointsused}{$pointsused}{elseif $pointsavailable}{$pointsavailable}{/if}" /><span class="note"> out of {$pointsavailable}</span><input type="submit" name="applyPoints" id="applyPoints" value="Apply" class="btn btn-small"/></div>
         </div>
     {/if}
     
@@ -90,9 +103,9 @@
     </div>
     {jojoHook hook="jojo_cart_before_buttons"}
     <div id="cart-updatebuttons">
-        <input type="submit" name="update"   id="update"   value="##Update##"     title="##Updates the totals if you have modified quantities for any items##" />
-        <input type="submit" name="empty"    id="empty"    value="##Empty Cart##" title="##Removes all items from your cart##" />
-        <input type="submit" name="checkout" id="checkout" value="##Checkout##"   title="##Proceed to the checkout page where you can pay for this order##" />
+        <input type="submit" name="update"   id="update"   value="##Update##"     class="btn btn-small" title="##Updates the totals if you have modified quantities for any items##" />
+        <input type="submit" name="empty"    id="empty"    value="##Empty Cart##" class="btn btn-small" title="##Removes all items from your cart##" />
+        <input type="submit" name="checkout" id="checkout" value="##Checkout##"   class="btn btn-primary"           title="##Proceed to the checkout page where you can pay for this order##" />
     </div>
 {/if}
 </form>

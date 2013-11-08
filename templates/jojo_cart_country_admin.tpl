@@ -7,7 +7,7 @@
 <h2>Set regions for countries</h2>
 <p>Each country is set to a region for the purpose of calculating freight prices.</p>
 <form method="post" action="">
-<table class="adminZebraTable">
+<table class="adminZebraTable table table-striped table bordered">
 <thead>
     <tr>
         <th>Country Name</th>
@@ -49,9 +49,9 @@
 <form method="post" action="{$pg_url}/">
   <select name="delete_region" id="delete_region">
     <option value="">Select region to delete</option>
-    {section name=r loop=$regions}
-    <option value="{$regions[r].regioncode}">{$regions[r].name}</option>
-    {/section}
+    {foreach item=r from=$regions}
+    <option value="{$r.regioncode}">{$r.name}</option>
+    {/foreach}
   </select>
   <select name="reassign_region" id="reassign_region">
     <option value="">Reassign all countries in this region to...</option>

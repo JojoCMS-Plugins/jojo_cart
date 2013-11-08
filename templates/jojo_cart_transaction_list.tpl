@@ -21,9 +21,11 @@ Order ID = {$id}
     </tr>
     {/if}
   {/foreach}
-{if $order.fixedorder}
-<tr>
+{if $order.fixedorder}<tr>
   <td colspan="3">Discount</td><td align="right">{$order.fixedorder|string_format:"%01.2f"}</td>
+</tr>
+{/if}{if $points}<tr>
+  <td colspan="3">Points</td><td align="right">-{$points.discount|string_format:"%01.2f"}</td>
 </tr>
 {/if}
 <tr>

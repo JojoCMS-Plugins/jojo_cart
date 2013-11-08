@@ -397,7 +397,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         /* Get the cart */
         $cart = self::getCart();
 
-        if ($qty == 0) {
+        if ($qty == 0 && Jojo::getOption('cart_zero_quantities', 'no')=='no') {
             return self::removeFromCart($id);
         }
 
@@ -475,6 +475,8 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         $cart->discount['fixedorder'] = isset($cart->discount['fixedorder']) ? $cart->discount['fixedorder'] : 0;
         $cart->discount['singleuse']  = isset($cart->discount['singleuse'])  ? $cart->discount['singleuse']  : false;
 
+        $cart->points['used']  = isset($cart->points['used'])  ? $cart->points['used']  : false;
+
         $subtotal = 0;
         foreach ($cart->items as $k => $item) {
             $cart->items[$k]['price'] = $cart->items[$k]['baseprice'];
@@ -521,6 +523,11 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         }
         $cart->order['fixedorder'] = $cart->discount['fixedorder'];
         $subtotal -= $cart->order['fixedorder'];
+        /* Apply Points discount */
+        if ($cart->points['used']) {
+            $pointsvalue = $cart->points['used']*Jojo::getOption('cart_loyalty_value', 0);
+            $subtotal -= $pointsvalue;
+        }
         $subtotal = max(0, $subtotal); //ensure discounts don't bring the total below 0
         $cart->order['subtotal'] = $subtotal;
         return $subtotal;
@@ -601,10 +608,10 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
                 $total += $freight->getFreight($region, $method, $item['quantity']);
             }
         }
-
         /* Get the shipping for the shared models */
         foreach ($sharedModelQuantities as $modelid => $quantity) {
             $quantity = Jojo::getOption('cart_freight_rounding', 'yes')=='yes' ? ceil($quantity) : $quantity;
+
             $total += $sharedModel[$modelid]->getFreight($region, $method, $quantity);
         }
         $total = max($total, Jojo_Cart_Freight::getRegionMinimum($region, $method));
@@ -733,6 +740,36 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         return true;
     }
 
+    public static function applyPoints($points)
+    {
+        global $_USERID;
+        $cart = self::getCart();
+       /* If empty then clear points used */
+        if (empty($points)) {
+            unset($cart->points['used']);
+            unset($cart->points['discount']);
+            $cart->points['currentbalance'] = $cart->points['balance'];
+            return true;
+        }
+
+        /* Check the user actually has points availble */
+        if ($cart->points['balance'] && $cart->points['balance']>0) {
+            /* Add details to the cart */
+            $cart->points['used'] = $points;
+            $cart->points['currentbalance'] = $cart->points['balance'] - $cart->points['used'];
+            $cart->points['discount'] = Jojo::getOption('cart_loyalty_value')*$points;
+           
+        } else {
+            unset($cart->points['used']);
+            unset($cart->points['discount']);
+            $cart->points['currentbalance'] = $cart->points['balance'];
+            return true;        
+        }
+
+        self::total();
+        return true;
+    }
+
     /**
      * Generates a new unique token
      */
@@ -760,6 +797,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         $action   = Util::getFormData('action',      '');
         $id       = Util::getFormData('id',       false);
         $discount = Jojo::getFormData('discount', false);
+        $points = Jojo::getFormData('points', false);
 
         /* Get the cart array */
         $cart = self::getCart();
@@ -767,6 +805,20 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         $smarty->assign('status', $cart->cartstatus);
         $cart->order['subtotal'] = self::subTotal();
 
+        if ($_USERID && Jojo::getOption('cart_loyalty_cost', '') && JOJO_Plugin_Jojo_cart::getCartCurrency($cart->token)==Jojo::getOption('cart_default_currency', 'USD')) {
+            if (isset($cart->points['balance'])) {
+                $pointsavailable = $cart->points['balance']; 
+            } else {
+                $pointsavailable = Jojo::selectRow("SELECT points FROM {cart_points} WHERE userid=?", array($_USERID));
+                $pointsavailable =  ($pointsavailable && $pointsavailable['points']>0) ? $pointsavailable['points'] : 0;
+                $cart->points['balance'] = $pointsavailable;
+            }
+            $smarty->assign('pointsavailable', $pointsavailable);
+            if (isset($cart->points['used'])) {
+                $smarty->assign('pointsused', $cart->points['used']);
+                $smarty->assign('pointsdiscount', $cart->points['discount']);
+            }
+        }
         /* calculate freight */
         $cart->order['freight'] = self::getFreight();
 
@@ -798,6 +850,12 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
                 $savedcart = self::getCart($token);
                 if (isset($savedcart->receipt)) $smarty->assign('receipt', $savedcart->receipt);
                 if (isset($savedcart->handler)) $smarty->assign('handler', $savedcart->handler);
+            }
+            if ($_USERID) {
+                $current = Jojo::selectRow("SELECT points FROM {cart_points} WHERE userid=?", array($_USERID));
+                if ($current) {
+                    $smarty->assign('pointsbalance', $current['points']);
+                }
             }
 
             $content['title']    = '##Transaction complete##';

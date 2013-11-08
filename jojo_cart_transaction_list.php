@@ -46,6 +46,7 @@ class jojo_plugin_jojo_cart_transaction_list extends JOJO_Plugin
               $smarty->assign('billing',       $billing);
               $smarty->assign('fields',       $cart->fields);
               $smarty->assign('order',        $cart->order);
+              $smarty->assign('points',        isset($cart->points) ? $cart->points : '');
               $smarty->assign('receipt',        $cart->receipt);
               $smarty->assign('id',           $transaction['id']);
               $currency = isset($cart->order['currency']) ? $cart->order['currency'] : call_user_func(array(Jojo_Cart_Class, 'getCartCurrency'), $transaction['token']);

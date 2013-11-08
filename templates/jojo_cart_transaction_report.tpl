@@ -12,15 +12,15 @@ $('a.shipped').cluetip({activation:"click", closePosition: 'top',closeText: '<im
 });
 {/literal}
 </script>
-<form action='' method="post">Download csv file of transactions<input type="hidden" value="csv" name="filedownload" id="filedownload" /><input type="submit" name="submit" value="GO" class="button" onmouseover="this.className='button buttonrollover';" onmouseout="this.className='button'" />
+<form action='' method="post"><input type="hidden" value="csv" name="filedownload" id="filedownload" /><input type="submit" name="submit" value="Download transactions as CSV" class="btn btn-small" />
 </form>
-<table class="sortabletable">
+<table class="sortabletable table table-striped table-bordered">
   <thead>
     <tr>
       <th>ID</th>
       <th>Date</th>
       <th>Time</th>
-      <th>Customer</th>
+      <th>Details</th>
       <th>Amount</th>
       <th>Currency</th>
       <th>Status</th>

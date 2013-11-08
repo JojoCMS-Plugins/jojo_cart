@@ -135,12 +135,6 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
                 $name = '';
             }
 
-            $smarty->assign('token',      $cart->token);
-            $smarty->assign('actioncode', $cart->actioncode);
-            $smarty->assign('fields',     $cart->fields);
-            $smarty->assign('order',      $cart->order);
-            $smarty->assign('items',      $cart->items);
-
             if (isset($cart->fields['shipping_rd'])) {
                 $surcharge = Jojo::selectRow("SELECT rural_surcharge FROM {cart_region} WHERE regioncode = ?", array($cart->fields['shippingRegion']));
                 $cart->order['surcharge'] = $surcharge['rural_surcharge'];
@@ -157,6 +151,28 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
                 Jojo::updateQuery("UPDATE {discount} SET usedby=? WHERE discountcode=?", array($cart->token, $cart->discount['code']));
             }
 
+            /* update loyalty point balance */
+            if ($_USERID && Jojo::getOption('cart_loyalty_cost', '') && JOJO_Plugin_Jojo_cart::getCartCurrency($token)==Jojo::getOption('cart_default_currency', 'USD')) {
+                $pointsused = isset($cart->points['used']) ? $cart->points['used'] : 0;
+                $cost = Jojo::getOption('cart_loyalty_cost');
+                $value = $cart->order['apply_tax'] ? JOJO_Plugin_Jojo_cart::removeTax($cart->order['subtotal']) : $cart->order['subtotal'];
+                $pointsadded = floor($value/$cost);
+                $currentpoints = Jojo::selectRow("SELECT points FROM {cart_points} WHERE userid=?", array($_USERID));
+                if ($currentpoints) {
+                    $balance = $currentpoints['points'] + $pointsadded - $pointsused;
+                    if ($balance<0) {
+                        //need to check for negative point balance (from having 2 carts open at once say) and alert
+                    }
+                    Jojo::updateQuery("UPDATE {cart_points} SET points=? WHERE userid=? LIMIT 1", array($balance, $_USERID));
+                } else {
+                    $balance = $pointsadded;
+                    Jojo::insertQuery("INSERT INTO {cart_points} SET userid=?, points=?", array($_USERID, $balance));
+                }
+                $cart->points['added'] = $pointsadded;
+                $cart->points['finalbalance'] = $balance;
+                $smarty->assign('points',      $cart->points);
+           }
+            
             /* log transaction */
             $log             = new Jojo_Eventlog();
             $log->code       = 'transaction';
@@ -165,6 +181,12 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
             $log->desc       = 'Successful transaction: '. $result['receipt'];
             $log->savetodb();
             unset($log);
+
+            $smarty->assign('token',      $cart->token);
+            $smarty->assign('actioncode', $cart->actioncode);
+            $smarty->assign('fields',     $cart->fields);
+            $smarty->assign('order',      $cart->order);
+            $smarty->assign('items',      $cart->items);
 
             /* Get order id */
 

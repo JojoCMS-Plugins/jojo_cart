@@ -15,6 +15,7 @@
  * @link    http://www.jojocms.org JojoCMS
  */
 
+$id  = Jojo::getFormData('rowid', false);
 $quantity  = Jojo::getFormData('qty', false);
 $code = Jojo::getFormData('code', false);
 
@@ -25,6 +26,7 @@ $cart = call_user_func(array(Jojo_Cart_Class, 'getCart'));
 
 /* send back the data that has changed in a JSON object for the javascript callback to work with */
 $response = array();
+$response['rowid'] = $id ? $id : 'row_' . $code;
 $response['code'] = $code;
 $response['quantity'] = $cart->items[$code]['quantity'];
 $response['linetotal'] = $cart->items[$code]['linetotal'];

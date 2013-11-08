@@ -16,7 +16,7 @@
 
 class JOJO_Plugin_jojo_cart_free extends JOJO_Plugin
 {
-    function getPaymentOptions()
+    static function getPaymentOptions()
     {
         global $smarty;
         $options = array();
@@ -27,13 +27,13 @@ class JOJO_Plugin_jojo_cart_free extends JOJO_Plugin
     /*
     * Determines whether this payment plugin is active for the current payment.
     */
-    function isActive()
+    static function isActive()
     {
         /* Look for a post variable specifying the test processor */
         return (Jojo::getFormData('handler', false) == 'free') ? true : false;
     }
 
-    function process()
+    static function process()
     {
         $receipt = (Jojo::getOption('cart_free_message')) == '' ? array() : array('Info' => Jojo::getOption('cart_free_message'));
         $errors  = array();

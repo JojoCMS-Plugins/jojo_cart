@@ -246,7 +246,7 @@ class Jojo_Cart_Freight {
             $packs = $this->getPacks();
             $packQuantities = array();
             foreach (Jojo_Cart_Freight::bestPacksizes($quantity, array_keys($packs)) as $packSize) {
-                $packQuantities[$packSize] = isset($packQuantities[$packSize]) ? $packQuantities[$packSize] + 1 : 1;
+                $packQuantities[$packSize] = isset($packQuantities[$packSize]) ? $packQuantities[$packSize] + 1 : $packSize;
             }
             $total = 0;
             foreach($packQuantities as $packSize => $packQuantity) {
