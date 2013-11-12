@@ -1,61 +1,6 @@
-
-table.adminZebraTable {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-table.adminZebraTable th {
-  background: #5E7FBB;
-  color: white;
-  font-size: 12px;
-  font-weight: bold;
-  padding: 5px;
-  border: 1px solid white;
-}
-
-table.adminZebraTable tr.row1 td {
-  background: white;
-}
-
-table.adminZebraTable tr.row2 td {
-  background: #EEEEEE;
-}
-
-table.adminZebraTable td {
-  border: 1px solid white;
-  padding: 4px 5px;
-}
-
-table.adminZebraTable tr.pending td {
-  color: #aaa;
-}
-
-strong {
-  font-weight: bold;
-}
-
-em {
-  font-style: italic;
-}
-
-.adminTransactionList thead tr th {
-    font-weight:bold;
-    padding-bottom:10px;
-    text-align:left;
-}
-
-.adminTransactionList th, .adminTransactionList td {
-    border: 1px solid black;
-}
-
-table.adminTransactionList {
-    border-collapse: collapse;
-    width: 100%;
-}
-
 #adminTransactionList {
   background:white;
-  padding:0 15px;
+  padding: 0 15px 15px ;
 }
 
 #cluetip {
