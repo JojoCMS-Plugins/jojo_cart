@@ -745,7 +745,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         global $_USERID;
         $cart = self::getCart();
        /* If empty then clear points used */
-        if (empty($points)) {
+        if (!$points) {
             unset($cart->points['used']);
             unset($cart->points['discount']);
             $cart->points['currentbalance'] = $cart->points['balance'];

@@ -34,7 +34,7 @@
 <div id="fm_{$fd_field}_packed"{if $freight_type!='packed'} style="display:none"{/if} class="fm_{$fd_field}_freight">
     <p>Enter a pack size and the shared freight model to use for that pack size.</p>
 
-    <table class="adminZebraTable">
+    <table class="table">
         <tr>
             <th>Items in pack</th>
             <th>Pack freight model</th>
@@ -99,96 +99,99 @@
         &nbsp;&nbsp;&nbsp;<em>which ever is greater</em>
     </p>
 
-    <div id="tabs">
-        <ul id="regiontabs" class="tabs">
-            <li class="tab basic"><a href="#" onclick="$('#fm_{$fd_field}_region table').hide(); $('#regionMin').show(); $('#regiontabs li').removeClass('selected').addClass('basic'); $(this).parent().removeClass('basic').addClass('selected'); return false;">Minimum Price</a></li>
-            <li class="tab basic"><a href="#" onclick="$('#fm_{$fd_field}_region table').hide(); $('#regionBase').show(); $('#regiontabs li').removeClass('selected').addClass('basic'); $(this).parent().removeClass('basic').addClass('selected'); return false;">Base Price</a></li>
-            <li class="tab selected"><a href="#" onclick="$('#fm_{$fd_field}_region table').hide(); $('#regionPerItem').show(); $('#regiontabs li').removeClass('selected').addClass('basic'); $(this).parent().removeClass('basic').addClass('selected'); return false;">Per Item Price</a></li>
+    <div class="advanced" id="tabs">
+        <ul class="nav nav-tabs">
+            <li><a href="#" data-target="#regionMin" data-toggle="tab">Minimum Price</a></li>
+            <li><a href="#" data-target="#regionBase" data-toggle="tab">Base Price</a></li>
+            <li class="active"><a href="#" data-target="#regionPerItem" data-toggle="tab">Per Item Price</a></li>
         </ul>
     </div>
+    <div class="tab-content">
+        <div class="tab-pane" id="regionMin">
+            <table class="table">
+                <tr class="advanced">
+                    <td colspan="{assign var=count value=count($methods)}{$count+1}"><h3>Minimum Shipping Cost</h3></th>
+                </tr>
+                <tr>
+                    <th>Region</th>
+        {foreach from=$methods item=method}
+                    <th title="{$method.longname}">{$method.shortname}</th>
+        {/foreach}
+                </tr>
+                <tr class="{cycle values="row1,row2"}">
+                    <td>Default minimum</td>
+        {foreach from=$methods key=methodid item=method}
+                    <td><input style="text-align: right" type="text" size="6" name="fm_{$fd_field}_default_min[{$methodid}]" value="{$freight_default_min[$methodid]}" />  {$OPTIONS.cart_default_currency}</td>
+        {/foreach}
+                </tr>
+        {section name=r loop=$freight_regions}
+                <tr class="{cycle values="row1,row2"}">
+                    <td>{$freight_regions[r].name}</td>
+        {foreach from=$methods key=methodid item=method}
+                    <td><input style="text-align: right" type="text" size="6" name="fm_{$fd_field}_region_min_{$freight_regions[r].code}[{$methodid}]" value="{$freight_regions_min[r][price][$methodid]}" autocomplete="off" /> {$OPTIONS.cart_default_currency}</td>
+        {/foreach}
+                </tr>
+        {/section}
+            </table>
+        </div>
+        <div class="tab-pane" id="regionBase">
+            <table class="table">
+                <tr class="advanced">
+                    <td colspan="{assign var=count value=count($methods)}{$count+1}"><h3>Base Shipping Cost</h3></th>
+                </tr>
+                <tr>
+                    <th>Region</th>
+        {foreach from=$methods item=method}
+                    <th title="{$method.longname}">{$method.shortname}</th>
+        {/foreach}
+                </tr>
+                <tr>
+                    <td>Default base rate</td>
+        {foreach from=$methods key=methodid item=method}
+                    <td><input style="text-align: right" type="text" size="6" name="fm_{$fd_field}_default_base[{$methodid}]" value="{$freight_default_base[$methodid]}" />  {$OPTIONS.cart_default_currency}</td>
+        {/foreach}
+                </tr>
+        {section name=r loop=$freight_regions}
+                <tr>
+                    <td>{$freight_regions[r].name}</td>
+        {foreach from=$methods key=methodid item=method}
+                    <td><input style="text-align: right" type="text" size="6" name="fm_{$fd_field}_region_base_{$freight_regions[r].code}[{$methodid}]" value="{$freight_regions_base[r][price][$methodid]}" autocomplete="off" /> {$OPTIONS.cart_default_currency}</td>
+        {/foreach}
+                </tr>
+        {/section}
+            </table>
+        </div>
+        <div class="tab-pane active" id="regionPerItem">
+            <table class="table">
+                <tr class="advanced">
+                    <td colspan="{assign var=count value=count($methods)}{$count+1}"><h3>Per Item Shipping Cost</h3></th>
+                </tr>
 
-    <br style="clear: both"/>
+                <tr>
+                    <th>Region</th>
+        {foreach from=$methods item=method}
+                    <th title="{$method.longname}">{$method.shortname}</th>
+        {/foreach}
+                </tr>
+                <tr>
+                    <td>Default per item rate</td>
+        {foreach from=$methods key=methodid item=method}
+                    <td><input style="text-align: right" type="text" size="6" name="fm_{$fd_field}_default[{$methodid}]" value="{$freight_default[$methodid]}" />  {$OPTIONS.cart_default_currency}</td>
+        {/foreach}
+                </tr>
+        {section name=r loop=$freight_regions}
+                <tr>
+                    <td>{$freight_regions[r].name}</td>
+        {foreach from=$methods key=methodid item=method}
+                    <td><input style="text-align: right" type="text" size="6" name="fm_{$fd_field}_region_{$freight_regions[r].code}[{$methodid}]" value="{$freight_regions[r][price][$methodid]}" autocomplete="off" /> {$OPTIONS.cart_default_currency}</td>
+        {/foreach}
+                </tr>
+        {/section}
+            </table>
+        </div>
+    </div>
 
-    <table id="regionPerItem" class="adminZebraTable">
-        <tr class="advanced">
-            <td colspan="{assign var=count value=count($methods)}{$count+1}"><h3>Per Item Shipping Cost</h3></th>
-        </tr>
-
-        <tr>
-            <th>Region</th>
-{foreach from=$methods item=method}
-            <th title="{$method.longname}">{$method.shortname}</th>
-{/foreach}
-        </tr>
-        <tr class="{cycle values="row1,row2"}">
-            <td>Default per item rate</td>
-{foreach from=$methods key=methodid item=method}
-            <td><input style="text-align: right" type="text" size="6" name="fm_{$fd_field}_default[{$methodid}]" value="{$freight_default[$methodid]}" />  {$OPTIONS.cart_default_currency}</td>
-{/foreach}
-        </tr>
-{section name=r loop=$freight_regions}
-        <tr class="{cycle values="row1,row2"}">
-            <td>{$freight_regions[r].name}</td>
-{foreach from=$methods key=methodid item=method}
-            <td><input style="text-align: right" type="text" size="6" name="fm_{$fd_field}_region_{$freight_regions[r].code}[{$methodid}]" value="{$freight_regions[r][price][$methodid]}" autocomplete="off" /> {$OPTIONS.cart_default_currency}</td>
-{/foreach}
-        </tr>
-{/section}
-    </table>
-
-    <table id="regionBase" class="adminZebraTable" style="display:none">
-        <tr class="advanced" style="display: table-row-group;">
-            <td colspan="{assign var=count value=count($methods)}{$count+1}"><h3>Base Shipping Cost</h3></th>
-        </tr>
-        <tr>
-            <th>Region</th>
-{foreach from=$methods item=method}
-            <th title="{$method.longname}">{$method.shortname}</th>
-{/foreach}
-        </tr>
-        <tr class="{cycle values="row1,row2"}">
-            <td>Default base rate</td>
-{foreach from=$methods key=methodid item=method}
-            <td><input style="text-align: right" type="text" size="6" name="fm_{$fd_field}_default_base[{$methodid}]" value="{$freight_default_base[$methodid]}" />  {$OPTIONS.cart_default_currency}</td>
-{/foreach}
-        </tr>
-{section name=r loop=$freight_regions}
-        <tr class="{cycle values="row1,row2"}">
-            <td>{$freight_regions[r].name}</td>
-{foreach from=$methods key=methodid item=method}
-            <td><input style="text-align: right" type="text" size="6" name="fm_{$fd_field}_region_base_{$freight_regions[r].code}[{$methodid}]" value="{$freight_regions_base[r][price][$methodid]}" autocomplete="off" /> {$OPTIONS.cart_default_currency}</td>
-{/foreach}
-        </tr>
-{/section}
-    </table>
-
-    <table id="regionMin" class="adminZebraTable" style="display:none">
-        <tr class="advanced" style="display: table-row-group;">
-            <td colspan="{assign var=count value=count($methods)}{$count+1}"><h3>Minimum Shipping Cost</h3></th>
-        </tr>
-        <tr>
-            <th>Region</th>
-{foreach from=$methods item=method}
-            <th title="{$method.longname}">{$method.shortname}</th>
-{/foreach}
-        </tr>
-        <tr class="{cycle values="row1,row2"}">
-            <td>Default minimum</td>
-{foreach from=$methods key=methodid item=method}
-            <td><input style="text-align: right" type="text" size="6" name="fm_{$fd_field}_default_min[{$methodid}]" value="{$freight_default_min[$methodid]}" />  {$OPTIONS.cart_default_currency}</td>
-{/foreach}
-        </tr>
-{section name=r loop=$freight_regions}
-        <tr class="{cycle values="row1,row2"}">
-            <td>{$freight_regions[r].name}</td>
-{foreach from=$methods key=methodid item=method}
-            <td><input style="text-align: right" type="text" size="6" name="fm_{$fd_field}_region_min_{$freight_regions[r].code}[{$methodid}]" value="{$freight_regions_min[r][price][$methodid]}" autocomplete="off" /> {$OPTIONS.cart_default_currency}</td>
-{/foreach}
-        </tr>
-{/section}
-    </table>
 </div>
-
 {/if}
 
 <input type="hidden" name="fm_{$fd_field}" value="" />
