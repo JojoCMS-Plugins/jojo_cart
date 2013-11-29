@@ -24,15 +24,11 @@
                 <td class="cart-linetotal">{$i.linetotal|string_format:"%01.2f"}</td>
               </tr>
     {/if}{/foreach}
-    {if $pointsused}
-            <tr>
-                <td colspan="5" id="cart-fixedorder">##Points Discount##: <span>{$order.currency_symbol|default:' '}{$pointsdiscount|string_format:"%01.2f"}<br /></span></td>
-            </tr>
-    {/if}
       {* Subtotal *}
             <tr>
                 <td colspan="5" id="cart-subtotal">
-            {if $order.fixedorder}##Discount##: {$order.fixedorder|string_format:"%01.2f"}<br />{/if}
+            {if $order.fixedorder}##Discount##: <span>-{$order.fixedorder|string_format:"%01.2f"}<br /></span>{/if}
+            {if $pointsused}##Points Used##: <span>-{$pointsdiscount|string_format:"%01.2f"}<br /></span>{/if}
             ##Sub-total##: <span>{$order.currency_symbol|default:' '}{$order.subtotal|string_format:"%01.2f"}</span>
                 </td>
             </tr>

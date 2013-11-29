@@ -746,8 +746,8 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         $cart = self::getCart();
        /* If empty then clear points used */
         if (!$points) {
-            unset($cart->points['used']);
-            unset($cart->points['discount']);
+            $cart->points['used']= 0;
+            $cart->points['discount']= 0;
             $cart->points['currentbalance'] = $cart->points['balance'];
             return true;
         }
@@ -760,8 +760,8 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
             $cart->points['discount'] = Jojo::getOption('cart_loyalty_value')*$points;
            
         } else {
-            unset($cart->points['used']);
-            unset($cart->points['discount']);
+            $cart->points['used'] = 0;
+            $cart->points['discount'] = 0;
             $cart->points['currentbalance'] = $cart->points['balance'];
             return true;        
         }

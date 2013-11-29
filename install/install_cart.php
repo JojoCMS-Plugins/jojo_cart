@@ -97,7 +97,8 @@ $table = 'cart_points';
 $query = "
    CREATE TABLE {cart_points} (
       `userid` int(11) NOT NULL,
-      `points` int(5) NOT NULL
+      `points` int(5) NOT NULL,
+       PRIMARY KEY ( `userid` )
        ) ENGINE = InnoDB ";
 /* Output result */
 

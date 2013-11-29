@@ -90,7 +90,7 @@
     {if $pointsavailable}
         <div id="cart-points">
             <label for="points">Your Points</label>
-            <div class="form-controls"><span class="note">Use </span><input type="text" size="10" name="points" id="points" value="{if $pointsused}{$pointsused}{elseif $pointsavailable}{$pointsavailable}{/if}" /><span class="note"> out of {$pointsavailable}</span><input type="submit" name="applyPoints" id="applyPoints" value="Apply" class="btn btn-small"/></div>
+            <div class="form-controls"><span class="note">Use </span><input type="text" size="10" name="points" id="points" value="{if $pointsused!==false}{$pointsused}{elseif $pointsavailable}{$pointsavailable}{/if}" /><span class="note"> out of {$pointsavailable}</span><input type="submit" name="applyPoints" id="applyPoints" value="Apply" class="btn btn-small"/></div>
         </div>
     {/if}
     
