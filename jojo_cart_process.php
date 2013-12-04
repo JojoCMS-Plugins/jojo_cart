@@ -222,7 +222,8 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
                 $subject     = 'Order on '.Jojo::getOption('sitetitle') . ' by ' . $name;
                 $message     = $smarty->fetch('jojo_cart_admin_email.tpl') . Jojo::emailFooter();
                 Jojo::simpleMail($to_name, $to_email, $subject, $message, $name, $email);
-            } elseif (defined('_CONTACTADDRESS') && (_CONTACTADDRESS != _WEBMASTERADDRESS)) {
+            } 
+            if (defined('_CONTACTADDRESS') && (_CONTACTADDRESS != _WEBMASTERADDRESS)) {
                 /* Email admin */
                 $to_name     = Jojo::either(_CONTACTNAME, _FROMNAME,_SITETITLE);
                 $to_email    = Jojo::either(_CONTACTADDRESS,_FROMADDRESS,_WEBMASTERADDRESS);
