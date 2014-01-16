@@ -15,6 +15,7 @@
 
 
 /* User Contact TAB */
+$table= 'user';
 $o = 0;
 
 /* Phone */
