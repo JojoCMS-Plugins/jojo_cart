@@ -748,7 +748,7 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         if (!$points) {
             $cart->points['used']= 0;
             $cart->points['discount']= 0;
-            $cart->points['currentbalance'] = $cart->points['balance'];
+            $cart->points['currentbalance'] = isset($cart->points['balance']) ? $cart->points['balance'] : 0;
             return true;
         }
 
