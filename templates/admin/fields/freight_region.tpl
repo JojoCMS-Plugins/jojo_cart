@@ -96,3 +96,5 @@
                 </tr>
         {/section}
             </table>
+        </div>
+    </div>
