@@ -34,14 +34,21 @@ class jojo_plugin_jojo_cart_transaction_report extends JOJO_Plugin
         }
 		
         jojo_plugin_Admin::adminMenu();
-
-        $transactions = Jojo::selectQuery("SELECT * FROM {cart} WHERE id > 0 ORDER BY id DESC LIMIT ".Jojo::getOption('cart_transactions_report_number', 150));
-        foreach($transactions as &$transaction) {
+        $ago = time() - (60*60*24*30);
+        $transactions = Jojo::selectQuery("SELECT * FROM {cart} WHERE id > 0  OR (updated > ?) ORDER BY id DESC, updated DESC LIMIT " . Jojo::getOption('cart_transactions_report_number', 150), array($ago));
+        $totals = array();
+        foreach($transactions as $k=>&$transaction) {
+           /* Remove any old carts with no details entered */
+            if (!$transaction['id'] && !$transaction['handler']) {
+                unset($transactions[$k]);
+                continue;
+            }
             $cart = unserialize($transaction['data']);
+            $transaction['completed'] = strftime('%F,  %l:%M%P', $transaction['updated']);
             $transaction['datetime'] = $transaction['updated'];
             $transaction['status'] = $transaction['status'];
             $transaction['handler'] = str_replace('jojo_plugin_jojo_cart_','', $transaction['handler']);
-            if (is_array($cart)) {
+             if (is_array($cart)) {
                 $transaction['fields'] = $cart['fields'];
                 $transaction['FirstName'] = $cart['fields']['FirstName'];
                 $transaction['LastName']  = $cart['fields']['LastName'];
@@ -58,8 +65,19 @@ class jojo_plugin_jojo_cart_transaction_report extends JOJO_Plugin
             $transaction['data']=$cart;
             $transaction['currency'] = !empty($transaction['currency']) ? $transaction['currency'] : call_user_func(array(Jojo_Cart_Class, 'getCartCurrency'), $transaction['token']);
             $transaction['currencysymbol'] = call_user_func(array(Jojo_Cart_Class, 'getCurrencySymbol'), $transaction['currency']);
+            /* Calculate monthly sales totals */
+            if (Jojo::getOption('cart_force_default_currency', 'yes') == 'yes' && $transaction['status']=='complete') {
+                $month = substr($transaction['completed'], 0, 7);
+                if (isset($totals[$month])) {
+                    $totals[$month] = $totals[$month] + round($transaction['amount'], 2);
+                } else {
+                    $totals[$month] = round($transaction['amount'], 2);
+                }
+            }
         }
         $smarty->assign('transactions', $transactions);
+        $smarty->assign('transactiontotals', $totals);
+        
 
         $content['title'] = 'Transaction report';
         $content['content'] = $smarty->fetch('jojo_cart_transaction_report.tpl');

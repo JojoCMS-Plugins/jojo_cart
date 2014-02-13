@@ -19,7 +19,6 @@ $('a.shipped').cluetip({activation:"click", closePosition: 'top',closeText: '<im
     <tr>
       <th>ID</th>
       <th>Date</th>
-      <th>Time</th>
       <th>Details</th>
       <th>Amount</th>
       <th>Currency</th>
@@ -33,8 +32,7 @@ $('a.shipped').cluetip({activation:"click", closePosition: 'top',closeText: '<im
     {foreach from=$transactions item=transaction}
     <tr class="{$transaction.status}">
       <td>{$transaction.id}</td>
-      <td>{$transaction.datetime|date_format:"%d %b %Y"}</td>
-      <td>{$transaction.datetime|date_format:"%H:%M"}</td>
+      <td>{$transaction.completed}</td>
       <td><a class="info" href="{$ADMIN}/cart/transaction_list/{$transaction.token}/" rel="{$ADMIN}/cart/transaction_list/{$transaction.token}/">{$transaction.FirstName} {$transaction.LastName}</a></td>
       <td>{$transaction.currencysymbol}{$transaction.amount|string_format:"%0.2f"} {if $OPTIONS.cart_show_gst|default:'yes'=='yes'}({if $transaction.apply_tax === "unknown"}{$OPTIONS.cart_tax_name|default:'Tax'} unknown{elseif $transaction.apply_tax}inc {$OPTIONS.cart_tax_name|default:'Tax'}{else}no {$OPTIONS.cart_tax_name|default:'Tax'}{/if}){/if}</td>
       <td>{if $transaction.currency}{$transaction.currency}{/if}</td>
@@ -51,5 +49,10 @@ $('a.shipped').cluetip({activation:"click", closePosition: 'top',closeText: '<im
     {/foreach}
   </tbody>
 </table>
-
+<h3>Totals</h3>
+<table class="sortabletable table table-striped table-bordered">
+{foreach from=$transactiontotals key=k item=t}
+<tr><td>{$k}</td><td>{$transaction.currencysymbol}{$t}</td></tr>
+{/foreach}
+</table>
 {include file="admin/footer.tpl"}
