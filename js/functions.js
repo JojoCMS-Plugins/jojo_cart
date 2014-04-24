@@ -24,6 +24,7 @@ $(document).ready(function(){
           $(this).after('<input type="hidden" name="nogiftwrap" id="nogiftwrap" value="1"/>');
       }
   });
+  if ($('#cart-updatebuttons #update').length>0) { $('#cart-updatebuttons #update').hide(); }
 });
 
 function change_quantity_callback(data)

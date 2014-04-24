@@ -20,7 +20,6 @@
     {jojoHook hook="jojo_cart_empty"}
 {else}
     <div class="box">
-        <h2>##Items in cart##</h2>
         <table id="shoppingcart" class="table">
             <thead>
                 <tr>
