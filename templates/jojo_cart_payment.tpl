@@ -3,7 +3,7 @@
     {jojoHook hook="jojo_cart_checkout_top"}
     {include file="jojo_cart_payment_customerdetails.tpl"}
     <div>
-        <h2>##Order information##</h2>
+        <h2>##Order information## <a href="{$languageurlprefix}cart/" class="btn btn-small pull-right" title="##Edit the quantities, or remove items from the order##">##Change Order##</a></h2>
         <table id="shoppingcart" class="table">
             <thead>
                 <tr>
@@ -53,18 +53,16 @@
     {if $usediscount}
         <div id="cart-discountcode">
         {if !$discount.code}
-           <p>If you have a discount code, enter it on the <a href="{$languageurlprefix}cart/" class="cart-button btn btn-small" title="Edit the quantities, or remove items from the order">Change Order</a> page</p>
+           <p>If you have a discount code, enter it on the <a href="{$languageurlprefix}cart/" class="btn btn-small" title="Edit the quantities, or remove items from the order">Change Order</a> page</p>
         {else}
           <p>Using Discount Code: {$discount.code}</p>
         {/if}
          </div>
     {/if}{if $useloyalty && !$pointsused}
         <div id="cart-loyalty">
-           <p>You have points available, use them on the <a href="{$languageurlprefix}cart/" class="cart-button btn btn-small" title="Edit the quantities, or remove items from the order">Change Order</a> page</p>
+           <p>You have points available, use them on the <a href="{$languageurlprefix}cart/" class="btn btn-small" title="Edit the quantities, or remove items from the order">Change Order</a> page</p>
          </div>
     {/if}
-
-        <p><a href="{$languageurlprefix}cart/" class="cart-button button btn btn-small" title="##Edit the quantities, or remove items from the order##">##Change Order##</a></p>
     </div>
 
 {if count($paymentoptions) > 1}
