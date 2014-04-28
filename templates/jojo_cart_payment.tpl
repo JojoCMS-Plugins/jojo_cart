@@ -67,7 +67,7 @@
 
 {if count($paymentoptions) > 1}
     <div id="cart-paymentoption">
-        <h3>##Payment options##</h3>
+        <h2>##Payment options##</h2>
         <form>
         <div class="form-field controls">
             {foreach from=$paymentoptions key=k item=option}<label class="radio"><input type="radio" id="payment_option_radio_{$option.id}" name="paymentoption" value="{$option.id}" />{$option.label}</label>

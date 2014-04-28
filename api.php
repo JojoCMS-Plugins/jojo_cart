@@ -241,17 +241,6 @@ $_options[] = array(
 );
 
 $_options[] = array(
-    'id'          => 'cart_tax_pricing_type_shipping',
-    'category'    => 'Cart',
-    'label'       => 'Always tax shipping',
-    'description' => 'Always add tax to exclusive pricing, don\'t remove it from inclusive. In taxed countries freight will be taxed locally even if the customer is in a non-taxed destination.',
-    'type'        => 'radio',
-    'default'     => 'no',
-    'options'     => 'no,yes',
-    'plugin'      => 'jojo_cart'
-);
-
-$_options[] = array(
     'id'          => 'cart_free_message',
     'category'    => 'Cart',
     'label'       => 'Message when total purchase is Free',
@@ -289,6 +278,28 @@ $_options[] = array(
     'category'    => 'Cart',
     'label'       => 'Allow zero quantities',
     'description' => 'Don\'t remove items set to quantity zero - used for pre-populated carts',
+    'type'        => 'radio',
+    'default'     => 'no',
+    'options'     => 'yes,no',
+    'plugin'      => 'jojo_cart'
+);
+
+$_options[] = array(
+    'id'          => 'cart_show_continue',
+    'category'    => 'Cart',
+    'label'       => 'Continue Shopping',
+    'description' => 'Show a "Continue Shopping" button linking to this page (leave blank to disable)',
+    'type'        => 'text',
+    'default'     => '',
+    'options'     => '',
+    'plugin'      => 'jojo_cart'
+);
+
+$_options[] = array(
+    'id'          => 'cart_show_empty',
+    'category'    => 'Cart',
+    'label'       => 'Empty cart',
+    'description' => 'Show the "empty cart" button',
     'type'        => 'radio',
     'default'     => 'no',
     'options'     => 'yes,no',
@@ -361,7 +372,6 @@ $_options[] = array(
     'plugin'      => 'jojo_cart'
 );
 
-
 $_options[] = array(
     'id'          => 'cart_confirm_shipped',
     'category'    => 'Cart - Shipping',
@@ -381,6 +391,17 @@ $_options[] = array(
     'type'        => 'textarea',
     'default'     => "Tracking Information:\nTicket number: xxxxxxxxx\nPhone: 555-5555\nWebsite: www.example.com",
     'options'     => '',
+    'plugin'      => 'jojo_cart'
+);
+
+$_options[] = array(
+    'id'          => 'cart_tax_pricing_type_shipping',
+    'category'    => 'Cart - Shipping',
+    'label'       => 'Always tax shipping',
+    'description' => 'Always add tax to exclusive pricing, don\'t remove it from inclusive. In taxed countries freight will be taxed locally even if the customer is in a non-taxed destination.',
+    'type'        => 'radio',
+    'default'     => 'no',
+    'options'     => 'no,yes',
     'plugin'      => 'jojo_cart'
 );
 

@@ -49,18 +49,18 @@
     {/foreach}
 {if $order.fixedorder}
         <tr>
-            <td colspan="5" id="cart-fixedorder">##Discount##: <span>{$order.currency_symbol|default:' '}{$order.fixedorder|string_format:"%01.2f"}<br /></span></td>
+            <td colspan="5" id="cart-fixedorder">##Discount##: {$order.currency_symbol|default:' '}<span>{$order.fixedorder|string_format:"%01.2f"}<br /></span></td>
         </tr>
 {/if}{if $pointsused}
         <tr>
-            <td colspan="5" id="cart-fixedorder">##Points Discount##: <span>{$order.currency_symbol|default:' '}{$pointsdiscount|string_format:"%01.2f"}<br /></span></td>
+            <td colspan="5" id="cart-fixedorder">##Points Discount##: {$order.currency_symbol|default:' '}<span>{$pointsdiscount|string_format:"%01.2f"}<br /></span></td>
         </tr>
 {/if}
         <tr>
-            <td colspan="5"  id="cart-subtotal">##Sub-total##: <span>{$order.currency_symbol|default:' '}{$order.subtotal|string_format:"%01.2f"}</span></td>
+            <td colspan="5"  id="cart-subtotal">##Sub-total##: {$order.currency_symbol|default:' '}<span>{$order.subtotal|string_format:"%01.2f"}</span></td>
         </tr>
        <tr>
-            <td colspan="5"  id="cart-freight">##Freight##: {if $order.freight}<span>{$order.freight|string_format:"%01.2f"}</span> (##based on current delivery address##){else}(##to be calculated##){/if}
+            <td colspan="5"  id="cart-freight">##Freight## {if $order.freight}(##based on current delivery address##): {$order.currency_symbol|default:' '}<span>{$order.freight|string_format:"%01.2f"}</span>{else}(##to be calculated##){/if}
            {if $order.surcharge}<div id="cart-surcharge">##{$order.surchargedescription}##: {$order.currency_symbol|default:' '}<span>{$order.surcharge|string_format:"%01.2f"}</span></div>
            {/if}
            </td>
@@ -68,12 +68,11 @@
     	
         <tr>
             <td colspan="5"  id="cart-total">
-             ##Total##: <span>{$order.currency|default:$OPTIONS.cart_default_currency}{$order.currency_symbol|default:' '}{$order.amount|string_format:"%01.2f"}</span>
+             ##Total##: {$order.currency|default:$OPTIONS.cart_default_currency}{$order.currency_symbol|default:' '}<span>{$order.amount|string_format:"%01.2f"}</span>
             {*{if $OPTIONS.cart_show_gst != 'no' && (($order.currency=='NZD') || ($order.currency=='' && $OPTIONS.cart_default_currency=='NZD'))}<p class="note">##includes GST of## {$order.currency_symbol|default:' '}{$order.amount/7.66666|string_format:"%01.2f"}</p>{/if}*}
             {if $OPTIONS.cart_tax_amount}
             {if $order.apply_tax}<p class="note">##includes## {$OPTIONS.cart_tax_amount}% {$OPTIONS.cart_tax_name|default:'Tax'}</p>
-            {else}
-            <p class="note">##excluding## {$OPTIONS.cart_tax_amount}% {$OPTIONS.cart_tax_name|default:'Tax'} (##if applicable##)</p>
+            {else}<p class="note">##excluding## {$OPTIONS.cart_tax_amount}% {$OPTIONS.cart_tax_name|default:'Tax'} (##if applicable##)</p>
             {/if}{/if}
             </td>
         </tr>
@@ -103,8 +102,9 @@
     {jojoHook hook="jojo_cart_before_buttons"}
     <div id="cart-updatebuttons">
         <input type="submit" name="update"   id="update"   value="##Update##"     class="btn btn-small" title="##Updates the totals if you have modified quantities for any items##" />
-        <input type="submit" name="empty"    id="empty"    value="##Empty Cart##" class="btn btn-small" title="##Removes all items from your cart##" />
-        <input type="submit" name="checkout" id="checkout" value="##Checkout##"   class="btn btn-primary"           title="##Proceed to the checkout page where you can pay for this order##" />
+        {if $OPTIONS.cart_show_empty=='yes'}<input type="submit" name="empty"    id="empty"    value="##Empty Cart##" class="btn btn-small" title="##Removes all items from your cart##" />{/if}
+        {if $OPTIONS.cart_show_continue}<a href="{$OPTIONS.cart_show_continue}" class="btn btn-primary">##Continue Shopping##</a>{/if}
+        <button type="submit" name="checkout" id="checkout" class="btn btn-primary" value="##Checkout##" title="##Proceed to the checkout page where you can pay for this order##">##Checkout##</button>
     </div>
 {/if}
 </form>

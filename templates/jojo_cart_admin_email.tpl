@@ -20,7 +20,7 @@ Click the following link to mark the order as being shipped. You can optionally 
 {/if}
 Order Details (#{$id})
 ======================
-{foreach from=$items key=k item=i}{if $i.quantity > 0}{$i.name|escape:'html':$charset}
+{foreach from=$items key=k item=i}{if $i.quantity > 0}{if $i.plu}{$i.plu} {/if}{$i.name|escape:'html':$charset}
 Quantity: {$i.quantity} @ {if $i.netprice != $i.price}{$i.netprice|string_format:"%01.2f"} (Discounted from {$i.price|string_format:"%01.2f"}){else}{$i.netprice|string_format:"%01.2f"}{/if}
 Line total: {$i.linetotal|string_format:"%01.2f"}
 
@@ -29,8 +29,8 @@ Discount: -{$order.fixedorder|string_format:"%01.2f"}
 {/if}{if $points.discount} 
 Points: -{$points.discount|string_format:"%01.2f"}
 {/if}Sub-total: {$order.subtotal|string_format:"%01.2f"}{if $order.freight} 
-Freight: {$order.freight|string_format:"%01.2f"}
-{/if}Total: {$order.currency|default:$OPTIONS.cart_default_currency}{$order.currency_symbol|default:' '}{$order.amount|string_format:"%01.2f"}
+Freight: {$order.freight|string_format:"%01.2f"}{/if}
+Total: {$order.currency|default:$OPTIONS.cart_default_currency}{$order.currency_symbol|default:' '}{$order.amount|string_format:"%01.2f"}
 {if $OPTIONS.cart_tax_amount}{if $order.apply_tax}includes {$OPTIONS.cart_tax_amount}% {$OPTIONS.cart_tax_name|default:'Tax'}
 {else}{$OPTIONS.cart_tax_name|default:'Tax'} not applicable
 {/if}{/if}
