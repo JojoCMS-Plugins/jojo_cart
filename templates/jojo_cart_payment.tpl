@@ -1,9 +1,7 @@
 <div class="jojo_cart">
-{include file="jojo_cart_test_mode.tpl"}
-{jojoHook hook="jojo_cart_checkout_top"}
-    <div>
-        {include file="jojo_cart_payment_customerdetails.tpl"}
-    </div>
+    {include file="jojo_cart_test_mode.tpl"}
+    {jojoHook hook="jojo_cart_checkout_top"}
+    {include file="jojo_cart_payment_customerdetails.tpl"}
     <div>
         <h2>##Order information##</h2>
         <table id="shoppingcart" class="table">
@@ -25,32 +23,32 @@
               </tr>
     {/if}{/foreach}
       {* Subtotal *}
-            <tr>
-                <td colspan="5" id="cart-subtotal">
-            {if $order.fixedorder}##Discount##: <span>-{$order.fixedorder|string_format:"%01.2f"}<br /></span>{/if}
-            {if $pointsused}##Points Used##: <span>-{$pointsdiscount|string_format:"%01.2f"}<br /></span>{/if}
-            ##Sub-total##: <span>{$order.currency_symbol|default:' '}{$order.subtotal|string_format:"%01.2f"}</span>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="5" id="cart-freight">##Freight##: {if $order.freight}{$order.currency_symbol|default:' '}{$order.freight|string_format:"%01.2f"}{else}n/a{/if}
-                    {if $order.surcharge}<div id="cart-surcharge">##{$order.surchargedescription}##: {$order.currency_symbol|default:' '}{$order.surcharge|string_format:"%01.2f"}</div>{/if}
-                </td>
-            </tr>
+                <tr>
+                    <td colspan="5" id="cart-subtotal">
+                {if $order.fixedorder}##Discount##: <span>-{$order.fixedorder|string_format:"%01.2f"}<br /></span>{/if}
+                {if $pointsused}##Points Used##: <span>-{$pointsdiscount|string_format:"%01.2f"}<br /></span>{/if}
+                ##Sub-total##: <span>{$order.currency_symbol|default:' '}{$order.subtotal|string_format:"%01.2f"}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="5" id="cart-freight">##Freight##: {if $order.freight}{$order.currency_symbol|default:' '}{$order.freight|string_format:"%01.2f"}{else}n/a{/if}
+                        {if $order.surcharge}<div id="cart-surcharge">##{$order.surchargedescription}##: {$order.currency_symbol|default:' '}{$order.surcharge|string_format:"%01.2f"}</div>{/if}
+                    </td>
+                </tr>
 
-            <tr>
-                <td colspan="5" id="cart-total">
-                    ##Total##: <span>{$order.currency|default:$OPTIONS.cart_default_currency}{$order.currency_symbol|default:' '}{$order.amount|string_format:"%01.2f"}</span>
-                    {*{if $OPTIONS.cart_show_gst != 'no' && (($order.currency=='NZD') || ($order.currency=='' && $OPTIONS.cart_default_currency=='NZD'))}<p class="note">##includes GST of## {$order.currency_symbol|default:' '}{$order.amount/7.66666|string_format:"%01.2f"}</p>{/if}*}
-                    {if $OPTIONS.cart_tax_amount}
-                    {if $order.apply_tax}<p class="note">##includes## {$OPTIONS.cart_tax_amount}% {$OPTIONS.cart_tax_name|default:'Tax'}</p>
-                    {else}
-                    <p class="note">{$OPTIONS.cart_tax_name|default:'Tax'} ##not applicable##</p>
-                    {/if}{/if}
-                </td>
-            </tr>
-          </tbody>
-    </table>
+                <tr>
+                    <td colspan="5" id="cart-total">
+                        ##Total##: <span>{$order.currency|default:$OPTIONS.cart_default_currency}{$order.currency_symbol|default:' '}{$order.amount|string_format:"%01.2f"}</span>
+                        {*{if $OPTIONS.cart_show_gst != 'no' && (($order.currency=='NZD') || ($order.currency=='' && $OPTIONS.cart_default_currency=='NZD'))}<p class="note">##includes GST of## {$order.currency_symbol|default:' '}{$order.amount/7.66666|string_format:"%01.2f"}</p>{/if}*}
+                        {if $OPTIONS.cart_tax_amount}
+                        {if $order.apply_tax}<p class="note">##includes## {$OPTIONS.cart_tax_amount}% {$OPTIONS.cart_tax_name|default:'Tax'}</p>
+                        {else}
+                        <p class="note">{$OPTIONS.cart_tax_name|default:'Tax'} ##not applicable##</p>
+                        {/if}{/if}
+                    </td>
+                </tr>
+              </tbody>
+        </table>
 
     {if $usediscount}
         <div id="cart-discountcode">
@@ -66,13 +64,11 @@
          </div>
     {/if}
 
-    <p><a href="{$languageurlprefix}cart/" class="cart-button button btn btn-small" title="##Edit the quantities, or remove items from the order##">##Change Order##</a></p>
-
-
+        <p><a href="{$languageurlprefix}cart/" class="cart-button button btn btn-small" title="##Edit the quantities, or remove items from the order##">##Change Order##</a></p>
     </div>
 
-      <div id="cart-paymentoption">
-    {if count($paymentoptions) > 1}
+{if count($paymentoptions) > 1}
+    <div id="cart-paymentoption">
         <h3>##Payment options##</h3>
         <form>
         <div class="form-field controls">
@@ -80,18 +76,18 @@
             {/foreach}
         </div>
         </form>
-      </div>
+    </div>
+    {foreach from=$paymentoptions key=k item=option}
+    <div id="payment_option_{$option.id}" class="payment_option">{$option.html}</div>
+    {/foreach}
 
-      {foreach from=$paymentoptions key=k item=option}
-      <div id="payment_option_{$option.id}" class="payment_option">{$option.html}</div>
-      {/foreach}
-
-    {else}
-      {foreach from=$paymentoptions key=k item=option}
+{else}
+    <div id="cart-paymentoption">
+        {foreach from=$paymentoptions key=k item=option}
         <div class="payment_option">{$option.html}</div>
-      {/foreach}
-    {/if}
-      </div>
+        {/foreach}
+    </div>
+{/if}
 
     {jojoHook hook="jojo_cart_checkout_bottom"}
 </div>
