@@ -1,5 +1,4 @@
-PAYMENT PENDING
-===============
+##PAYMENT PENDING
 This order will not be completed/delivered until payment has been made.
 
 {$OPTIONS.cart_manual_payment_instructions}
