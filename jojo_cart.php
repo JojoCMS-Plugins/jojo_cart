@@ -15,7 +15,7 @@
  * @link    http://www.jojocms.org JojoCMS
  */
 
-class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
+class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
 {
     /**
      * Store the class name of the product handler
@@ -794,8 +794,8 @@ class JOJO_Plugin_Jojo_cart extends JOJO_Plugin
         $languageurlprefix = Jojo::getPageUrlPrefix($this->page['pageid']);
 
         /* Read GET variables */
-        $action   = Util::getFormData('action',      '');
-        $id       = Util::getFormData('id',       false);
+        $action   = Jojo::getFormData('action',      '');
+        $id       = Jojo::getFormData('id',       false);
         $discount = Jojo::getFormData('discount', false);
         $points = Jojo::getFormData('points', false);
 
