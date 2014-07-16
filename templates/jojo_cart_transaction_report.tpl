@@ -34,7 +34,7 @@ $('a.shipped').cluetip({activation:"click", closePosition: 'top',closeText: '<im
       <td>{$transaction.id}</td>
       <td>{$transaction.completed}</td>
       <td><a class="info" href="{$ADMIN}/cart/transaction_list/{$transaction.token}/" rel="{$ADMIN}/cart/transaction_list/{$transaction.token}/">{$transaction.FirstName} {$transaction.LastName}</a></td>
-      <td>{$transaction.currencysymbol}{$transaction.amount|string_format:"%0.2f"} {if $OPTIONS.cart_show_gst|default:'yes'=='yes'}({if $transaction.apply_tax === "unknown"}{$OPTIONS.cart_tax_name|default:'Tax'} unknown{elseif $transaction.apply_tax}inc {$OPTIONS.cart_tax_name|default:'Tax'}{else}no {$OPTIONS.cart_tax_name|default:'Tax'}{/if}){/if}</td>
+      <td>{$transaction.currencysymbol}{$transaction.amount|string_format:"%0.2f"}{if $OPTIONS.cart_show_gst|default:'yes'=='yes'} <span class="note">{if $transaction.apply_tax === "unknown"}({$OPTIONS.cart_tax_name|default:'Tax'} unknown){elseif $transaction.apply_tax}(inc {$OPTIONS.cart_tax_name|default:'Tax'}){/if}</span>{/if}</td>
       <td>{if $transaction.currency}{$transaction.currency}{/if}</td>
       <td>
       {if $transaction.status=='payment_pending' || $transaction.status=='pending' || $transaction.status=='abandoned'}<a class="paid" target="_blank" href="cart/paidadmin_complete/{$transaction.token}/{$transaction.actioncode}/" rel="cart/paidadmin_complete/{$transaction.token}/{$transaction.actioncode}/">{$transaction.status} - click to complete</a>{else}{$transaction.status}{/if}
@@ -49,10 +49,13 @@ $('a.shipped').cluetip({activation:"click", closePosition: 'top',closeText: '<im
     {/foreach}
   </tbody>
 </table>
-<h3>Totals</h3>
+<h3>Summary</h3>
 <table class="sortabletable table table-striped table-bordered">
+<tr><th rowspan="2">Month</th><th rowspan="2">Total</th><th rowspan="2"># of transactions</th><th rowspan="2">Total items sold</th><th colspan="3" style="text-align: center;">Averages per transaction</th></tr>
+<tr><th>Total spend</th><th># of Items</th><th>Item value</th></tr>
 {foreach from=$transactiontotals key=k item=t}
-<tr><td>{$k}</td><td>{$transaction.currencysymbol}{$t}</td></tr>
+<tr><td>{$k}</td><td>{$transaction.currencysymbol}{$t.total}</td><td>{$t.number}</td><td>{$t.items}</td><td>{$transaction.currencysymbol}{$t.average}</td><td>{$t.avitems}</td><td>{$transaction.currencysymbol}{$t.avitemvalue}</td></tr>
 {/foreach}
+<tr><th>All</th><th>{$transaction.currencysymbol}{$grandtotals.total}</th><th>{$grandtotals.number}</th><th>{$grandtotals.items}</th><th>{$transaction.currencysymbol}{$grandtotals.average}</th><th>{$grandtotals.avitems}</th><th>{$transaction.currencysymbol}{$grandtotals.avitemvalue}</th></tr>
 </table>
 {include file="admin/footer.tpl"}

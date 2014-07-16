@@ -77,11 +77,11 @@ class jojo_plugin_Jojo_cart_update extends JOJO_Plugin
         
         Jojo::runHook('jojo_cart_update:bottom');
         
-        $languageurlprefix = $_SESSION['languageurlprefix'];
+        $pageurlprefix = isset($_SESSION['languageurlprefix']) ? $_SESSION['languageurlprefix'] : '';
         
         /* Redirect to the Checkout */
         if (Jojo::getFormData('checkout')) {
-            Jojo::redirect(_SECUREURL . '/' .$languageurlprefix. 'cart/checkout/', 302);
+            Jojo::redirect(_SECUREURL . '/' .$pageurlprefix. 'cart/checkout/', 302);
         }
 
         /* Redirect back to the cart */
@@ -89,9 +89,9 @@ class jojo_plugin_Jojo_cart_update extends JOJO_Plugin
             
             /* Pass the session id when going from non secure to secure if the secure session has not already been started */
             if (isset($_SESSION['secure_session_started']) && ($_SESSION['secure_session_started'] == true)) {
-                $url = _SECUREURL .'/' .$languageurlprefix. 'cart/';
+                $url = _SECUREURL .'/' .$pageurlprefix. 'cart/';
             } else {
-                $url = _SECUREURL .'/' .$languageurlprefix. 'cart/?sid='.session_id();
+                $url = _SECUREURL .'/' .$pageurlprefix. 'cart/?sid='.session_id();
             }
 
             /* analytics tracking requires a javascript redirect, not a server redirect */
@@ -104,6 +104,6 @@ class jojo_plugin_Jojo_cart_update extends JOJO_Plugin
                 Jojo::redirect($url, 302);
             }
         }
-        Jojo::redirect(_SECUREURL .'/' .$languageurlprefix. 'cart/', 302);
+        Jojo::redirect(_SECUREURL .'/' .$pageurlprefix. 'cart/', 302);
     }
 }
