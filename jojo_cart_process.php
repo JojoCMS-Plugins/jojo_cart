@@ -214,7 +214,7 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
 
             include _BASEPLUGINDIR . '/jojo_core/external/parsedown/Parsedown.php';
             $parsedown = new Parsedown();
-            $htmlmessage = $parsedown->parse($message);
+            $htmlmessage = $parsedown->text($message);
             
             if ($css = Jojo::getOption('css-email', '')) {
                 $htmlmessage = Jojo::inlineStyle($htmlmessage, $css, true);
@@ -224,35 +224,35 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
                 /* Email admin - if defined in the cart options */
                 $to_name     = _CART_ORDER_NAME;
                 $to_email    = _CART_ORDER_EMAIL;
-                Jojo::simpleMail($to_name, $to_email, $subject, $message, $name, $email, $htmlmessage, $name . '<' . $contact_email . '>');
+                Jojo::simpleMail($to_name, $to_email, $subject, $message, $name, $email, $htmlmessage, $contact_name . ' <' . $contact_email . '>');
             } elseif (Jojo::getOption('cart_order_email', false)) {
                 /* Email admin - if defined in the cart options */
                 $to_name     = Jojo::getOption('cart_order_name', '');
                 $to_email    = Jojo::getOption('cart_order_email', false);
-                Jojo::simpleMail($to_name, $to_email, $subject, $message, $name, $email, $htmlmessage, $name . '<' . $contact_email . '>');
+                Jojo::simpleMail($to_name, $to_email, $subject, $message, $name, $email, $htmlmessage, $contact_name . ' <' . $contact_email . '>');
             } 
             if (defined('_CONTACTADDRESS') && (_CONTACTADDRESS != _WEBMASTERADDRESS)) {
                 /* Email admin */
                 $to_name     = Jojo::either(_CONTACTNAME, _FROMNAME,_SITETITLE);
                 $to_email    = Jojo::either(_CONTACTADDRESS,_FROMADDRESS,_WEBMASTERADDRESS);
-                Jojo::simpleMail($to_name, $to_email, $subject, $message, $name, $email, $htmlmessage, $name . '<' . $contact_email . '>');
+                Jojo::simpleMail($to_name, $to_email, $subject, $message, $name, $email, $htmlmessage, $contact_name . ' <' . $contact_email . '>');
             }
 
             /* Email webmaster */
             if (Jojo::getOption('cart_webmaster_copy', 'yes') == 'yes' AND $to_email != _WEBMASTERADDRESS) {
                 $to_name     = _WEBMASTERNAME;
                 $to_email    = _WEBMASTERADDRESS;
-                Jojo::simpleMail($to_name, $to_email, $subject, $message, $name, $email, $htmlmessage, $name . '<' . $contact_email . '>');
+                Jojo::simpleMail($to_name, $to_email, $subject, $message, $name, $email, $htmlmessage, $contact_name . ' <' . $contact_email . '>');
             }
 
             /* Email client */
             $subject     = 'Order confirmation from ' . Jojo::getOption('sitetitle');
             $message     = $smarty->fetch('jojo_cart_customer_email.tpl');
-            $htmlmessage = $parsedown->parse($message);
+            $htmlmessage = $parsedown->text($message);
             if ($css) {
                 $htmlmessage = Jojo::inlineStyle($htmlmessage, $css, true);
             }
-            Jojo::simpleMail($name, $email, $subject, $message, $contact_name, $contact_email, $htmlmessage, $contact_name . '<' . $contact_email . '>');
+            Jojo::simpleMail($name, $email, $subject, $message, $contact_name, $contact_email, $htmlmessage, $contact_name . ' <' . $contact_email . '>');
 
             /* Hook for plugins to make custom actions */
             Jojo::runHook('jojo_cart_success', array('cart' => $cart));
