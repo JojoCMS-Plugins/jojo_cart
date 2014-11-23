@@ -9,38 +9,17 @@ div.receipt {
   font-weight: normal;
   font-size: 90%;
 }
-
-#shoppingcart .cart-quantity {
-    text-align: center;
-    white-space: nowrap;
-    input {
-      width: 20px;
-      text-align: right;
-    }
-    a.cart-remove {
-      line-height: 14px;
-      color: red;
-      font-size: 115%;
-      margin: 0px;
-      text-decoration: none;
-        &:hover {
-          text-decoration: none;
-          font-weight: bold;
-        }
-    }
+#shoppingcart .cart-quantity  {
+ min-width: 45px;
+}
+#shoppingcart .cart-remove a {
+  color: red;
+  font-size: 115%;
 }
 
-@media only screen and (max-width: 767px) {
-    #shoppingcart .cart-quantity { white-space: normal; }
-}
 
-#cart-fixedorder, #cart-total, #cart-subtotal, #cart-freight, #cart-surcharge, #cart-discountcode, #shoppingcart .cart-price, #shoppingcart .cart-linetotal, #cart-giftwrap {
+#cart-fixedorder, #cart-total, #cart-subtotal, #cart-freight, #cart-surcharge, #shoppingcart .cart-price, #shoppingcart .cart-linetotal, #cart-giftwrap {
   text-align: right;
-}
-
-#cart-giftwrap label {
-  float: none;
-  display: inline;
 }
 
 #cart-total {

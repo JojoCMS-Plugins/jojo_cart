@@ -406,6 +406,16 @@ $_options[] = array(
 );
 
 $_options[] = array(
+    'id'          => 'freight_favouritesonly',
+    'category'    => 'Cart - Shipping',
+    'label'       => 'Ship to \'favourite\' countries only',
+    'description' => 'Shipping destination form will only display countries ticked as favourite (shipping charges should still be set as NA for other regions for saved user addresses).',
+    'type'        => 'radio',
+    'default'     => 'no',
+    'options'     => 'yes,no'
+);
+
+$_options[] = array(
     'id'          => 'cart_loyalty_value',
     'category'    => 'Cart',
     'label'       => 'Loyalty Point Value',

@@ -3,7 +3,7 @@
     {jojoHook hook="jojo_cart_checkout_top"}
     {include file="jojo_cart_payment_customerdetails.tpl"}
     <div>
-        <h2>##Order information## <a href="{$languageurlprefix}cart/" class="btn btn-small pull-right" title="##Edit the quantities, or remove items from the order##">##Change Order##</a></h2>
+        <h2>##Order information## <a href="{$languageurlprefix}cart/" class="btn btn-default btn-sm pull-right" title="##Edit the quantities, or remove items from the order##">##Change Order##</a></h2>
         <table id="shoppingcart" class="table">
             <thead>
                 <tr>

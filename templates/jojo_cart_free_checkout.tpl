@@ -4,6 +4,6 @@
     <h2>Free transaction</h2>
     <p>There is no charge for this order.</p>
   <div style="text-align: center">
-    <input type="submit" name="submit" value="Submit order" />
+    <button class="btn btn-primary" name="submit" value="Submit order">Submit order</button>
   </div>
 </form>

@@ -24,7 +24,7 @@ item          |{if $plu} plu | {/if}   qty   |   price  | line total
 {/if}{/foreach}
 
 {if $order.fixedorder}Discount: -{$order.fixedorder|string_format:"%01.2f"}  
-{/if}{if $points.discount} Points: -{$points.discount|string_format:"%01.2f"}  
+{/if}{if $points.discount}Points: -{$points.discount|string_format:"%01.2f"}  
 {/if}Sub-total: {$order.subtotal|string_format:"%01.2f"}  
 {if $order.freight}Freight: {$order.freight|string_format:"%01.2f"}  
 {/if}**Total: {$order.currency|default:$OPTIONS.cart_default_currency}{$order.currency_symbol|default:' '}{$order.amount|string_format:"%01.2f"}**  
