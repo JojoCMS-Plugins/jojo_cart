@@ -241,6 +241,9 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
 
        if (empty($cart->order['amount'])) $cart->order['amount'] = 0;
 
+        $cart->order['currency']        = self::getCartCurrency();
+        $cart->order['currency_symbol'] = self::getCurrencySymbol($cart->order['currency']);
+
         /* Save */
         self::addDataBlobField();
         Jojo::updateQuery("REPLACE INTO {cart} SET id=?, token=?, data=?, data_blob=?, status=?, ip=?, userid = ?, updated=?, handler=?, amount=?, actioncode=?, shipped=?",
