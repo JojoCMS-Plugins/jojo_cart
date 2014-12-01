@@ -1,19 +1,18 @@
 An order has been placed on {$sitetitle}.
 
-{if $status=='payment_pending'}{if $pending_template.admin}{include file=$pending_template.admin}
-{else}{include file='jojo_cart_admin_email_pending.tpl'}
-{/if}{else}Payment Method: {if $activeplugin=='jojo_plugin_jojo_cart_emailorder'}Email Order (Invoice for payment){else}Online Transaction using {$activeplugin}{/if}
-Errors: {if $errors}{$errors}{else}None{/if}
-{if $rawreceipt} 
-Receipt:
-{foreach from=$rawreceipt key=k item=i}{$k}: {$i}
+{if $status=='payment_pending'}{if $pending_template.admin}{include file=$pending_template.admin}  
+{else}{include file='jojo_cart_admin_email_pending.tpl'}  
+{/if}{else}Payment Method: {if $activeplugin=='jojo_plugin_jojo_cart_emailorder'}Email Order (Invoice for payment){else}Online Transaction using {$activeplugin}{/if}  
+Errors: {if $errors}{$errors}{else}None{/if}  
+{if $rawreceipt}Receipt:  
+{foreach from=$rawreceipt key=k item=i}{$k}: {$i}  
 {/foreach}{/if}
 
 ###Payment Type
 {$handler}
 
 {/if}{if $OPTIONS.cart_confirm_shipped == 'yes'}####Once the order has been shipped
-Click the following link to mark the order as being shipped. You can optionally send a message to the customer to notify them.
+Click the following link to mark the order as being shipped. You can optionally send a message to the customer to notify them.  
 {$SITEURL}/cart/shipped/{$token}/{$actioncode}/
 
 {/if}{foreach from=$items key=k item=i}{if $i.plu}{assign var='plu' value=true}{/if}{/foreach}
