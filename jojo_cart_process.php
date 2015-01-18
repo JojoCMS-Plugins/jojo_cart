@@ -59,7 +59,7 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
 
         /* Which payment plugin are we using? */
         $activeplugin = self::activePaymentPlugin();
-        $smarty->assign('activeplugin',  $activeplugin);
+        $smarty->assign('activeplugin', ucwords(str_replace('_', ' ', (str_replace('jojo_plugin_jojo_cart_', '', $activeplugin)))));
         if (!$activeplugin) {
             echo 'Error: unable to find active payment plugin';
             $log             = new Jojo_Eventlog();
@@ -209,7 +209,7 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
             $contact_name   = Jojo::either(_CONTACTNAME, _FROMNAME,_SITETITLE);
             $contact_email  = Jojo::either(_CONTACTADDRESS,_FROMADDRESS,_WEBMASTERADDRESS);
 
-            $subject     = 'Order on '.Jojo::getOption('sitetitle') . ' by ' . $name;
+            $subject     = 'Order by ' . $name . ' on ' . Jojo::getOption('sitetitle');
             $message     = $smarty->fetch('jojo_cart_admin_email.tpl') . Jojo::emailFooter();
 
             include _BASEPLUGINDIR . '/jojo_core/external/parsedown/Parsedown.php';

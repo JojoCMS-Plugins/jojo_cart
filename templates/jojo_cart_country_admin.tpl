@@ -7,7 +7,7 @@
 <h2>Set regions for countries</h2>
 <p>Each country is set to a region for the purpose of calculating freight prices.</p>
 <form method="post" action="">
-<table class="adminZebraTable table table-striped table bordered">
+<table class="table table-striped">
 <thead>
     <tr>
         <th>Country Name</th>
@@ -22,7 +22,7 @@
   <tr class="{cycle values="row1,row2"}">
     <td>{$c.name}</td>
     <td>
-    <select title="The default region for {$c.name} is {$c.defaultregion}" onchange="$.get('json/jojo_cart_set_region.php', {ldelim} c: '{$c.countrycode|strtolower}', r: $(this).val() {rdelim}, function(data){ldelim}$('#status_{$c.countrycode|strtolower}').html(data).fadeIn('fast').animate({ldelim}opacity: 1.0{rdelim}, 1000).fadeOut(3000);{rdelim});">
+    <select class="form-control" title="The default region for {$c.name} is {$c.defaultregion}" onchange="$.get('json/jojo_cart_set_region.php', {ldelim} c: '{$c.countrycode|strtolower}', r: $(this).val() {rdelim}, function(data){ldelim}$('#status_{$c.countrycode|strtolower}').html(data).fadeIn('fast').animate({ldelim}opacity: 1.0{rdelim}, 1000).fadeOut(3000);{rdelim});">
 {section name=r loop=$regions}
     <option value="{$regions[r].regioncode}"{if $c.region==$regions[r].regioncode} selected="selected"{/if}>{$regions[r].name}</option>
 {/section}
@@ -34,7 +34,7 @@
     <td style="text-align: center">
         <input type="checkbox"{if $c.applytax == 'yes'} checked="checked"{/if} onchange="$.get('json/jojo_cart_country_toggleapplytax.php', {ldelim} c: '{$c.countrycode|strtolower}',{rdelim}, function(data){ldelim}$('#status_{$c.countrycode|strtolower}').html(data).fadeIn('fast').animate({ldelim}opacity: 1.0{rdelim}, 1000).fadeOut(3000);{rdelim});"/>
     </td>
-    <td style="background: none;"><div id="status_{$c.countrycode|strtolower}"></div></td>
+    <td><div id="status_{$c.countrycode|strtolower}"></div></td>
   </tr>
 {/foreach}
 </tbody>
@@ -46,20 +46,20 @@
 <a name="delete_region"></a>
 <h2>Delete a region</h2>
 <p>Feel free to delete a region, if it is not needed by your site. After deleting a region, all countries assigned to that region are reassigned to the region you specify.
-<form method="post" action="{$pg_url}/">
-  <select name="delete_region" id="delete_region">
+<form class="horizontal-form" method="post" action="{$pg_url}/">
+  <select class="form-control" name="delete_region" id="delete_region">
     <option value="">Select region to delete</option>
     {foreach item=r from=$regions}
     <option value="{$r.regioncode}">{$r.name}</option>
     {/foreach}
   </select>
-  <select name="reassign_region" id="reassign_region">
+  <select class="form-control" name="reassign_region" id="reassign_region">
     <option value="">Reassign all countries in this region to...</option>
     {section name=r loop=$regions}
     <option value="{$regions[r].regioncode}">{$regions[r].name}</option>
     {/section}
   </select>
-  <input type="submit" name="delete" value="Delete" onclick="{literal}if (($('#delete_region').val()=='') || ($('#reassign_region').val()=='') || ($('#reassign_region').val()==$('#delete_region').val())) {alert('Please select a region to delete, and a different region to reassign the countries to'); return false;}{/literal}" />
+  <input class="btn btn-default" type="submit" name="delete" value="Delete" onclick="{literal}if (($('#delete_region').val()=='') || ($('#reassign_region').val()=='') || ($('#reassign_region').val()==$('#delete_region').val())) {alert('Please select a region to delete, and a different region to reassign the countries to'); return false;}{/literal}" />
 </form>
 
 {* add regions *}
@@ -67,9 +67,9 @@
 <h2>Add a new region</h2>
 <form method="post" action="{$pg_url}/">
   <p>Codes need to be lower case, and contain no special characters other than underscores. Use a logical code for your region, eg "eastern_europe" or "pacific_islands".</p>
-  <label>Region code: <input type="text" name="add_region_code" id="add_region_code" value="" /></label>
-  <label>Region name: <input type="text" name="add_region_name" id="add_region_name" value="" /></label>
-  <input type="submit" name="add" value="Add" onclick="{literal}if (($('#add_region_code').val()=='') || ($('#add_region_name').val()=='') || (!$('#add_region_code').val().match(/^[a-z0-9_]+$/))) {alert('Please ensure both the region name and code fields are completed, and the code is lowercase with no spaces or special characters.'); return false;}{/literal}" />
+  <label>Region code: <input class="form-control" type="text" name="add_region_code" id="add_region_code" value="" /></label>
+  <label>Region name: <input class="form-control" type="text" name="add_region_name" id="add_region_name" value="" /></label>
+  <input class="btn btn-default" type="submit" name="add" value="Add" onclick="{literal}if (($('#add_region_code').val()=='') || ($('#add_region_name').val()=='') || (!$('#add_region_code').val().match(/^[a-z0-9_]+$/))) {alert('Please ensure both the region name and code fields are completed, and the code is lowercase with no spaces or special characters.'); return false;}{/literal}" />
 </form>
 
 {include file="admin/footer.tpl"}
