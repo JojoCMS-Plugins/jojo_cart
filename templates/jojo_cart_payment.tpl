@@ -53,14 +53,14 @@
     {if $usediscount}
         <div id="cart-discountcode">
         {if !$discount.code}
-           <p>If you have a discount code, enter it on the <a href="{$languageurlprefix}cart/" class="btn btn-small" title="Edit the quantities, or remove items from the order">Change Order</a> page</p>
+           <p>If you have a discount code, enter it on the <a href="{$languageurlprefix}cart/" class="btn btn-default btn-sm" title="Edit the quantities, or remove items from the order">Change Order</a> page</p>
         {else}
           <p>Using Discount Code: {$discount.code}</p>
         {/if}
          </div>
     {/if}{if $useloyalty && !$pointsused}
         <div id="cart-loyalty">
-           <p>You have points available, use them on the <a href="{$languageurlprefix}cart/" class="btn btn-small" title="Edit the quantities, or remove items from the order">Change Order</a> page</p>
+           <p>You have points available, use them on the <a href="{$languageurlprefix}cart/" class="btn btn-default btn-sm" title="Edit the quantities, or remove items from the order">Change Order</a> page</p>
          </div>
     {/if}
     </div>
