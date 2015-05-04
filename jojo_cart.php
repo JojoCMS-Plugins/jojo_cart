@@ -409,6 +409,9 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
         if (isset($item['min_quantity']) && $item['min_quantity'] && $item['quantity']) {
             $item['quantity'] = max($item['min_quantity'], $item['quantity']);
         }
+        if (isset($item['max_quantity']) && $item['max_quantity'] && $item['quantity']) {
+            $item['quantity'] = min($item['max_quantity'], $item['quantity']);
+        }
         $item['baseprice']  = $item['price']; //baseprice is the original prices as stored in the DB, before tax calculations are applied (this value is exclusive or inclusive as per 'cart_tax_pricing_type' option)
         $item['netprice']   = $item['price']; //price is the price before discounts - netprice is the price after discounts
         $item['linetotal']  = $item['netprice'] * $qty;

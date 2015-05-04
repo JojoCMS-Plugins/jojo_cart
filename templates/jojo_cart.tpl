@@ -40,7 +40,7 @@
         {if $i.quantity_fixed}
                         <input type="hidden" name="quantity[{$i.id}]" id="quantity[{$i.id}]" value="{$i.quantity}" />{$i.quantity}
         {else}
-                        <input type="text" class="cart-quantity form-control" name="quantity[{$i.id}]" id="quantity[{$i.id}]" size="3" value="{$i.quantity}" />
+                        <input type="number" class="cart-quantity form-control" name="quantity[{$i.id}]" id="quantity[{$i.id}]" size="3" value="{$i.quantity}" min="{if $i.min_quantity}{$i.min_quantity}{else}1{/if}"{if $i.max_quantity}  max="{$i.max_quantity}"{/if} />
         {/if}
                     </td>
                     <td class="cart-price">{if $i.netprice != $i.price}<strike>{$i.price|string_format:"%01.2f"}</strike> {$i.netprice|string_format:"%01.2f"}{else}{$i.netprice|string_format:"%01.2f"}{/if}</td>

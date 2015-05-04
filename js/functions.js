@@ -1,6 +1,6 @@
 /* Add AJAX behaviour to save quantities automatically */
 $(document).ready(function(){
-  $('input.cart-quantity').keyup(function(){
+  $('input.cart-quantity').bind('keyup input mousewheel', function(){
     var rowid = $(this).closest('tr').attr('id');
     var id = $(this).attr('id');
     var code = id.replace(/quantity\[(.*?)\]/ig, "$1");
