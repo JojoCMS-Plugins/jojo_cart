@@ -114,7 +114,7 @@
     
     {if $OPTIONS.cart_free_gift_wrap == 'yes'}
         <div id="cart-giftwrap" class="checkbox">
-            <label for="giftwrap"><input type="checkbox" name="giftwrap" id="giftwrap" value="1" {if $order.giftwrap==true}checked="checked"{/if} /> Free gift wrapping</label>
+            <label for="giftwrap"><input type="checkbox" name="giftwrap" id="giftwrap" value="1" {if $order.giftwrap==true}checked="checked"{/if} /> ##This is a gift##</label>
         </div>
     {/if}
     </div>

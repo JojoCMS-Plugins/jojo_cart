@@ -18,7 +18,7 @@ div.receipt {
 }
 
 
-#cart-fixedorder, #cart-total, #cart-subtotal, #cart-freight, #cart-surcharge, #shoppingcart .cart-price, #shoppingcart .cart-linetotal, #cart-giftwrap {
+#cart-fixedorder, #cart-total, #cart-subtotal, #cart-freight, #cart-surcharge, #shoppingcart .cart-price, #shoppingcart .cart-linetotal {
   text-align: right;
 }
 
