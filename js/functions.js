@@ -38,5 +38,6 @@ function change_quantity_callback(data)
     if (!data.surcharge && $('#cart-surcharge span').length>0) {
       $('#cart-surcharge').hide();
     }
+    $('.cartItemTotal').html(data.itemtotal);
     $('#cart-total span').html(data.total.toFixed(2));
 }
