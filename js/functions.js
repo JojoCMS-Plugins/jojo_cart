@@ -29,7 +29,7 @@ $(document).ready(function(){
 
 function change_quantity_callback(data)
 {
-    $('#'+data.rowid+' td.cart-linetotal span').html(data.linetotal.toFixed(2));
+    $('#'+data.rowid+' .cart-linetotal span').html(data.linetotal.toFixed(2));
     //$('#row_'+data.code+' input.cart-quantity').val(data.quantity);
     $('#cart-subtotal span').html(data.subtotal.toFixed(2));
     if (data.freight!==false) {
