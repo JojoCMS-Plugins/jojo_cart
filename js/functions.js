@@ -19,6 +19,7 @@ $(document).ready(function(){
   });
   $('input#giftwrap').click(function(){
       $('#nogiftwrap').remove();
+      $('#giftmessagefield').toggle();
       if ($(this).is(':checked')) {
       }else{
           $(this).after('<input type="hidden" name="nogiftwrap" id="nogiftwrap" value="1"/>');

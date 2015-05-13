@@ -67,7 +67,8 @@ class jojo_plugin_Jojo_cart_update extends JOJO_Plugin
             call_user_func(array(Jojo_Cart_Class, 'setGiftWrap'), false);
         }
         if (Jojo::getFormData('giftwrap')) {
-            call_user_func(array(Jojo_Cart_Class, 'setGiftWrap'), true);
+            $giftmessage = Jojo::getFormData('giftmessage', '');
+            call_user_func(array(Jojo_Cart_Class, 'setGiftWrap'), true, $giftmessage);
         }
         
         /* save to database after any changes */

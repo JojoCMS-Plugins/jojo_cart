@@ -662,10 +662,11 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
     /**
      * Set gift wrapping options for this order
      */
-    public static function setGiftWrap($giftwrap=true)
+    public static function setGiftWrap($giftwrap=true, $giftmessage='')
     {
         $cart = self::getCart();
         $cart->order['giftwrap'] = $giftwrap;
+        $cart->order['giftmessage'] = $giftmessage;
     }
 
     /**

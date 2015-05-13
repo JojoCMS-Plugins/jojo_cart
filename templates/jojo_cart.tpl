@@ -116,6 +116,12 @@
         <div id="cart-giftwrap" class="checkbox">
             <label for="giftwrap"><input type="checkbox" name="giftwrap" id="giftwrap" value="1" {if $order.giftwrap==true}checked="checked"{/if} /> ##This is a gift##</label>
         </div>
+       {if $OPTIONS.cart_free_gift_message == 'yes'}
+       <div id="giftmessagefield" class="form-fieldset form-group"{if $order.giftwrap==false} style="display: none;"{/if}>
+            <label for="gift_message">Message</label>
+            <textarea class="form-control input textarea" rows="4" cols="40" name="giftmessage" id="giftmessage">{if $order.giftmessage}{$order.giftmessage}{/if}</textarea>
+        </div>
+        {/if}
     {/if}
     </div>
     {jojoHook hook="jojo_cart_before_buttons"}

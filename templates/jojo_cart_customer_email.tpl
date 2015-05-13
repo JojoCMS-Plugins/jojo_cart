@@ -28,8 +28,9 @@ item          |   qty   |   price  | line total
 
 {/if}{if $discount && $discount.code != ''}This order used discount code: {$discount.code}
 
-{/if}{if $order.giftwrap}Order to be giftwrapped
-
+{/if}{if $order.giftwrap}This is a gift  
+{if $order.giftmessage}**Message:**  
+{$order.giftmessage}
 {/if}
 {jojoHook hook="jojo_cart_customer_email_bottom"}
 If you have any queries regarding this order, please contact us on {$OPTIONS.contactaddress|default:$OPTIONS.webmasteraddress}
