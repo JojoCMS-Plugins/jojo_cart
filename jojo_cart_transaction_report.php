@@ -57,8 +57,8 @@ class jojo_plugin_jojo_cart_transaction_report extends JOJO_Plugin
                 $transaction['items'] = $cart['items'];
             } elseif (is_object($cart) ) {
                 $transaction['fields'] = isset($cart->fields) ? $cart->fields : '';
-                $transaction['FirstName'] = !empty($cart->fields['billing_firstname']) ? $cart->fields['billing_firstname'] : $cart->fields['shipping_firstname'];
-                $transaction['LastName']  = !empty($cart->fields['billing_lastname']) ? $cart->fields['billing_lastname'] : $cart->fields['shipping_lastname'];
+                $transaction['FirstName'] = isset($cart->fields['billing_firstname']) && $cart->fields['billing_firstname'] ? $cart->fields['billing_firstname'] : ( isset($cart->fields['shipping_firstname']) && $cart->fields['shipping_firstname'] ? $cart->fields['shipping_firstname'] : '');
+                $transaction['LastName']  = isset($cart->fields['billing_lastname']) && $cart->fields['billing_lastname'] ? $cart->fields['billing_lastname'] : ( isset($cart->fields['shipping_lastname']) && $cart->fields['shipping_lastname'] ? $cart->fields['shipping_lastname'] : '');
                 $transaction['amount']    = $cart->order['amount'];
                 $transaction['currency'] = isset($cart->order['currency']) ? $cart->order['currency'] : '';
                 $transaction['apply_tax'] = isset($cart->order['apply_tax']) ? $cart->order['apply_tax'] : 'unknown';

@@ -31,7 +31,11 @@ $(document).ready(function(){
 function change_quantity_callback(data)
 {
     $('#'+data.rowid+' .cart-linetotal span').html(data.linetotal.toFixed(2));
-    $('#'+data.rowid+' .cart-quantity').val(data.quantity);
+    if (data.quantity==0 && !$('.jojo_cart .orderlist')) {
+        $('#'+data.rowid).hide();
+    } else {
+        $('#'+data.rowid+' .cart-quantity').val(data.quantity);
+    }
     $('#cart-subtotal span').html(data.subtotal.toFixed(2));
     if (data.freight!==false) {
     	$('#cart-freight span').html(data.freight.toFixed(2));

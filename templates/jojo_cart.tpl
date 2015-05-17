@@ -20,7 +20,7 @@
     {jojoHook hook="jojo_cart_empty"}
 {else}
     <div class="box">
-        <table id="shoppingcart" class="table">
+        <table id="shoppingcart" class="table{if $OPTIONS.cart_zero_quantities=='yes'} orderlist{/if}">
             <thead>
                 <tr>
                     <th class="hidden-xs"></th>

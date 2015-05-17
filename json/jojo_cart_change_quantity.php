@@ -28,8 +28,9 @@ $cart = call_user_func(array(Jojo_Cart_Class, 'getCart'));
 $response = array();
 $response['rowid'] = $id ? $id : 'row_' . $code;
 $response['code'] = $code;
-$response['quantity'] = $cart->items[$code]['quantity'];
-$response['linetotal'] = $cart->items[$code]['linetotal'];
+ 
+$response['quantity'] = isset($cart->items[$code]) ? $cart->items[$code]['quantity'] : 0;
+$response['linetotal'] = isset($cart->items[$code]) ? $cart->items[$code]['linetotal'] : 0;
 $response['itemtotal'] = call_user_func(array(Jojo_Cart_Class, 'getNumItems'), $cart->items);
 $response['currency'] = call_user_func(array(Jojo_Cart_Class, 'getCartCurrency'), $cart->token);
 $response['currencysymbol'] = call_user_func(array(Jojo_Cart_Class, 'getCurrencySymbol'), $response['currency']);
