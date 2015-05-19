@@ -14,7 +14,7 @@
                 </tr>
               </thead>
               <tbody>
-              {foreach from=$t.cart->items key=k item=i}
+              {foreach from=$t.items key=k item=i}
                 {if $i.quantity > 0}
                 <tr class="{if $i.status} {$i.status}{/if}">
                   <td>{if $i.details && $i.details['url']}<a href="{$i.details['url']}" title="View product page">{/if}{if $i.plu}{$i.plu} {/if}{$i.name}{if $i.details && $i.details['url']}</a>{/if}</td>

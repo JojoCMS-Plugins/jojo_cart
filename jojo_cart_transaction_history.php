@@ -32,10 +32,10 @@ class jojo_plugin_jojo_cart_transaction_history extends JOJO_Plugin
                            $t['billing'][$k] = $f;
                        }
                     }
-                    foreach ($t['cart']->items as $i) {
-                    }
+                    $t['items'] = array();
                     $t['numitems'] = 0;                  
                     foreach ($t['cart']->items as $k => &$f) {
+                        $f['id'] = str_replace(' ', '_', $f['id']);
                         $t['numitems'] = $t['numitems'] + $f['quantity'];
                         foreach (Jojo_Plugin_Jojo_Cart::getProductHandlers() as $productHandler) {
                             $item = call_user_func(array($productHandler, 'getProductDetails'), $f['id']);
@@ -44,7 +44,8 @@ class jojo_plugin_jojo_cart_transaction_history extends JOJO_Plugin
                                 break;
                             }
                         }
-                    }
+                         $t['items'][] = $f;
+                   }
                     $t['cart']->order['currencysymbol'] = call_user_func(array(Jojo_Cart_Class, 'getCurrencySymbol'), $t['cart']->order['currency']);
                     $t['completed'] = strftime('%A %e %B %Y at %l:%M%P', $t['updated']);
                     $t['handler'] = str_replace('jojo_plugin_jojo_cart_','', $t['handler']);
