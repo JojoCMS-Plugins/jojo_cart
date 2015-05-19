@@ -26,12 +26,21 @@ $(document).ready(function(){
       }
   });
   if ($('#cart-updatebuttons #update').length>0) { $('#cart-updatebuttons #update').hide(); }
+  if ($('#order-history').length>0) { 
+    $('#order-history .order-details').hide();
+    $('#order-history .show-details').bind('click', function(){
+        targetid = $(this).attr('data-target');
+        $('#' + targetid).toggle();
+        $('span', this).toggle();
+    });
+  }
+  
 });
 
 function change_quantity_callback(data)
 {
     $('#'+data.rowid+' .cart-linetotal span').html(data.linetotal.toFixed(2));
-    if (data.quantity==0 && !$('.jojo_cart .orderlist')) {
+    if (data.quantity==0 && $('.jojo_cart .orderlist').length==0) {
         $('#'+data.rowid).hide();
     } else {
         $('#'+data.rowid+' .cart-quantity').val(data.quantity);

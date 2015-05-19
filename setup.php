@@ -79,18 +79,25 @@ Jojo::updateQuery("UPDATE {page} SET pg_footernav='no' WHERE pg_link='jojo_plugi
 Jojo::updateQuery("UPDATE {page} SET pg_sitemapnav='no' WHERE pg_link='jojo_plugin_jojo_cart_payment'");
 
 
-// Payment Prcoessor
+// Payment Processor
 $data = Jojo::selectRow("SELECT pageid FROM {page} WHERE pg_link = ?", array('jojo_plugin_jojo_cart_process'));
 if (!$data) {
    echo "Adding <b>Payment Processor</b> Page to menu<br />";
    Jojo::insertQuery('INSERT INTO {page} SET pg_title = ?, pg_url = ?, pg_body_code = ?, pg_link = ?, pg_parent = ?, pg_index = ?, pg_followto = ?, pg_contentcache = ?, pg_mainnav = ?, pg_sitemapnav = ?, pg_xmlsitemapnav = ?, pg_footernav = ?, pg_ssl = ?',
-        array("Payment Prcoessor", "cart/process", "[editor:html]\n", "jojo_plugin_jojo_cart_process", $_SHOPPING_CART_ID, "no", "no", "no", "no", "no", "no", "no", "yes"));
+        array("Payment Processor", "cart/process", "[editor:html]\n", "jojo_plugin_jojo_cart_process", $_SHOPPING_CART_ID, "no", "no", "no", "no", "no", "no", "no", "yes"));
 }
 // Remove 'Payment processor' from footer navigation
 Jojo::updateQuery("UPDATE {page} SET pg_footernav='no' WHERE pg_link='jojo_plugin_jojo_cart_process'");
 // Remove 'Payment processor' from sitemap
 Jojo::updateQuery("UPDATE {page} SET pg_sitemapnav='no' WHERE pg_link='jojo_plugin_jojo_cart_process'");
 
+// User Transaction History
+$data = Jojo::selectRow("SELECT pageid FROM {page} WHERE pg_link = ?", array('jojo_plugin_jojo_cart_transaction_history'));
+if (!$data) {
+   echo "Adding <b>Transaction History</b> Page to menu<br />";
+   Jojo::insertQuery('INSERT INTO {page} SET pg_title = ?, pg_url = ?, pg_body_code = ?, pg_link = ?, pg_parent = ?, pg_index = ?, pg_followto = ?, pg_contentcache = ?, pg_mainnav = ?, pg_sitemapnav = ?, pg_xmlsitemapnav = ?, pg_footernav = ?, pg_ssl = ?',
+        array("Your Order History", "cart/transaction_history", "[editor:html]\n", "jojo_plugin_jojo_cart_transaction_history", $_SHOPPING_CART_ID, "no", "no", "no", "no", "no", "no", "no", "yes"));
+}
 
 // Admin Shopping Cart
 $data = Jojo::selectRow("SELECT pageid FROM {page} WHERE pg_url = ?", array('admin/cart'));
