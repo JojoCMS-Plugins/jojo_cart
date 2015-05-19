@@ -34,8 +34,44 @@ class jojo_plugin_jojo_cart_transaction_report extends JOJO_Plugin
         }
 		
         jojo_plugin_Admin::adminMenu();
-        $ago = time() - (60*60*24*30);
-        $transactions = Jojo::selectQuery("SELECT * FROM {cart} WHERE id > 0  OR (updated > ?) ORDER BY id DESC, updated DESC", array($ago));
+        $report_start = Jojo::getFormData('report_start', date('d M Y', strtotime('-1 month')));
+        $report_end  = Jojo::getFormData('report_end',    date('d M Y'));
+        $report_start = Jojo::strtotimeUk($report_start);
+        $report_end = Jojo::strtotimeUk($report_end . '23:59:59');
+        //$report_end = Jojo::strtotimeUk(, $report_end); //set report_end to the end of the day
+        $smarty->assign('report_start', $report_start);
+        $smarty->assign('report_end', $report_end);
+        
+        /* customer name search - ignores date range */
+        $customer_name = Jojo::getFormData('customer_name', false);
+        $smarty->assign('customer_name', $customer_name);
+        if ($customer_name) {
+            $keywords = explode(' ', strtolower($customer_name));
+            $vals = array();
+            $where = '0';
+            foreach ($keywords as $k) {
+                $where .= ' OR data LIKE \'%'.Jojo::clean($k).'%\'';
+                //$vals[] = $k;
+            }
+            $data = Jojo::selectQuery("SELECT * FROM {cart} WHERE id > 0 AND ($where) ORDER BY id DESC LIMIT ".Jojo::getOption('cart_transactions_report_number', 150)); //get all transactions that could be a match
+            $transactions = array();
+            /* remove transactions that don't match the name fields */
+            foreach ($data as $transaction) {
+                $cart = unserialize($transaction['data']);
+                foreach ($keywords as $k) {
+                    if ((strpos(strtolower($cart->fields['billing_firstname']), $k) !== false)
+                        || (strpos(strtolower($cart->fields['billing_lastname']), $k) !== false) 
+                        || (strpos(strtolower($cart->fields['shipping_firstname']), $k) !== false) 
+                        || (strpos(strtolower($cart->fields['shipping_lastname']), $k) !== false) ) {
+                        $transactions[] = $transaction;
+                        break;
+                    }
+                }
+            }
+        } else {
+            $ago = time() - (60*60*24*30);
+            $transactions = Jojo::selectQuery("SELECT * FROM {cart} WHERE id > 0  OR (updated > ?) ORDER BY id DESC, updated DESC", array($ago));
+        }
         $totals = array();
         foreach($transactions as $k=>&$transaction) {
            /* Remove any old carts with no details entered */

@@ -59,7 +59,6 @@
                 </div>
                 {/if}
             </div>
-            {if $t.cart->receipt}{$t.cart->receipt}{/if}
         </div>
     </div>
 {/foreach}

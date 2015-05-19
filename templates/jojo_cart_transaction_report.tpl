@@ -12,7 +12,32 @@ $('a.shipped').cluetip({activation:"click", closePosition: 'top',closeText: '<im
 });
 {/literal}
 </script>
-<p><form action='' method="post"><input type="hidden" value="csv" name="filedownload" id="filedownload" /><input type="submit" name="submit" value="Download transactions as CSV" class="btn btn-default btn-sm" /></form></p>
+<form action='' method="post" class="form-inline pull-right">
+    <div class="form-group">
+        <input type="hidden" value="csv" name="filedownload" id="filedownload" /><input type="submit" name="submit" value="Download as CSV" class="btn btn-default" />
+    </div>
+</form>
+
+<div id="transaction_list_search">
+    <h3>Search by date</h3>
+    <form method="post" action="" class="form-inline">
+        <div class="form-group">
+            <label for="report_start">Start date:&nbsp;</label><input class="form-control text" type="text" name="report_start" value="{$report_start|date_format:'%d %b %Y'}" />
+         </div>   
+        <div class="form-group">
+            <label for="report_end">End date:&nbsp;</label><input class="form-control text" type="text" name="report_end" value="{$report_end|date_format:'%d %b %Y'}" />
+         </div>   
+        <input type="submit" name="search" value="Search"  class="btn btn-default"/>
+    </form>
+    <h3>Search by customer</h3>
+    <form method="post" action="" class="form-inline">
+        <div class="form-group">
+            <label for="customer_name">Customer name:&nbsp;</label><input class="form-control text" type="text" name="customer_name" value="{$customer_name}" />
+        </div>
+        <input type="submit" name="search" value="Search"  class="btn btn-default"/>
+    </form>
+</div>
+<br>
 <table class="sortabletable table table-striped table-bordered">
   <thead>
     <tr>
