@@ -22,7 +22,7 @@ class jojo_plugin_jojo_cart_transaction_history extends JOJO_Plugin
         $content = array();
 
         if ($_USERID) {
-            if ($transactions = Jojo::selectQuery("SELECT * FROM {cart} WHERE userid = ?  ORDER BY updated DESC", array($_USERID))) {
+            if ($transactions = Jojo::selectQuery("SELECT * FROM {cart} WHERE userid = ? AND (status='payment_pending' OR status='complete') ORDER BY updated DESC", array($_USERID))) {
                 foreach ($transactions as $k=>&$t) {
                     $transactions[$k]['cart'] = unserialize($t['data']);
                     foreach ($t['cart']->fields as $k => $f) {
