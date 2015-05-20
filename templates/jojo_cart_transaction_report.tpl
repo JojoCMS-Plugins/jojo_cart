@@ -9,6 +9,10 @@ $(document).ready(function() {
 $('a.info').cluetip({activation:"click", closePosition: 'top',closeText: '<img src="images/cross.png" alt="" />',sticky:true,ajaxCache: true,width:600,showTitle:false});
 $('a.paid').cluetip({activation:"click", closePosition: 'top',closeText: '<img src="images/cross.png" alt="" />',sticky:true,width:380,showTitle:false});
 $('a.shipped').cluetip({activation:"click", closePosition: 'top',closeText: '<img src="images/cross.png" alt="" />',sticky:true,width:380,showTitle:false,onHide:function(){window.location.reload();}});
+    $('#report_start').AnyTime_noPicker();
+    $('#report_start').AnyTime_picker({format: "%Y-%m-%d"});
+    $('#report_end').AnyTime_noPicker();
+    $('#report_end').AnyTime_picker({format: "%Y-%m-%d"});
 });
 {/literal}
 </script>
@@ -22,10 +26,10 @@ $('a.shipped').cluetip({activation:"click", closePosition: 'top',closeText: '<im
     <h3>Search by date</h3>
     <form method="post" action="" class="form-inline">
         <div class="form-group">
-            <label for="report_start">Start date:&nbsp;</label><input class="form-control text" type="text" name="report_start" value="{$report_start|date_format:'%d %b %Y'}" />
+            <label for="report_start">Start date:&nbsp;</label><input id="report_start" class="form-control date anytime" type="text" name="report_start" value="{$report_start|date_format:'%d %b %Y'}" />
          </div>   
         <div class="form-group">
-            <label for="report_end">End date:&nbsp;</label><input class="form-control text" type="text" name="report_end" value="{$report_end|date_format:'%d %b %Y'}" />
+            <label for="report_end">End date:&nbsp;</label><input id="report_end" class="form-control  date anytime" type="text" name="report_end" value="{$report_end|date_format:'%d %b %Y'}" />
          </div>   
         <input type="submit" name="search" value="Search"  class="btn btn-default"/>
     </form>

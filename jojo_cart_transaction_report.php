@@ -34,11 +34,8 @@ class jojo_plugin_jojo_cart_transaction_report extends JOJO_Plugin
         }
 		
         jojo_plugin_Admin::adminMenu();
-        $report_start = Jojo::getFormData('report_start', date('d M Y', strtotime('-1 month')));
-        $report_end  = Jojo::getFormData('report_end',    date('d M Y'));
-        $report_start = Jojo::strtotimeUk($report_start);
-        $report_end = Jojo::strtotimeUk($report_end . '23:59:59');
-        //$report_end = Jojo::strtotimeUk(, $report_end); //set report_end to the end of the day
+        $report_start = Jojo::getFormData('report_start', '');
+        $report_end  = Jojo::getFormData('report_end', '');
         $smarty->assign('report_start', $report_start);
         $smarty->assign('report_end', $report_end);
         
@@ -70,7 +67,11 @@ class jojo_plugin_jojo_cart_transaction_report extends JOJO_Plugin
             }
         } else {
             $ago = time() - (60*60*24*30);
-            $transactions = Jojo::selectQuery("SELECT * FROM {cart} WHERE id > 0  OR (updated > ?) ORDER BY id DESC, updated DESC", array($ago));
+            if ($report_start && $report_end) {
+                $transactions = Jojo::selectQuery("SELECT * FROM {cart} WHERE id > 0 AND (updated >= ?) AND (updated <= ?) ORDER BY id DESC", array(strtotime($report_start), strtotime($report_end)));
+            } else {
+                $transactions = Jojo::selectQuery("SELECT * FROM {cart} WHERE id > 0 OR (updated >= ?) ORDER BY id DESC", array($ago));
+            }
         }
         $totals = array();
         foreach($transactions as $k=>&$transaction) {
@@ -138,7 +139,11 @@ class jojo_plugin_jojo_cart_transaction_report extends JOJO_Plugin
         $gt['avitemvalue'] = $gt['number'] && $gt['avitems'] ? number_format(($gt['total'] / $gt['number']) / ($gt['items'] / $gt['number']) , 2) : 0.00;
         $gt['total'] = number_format($gt['total'], 2);
         
-        $smarty->assign('transactions', array_slice($transactions, 0, Jojo::getOption('cart_transactions_report_number', 150)));
+        if ($report_start && $report_end) {
+            $smarty->assign('transactions', $transactions);
+        } else {
+            $smarty->assign('transactions', array_slice($transactions, 0, Jojo::getOption('cart_transactions_report_number', 150)));
+        }
         $smarty->assign('transactiontotals', $totals);
         $smarty->assign('grandtotals', $gt);
         
