@@ -68,9 +68,9 @@ class jojo_plugin_jojo_cart_transaction_report extends JOJO_Plugin
         } else {
             $ago = time() - (60*60*24*30);
             if ($report_start && $report_end) {
-                $transactions = Jojo::selectQuery("SELECT * FROM {cart} WHERE id > 0 AND (updated >= ?) AND (updated <= ?) ORDER BY id DESC", array(strtotime($report_start), strtotime($report_end)));
+                $transactions = Jojo::selectQuery("SELECT * FROM {cart} WHERE id > 0 AND (updated >= ?) AND (updated <= ?) ORDER BY updated DESC", array(strtotime($report_start), strtotime($report_end)));
             } else {
-                $transactions = Jojo::selectQuery("SELECT * FROM {cart} WHERE id > 0 OR (updated >= ?) ORDER BY id DESC", array($ago));
+                $transactions = Jojo::selectQuery("SELECT * FROM {cart} WHERE id > 0 OR (updated >= ?) ORDER BY updated DESC", array($ago));
             }
         }
         $totals = array();
