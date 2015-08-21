@@ -21,7 +21,9 @@
 /* delete empty carts older than the greater of 1 day or cart_lifetime */
 $limit = Jojo::getOption('cart_lifetime', 0) ? Jojo::getOption('cart_lifetime', 0) : 1;
 $limittime = time() - ($limit * 60*60*24);
+$month = time() - (60*60*24*30);
 
 if (Jojo::tableExists('cart')) {
     Jojo::deleteQuery("DELETE FROM {cart} WHERE id='0' AND amount='0.00' AND updated<?", array($limittime));
+    Jojo::deleteQuery("DELETE FROM {cart} WHERE id='0' AND updated<?", array($month));
 }

@@ -29,7 +29,7 @@
                 <tr class="{cycle values="row1,row2"}">
                     <th style="width:25%">Per item price</th>
         {foreach from=$methods key=methodid item=method}
-                    <td><input style="text-align: right" type="text" size="6" name="fm_{$fd_field}_fixed_default[{$methodid}]" value="{$freight_default[$methodid]}" />  {$OPTIONS.cart_default_currency}</td>
+                    <td><div class="input-group"><input class="form-control" style="text-align: right" type="text" size="6" name="fm_{$fd_field}_fixed_default[{$methodid}]" value="{$freight_default[$methodid]}" />  <span class="input-group-addon" >{$OPTIONS.cart_default_currency}</span></div></td>
         {/foreach}
                 </tr>
             </table>
@@ -49,7 +49,7 @@
                 <tr class="{cycle values="row1,row2"}">
                     <th style="width:25%">Base price</th>
         {foreach from=$methods key=methodid item=method}
-                    <td><input style="text-align: right" type="text" size="6" name="fm_{$fd_field}_fixed_base[{$methodid}]" value="{$freight_default_base[$methodid]}" />  {$OPTIONS.cart_default_currency}</td>
+                    <td><div class="input-group"><input class="form-control" style="text-align: right" type="text" size="6" name="fm_{$fd_field}_fixed_base[{$methodid}]" value="{$freight_default_base[$methodid]}" />  <span class="input-group-addon" >{$OPTIONS.cart_default_currency}</span></div></td>
         {/foreach}
                 </tr>
             </table>
@@ -69,7 +69,7 @@
                 <tr class="{cycle values="row1,row2"}">
                     <th style="width:25%">Minimum freight price</th>
         {foreach from=$methods key=methodid item=method}
-                    <td><input style="text-align: right" type="text" size="6" name="fm_{$fd_field}_fixed_min[{$methodid}]" value="{$freight_default_min[$methodid]}" />  {$OPTIONS.cart_default_currency}</td>
+                    <td><div class="input-group"><input class="form-control"  style="text-align: right" type="text" size="6" name="fm_{$fd_field}_fixed_min[{$methodid}]" value="{$freight_default_min[$methodid]}" />  <span class="input-group-addon" >{$OPTIONS.cart_default_currency}</span></div></td>
         {/foreach}
                 </tr>
             </table>

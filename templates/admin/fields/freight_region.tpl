@@ -28,14 +28,14 @@
                 <tr>
                     <td>Default per item rate</td>
         {foreach from=$methods key=methodid item=method}
-                    <td><input style="text-align: right" type="text" size="6" name="fm_{$fd_field}_default[{$methodid}]" value="{$freight_default[$methodid]}" />  {$OPTIONS.cart_default_currency}</td>
+                    <td><div class="input-group"><input class="form-control" style="text-align: right" type="text" size="6" name="fm_{$fd_field}_default[{$methodid}]" value="{$freight_default[$methodid]}" />  <span class="input-group-addon" >{$OPTIONS.cart_default_currency}</span></div></td>
         {/foreach}
                 </tr>
         {foreach from=$freight_regions item=region}
                 <tr>
                     <td>{$region.name}</td>
         {foreach from=$methods key=methodid item=method}
-                    <td><input style="text-align: right" type="text" size="6" name="fm_{$fd_field}_region_{$region.code}[{$methodid}]" value="{$region[price][$methodid]}" autocomplete="off" /> {$OPTIONS.cart_default_currency}</td>
+                    <td><div class="input-group"><input class="form-control" style="text-align: right" type="text" size="6" name="fm_{$fd_field}_region_{$region.code}[{$methodid}]" value="{$region[price][$methodid]}" autocomplete="off" />  <span class="input-group-addon" >{$OPTIONS.cart_default_currency}</span></div></td>
         {/foreach}
                 </tr>
         {/foreach}
@@ -56,14 +56,14 @@
                 <tr>
                     <td>Default base rate</td>
         {foreach from=$methods key=methodid item=method}
-                    <td><input style="text-align: right" type="text" size="6" name="fm_{$fd_field}_default_base[{$methodid}]" value="{$freight_default_base[$methodid]}" />  {$OPTIONS.cart_default_currency}</td>
+                    <td><div class="input-group"><input class="form-control" style="text-align: right" type="text" size="6" name="fm_{$fd_field}_default_base[{$methodid}]" value="{$freight_default_base[$methodid]}" />  <span class="input-group-addon" >{$OPTIONS.cart_default_currency}</span></div></td>
         {/foreach}
                 </tr>
         {section name=r loop=$freight_regions}
                 <tr>
                     <td>{$freight_regions[r].name}</td>
         {foreach from=$methods key=methodid item=method}
-                    <td><input style="text-align: right" type="text" size="6" name="fm_{$fd_field}_region_base_{$freight_regions[r].code}[{$methodid}]" value="{$freight_regions_base[r].price.$methodid}" autocomplete="off" /> {$OPTIONS.cart_default_currency}</td>
+                    <td><div class="input-group"><input class="form-control" style="text-align: right" type="text" size="6" name="fm_{$fd_field}_region_base_{$freight_regions[r].code}[{$methodid}]" value="{$freight_regions_base[r].price.$methodid}" autocomplete="off" />  <span class="input-group-addon" >{$OPTIONS.cart_default_currency}</span></div></td>
         {/foreach}
                 </tr>
         {/section}
@@ -84,14 +84,14 @@
                 <tr>
                     <td>Default minimum</td>
         {foreach from=$methods key=methodid item=method}
-                    <td><input style="text-align: right" type="text" size="6" name="fm_{$fd_field}_default_min[{$methodid}]" value="{$freight_default_min.$methodid}" />  {$OPTIONS.cart_default_currency}</td>
+                    <td><div class="input-group"><input class="form-control" style="text-align: right" type="text" size="6" name="fm_{$fd_field}_default_min[{$methodid}]" value="{$freight_default_min.$methodid}" />   <span class="input-group-addon" >{$OPTIONS.cart_default_currency}</span></div></td>
         {/foreach}
                 </tr>
         {section name=r loop=$freight_regions}
                 <tr>
                     <td>{$freight_regions[r].name}</td>
         {foreach from=$methods key=methodid item=method}
-                    <td><input style="text-align: right" type="text" size="6" name="fm_{$fd_field}_region_min_{$freight_regions[r].code}[{$methodid}]" value="{$freight_regions_min[r].price.$methodid}" autocomplete="off" /> {$OPTIONS.cart_default_currency}</td>
+                    <td><div class="input-group"><input class="form-control" style="text-align: right" type="text" size="6" name="fm_{$fd_field}_region_min_{$freight_regions[r].code}[{$methodid}]" value="{$freight_regions_min[r].price.$methodid}" autocomplete="off" />  <span class="input-group-addon" >{$OPTIONS.cart_default_currency}</span></div></td>
         {/foreach}
                 </tr>
         {/section}

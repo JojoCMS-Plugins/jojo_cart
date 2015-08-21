@@ -29,6 +29,7 @@ if (class_exists(Jojo_Cart_Class)) {
         $smarty->assign('items', $cartItems);
         $smarty->assign('total', call_user_func(array(Jojo_Cart_Class, 'total')));
         $smarty->assign('cartisempty', false);
+        Jojo::noCache(true);
     }
 }
 
