@@ -12,6 +12,12 @@ $(document).ready(function(){
     var code = id.replace(/quantity\[(.*?)\]/ig, "$1");
     $.getJSON('json/jojo_cart_change_quantity.php', {qty: $(this).val(), code: code, rowid: rowid}, change_quantity_callback);
   });
+  $('#applyDiscount').bind('click', function(){
+    var code = $('#discountCode').val();
+    $.getJSON('json/jojo_cart_change_quantity.php', {discount: code}, change_quantity_callback);
+    $('#update').click();
+    return false;
+  });
   $('input.cart-quantity').bind('focus', function(){
       if ($(this).val() == '0') {
           $(this).val('');
@@ -39,15 +45,19 @@ $(document).ready(function(){
 
 function change_quantity_callback(data)
 {
-    $('#'+data.rowid+' .cart-linetotal span').html(data.linetotal.toFixed(2));
+    if ($('#'+data.rowid+' .cart-linetotal span').length>0) {
+        $('#'+data.rowid+' .cart-linetotal span').html(data.linetotal.toFixed(2));
+    }
     if (data.quantity==0 && $('.shoppingcart .orderlist').length==0) {
         $('#'+data.rowid).hide();
     } else {
         $('#'+data.rowid+' .cart-quantity').val(data.quantity);
     }
     $('#cart-subtotal span').html(data.subtotal.toFixed(2));
-    if (data.freight!==false) {
-    	$('#cart-freight span').html(data.freight.toFixed(2));
+    if (data.freight && $.isNumeric(data.freight)) {
+    	$('#cart-freight span').html(parseFloat(data.freight).toFixed(2));
+    } else if (data.freight!==false){
+    	$('#cart-freight span').html(data.freight);
     }
     if (!data.surcharge && $('#cart-surcharge span').length>0) {
       $('#cart-surcharge').hide();

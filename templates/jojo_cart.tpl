@@ -46,18 +46,18 @@
     </div>
     {if $order.fixedorder}
     <div class="row">
-        <div class="col-sm-11" id="cart-fixedorder">##Discount##: {$order.currency_symbol|default:' '}<span>{$order.fixedorder|string_format:"%01.2f"}<br /></span></div>
+        <div class="col-sm-11" id="cart-fixedorder">##Code Discount##: -{$order.currency_symbol|default:' '}<span>{$order.fixedorder|string_format:"%01.2f"}</span></div>
     </div>
     {/if}{if $pointsused}
     <div class="row">
-        <div class="col-sm-11" id="cart-fixedorder">##Points Discount##: {$order.currency_symbol|default:' '}<span>{$pointsdiscount|string_format:"%01.2f"}<br /></span></div>
+        <div class="col-sm-11" id="cart-points">##Points Discount##: -{$order.currency_symbol|default:' '}<span>{$pointsdiscount|string_format:"%01.2f"}<br /></span></div>
     </div>
     {/if}
     <div class="row">
         <div class="col-sm-11"  id="cart-subtotal">##Sub-total##: {$order.currency_symbol|default:' '}<span>{$order.subtotal|string_format:"%01.2f"}</span></div>
     </div>
     <div class="row">
-        <div class="col-sm-11"  id="cart-freight">##Freight## {if $order.freight}(##based on current delivery address##): {$order.currency_symbol|default:' '}<span>{$order.freight|string_format:"%01.2f"}</span>{else}(##to be calculated##){/if}
+        <div class="col-sm-11"  id="cart-freight">##Freight## {if $order.freight}: {$order.currency_symbol|default:' '}<span>{$order.freight|string_format:"%01.2f"}</span>{elseif $order.freight!==false}<span>{$OPTIONS.freight_description}</span>{else}##to be calculated##{/if}
        {if $order.surcharge}<div id="cart-surcharge">##{$order.surchargedescription}##: {$order.currency_symbol|default:' '}<span>{$order.surcharge|string_format:"%01.2f"}</span></div>
        {/if}
        </div>
@@ -79,7 +79,7 @@
                 <label for="discountCode">Discount Code:</label>
                 <div class="input-group">
                 <input class="form-control" type="text" size="10" name="discountCode" id="discountCode" value="{if $discount.code}{$discount.code}{/if}" />
-                <span class="input-group-btn"><input type="submit" name="applyDiscount" id="applyDiscount" value="Apply" class="btn btn-default"/></span>
+                <span class="input-group-btn"><a id="applyDiscount" class="btn btn-default" href="#">Apply</a></span>
                 </div>
             </div>
         </div>

@@ -18,19 +18,25 @@
 $id  = Jojo::getFormData('rowid', false);
 $quantity  = Jojo::getFormData('qty', false);
 $code = Jojo::getFormData('code', false);
+$discount = Jojo::getFormData('discount', false);
 
-/* save the new quantities to the cart */
-call_user_func(array(Jojo_Cart_Class, 'setQuantity'), $code, $quantity);
-
+if ($code) {
+    /* save the new quantities to the cart */
+    call_user_func(array(Jojo_Cart_Class, 'setQuantity'), $code, $quantity);
+}
+if ($discount!==false) {
+    call_user_func(array(Jojo_Cart_Class, 'applyDiscountCode'), $discount);
+}
 $cart = call_user_func(array(Jojo_Cart_Class, 'getCart'));
 
 /* send back the data that has changed in a JSON object for the javascript callback to work with */
 $response = array();
 $response['rowid'] = $id ? $id : 'row_' . $code;
 $response['code'] = $code;
- 
-$response['quantity'] = isset($cart->items[$code]) ? $cart->items[$code]['quantity'] : 0;
-$response['linetotal'] = isset($cart->items[$code]) ? $cart->items[$code]['linetotal'] : 0;
+if ($code) {
+    $response['quantity'] = isset($cart->items[$code]) ? $cart->items[$code]['quantity'] : 0;
+    $response['linetotal'] = isset($cart->items[$code]) ? $cart->items[$code]['linetotal'] : 0;
+}
 $response['itemtotal'] = call_user_func(array(Jojo_Cart_Class, 'getNumItems'), $cart->items);
 $response['currency'] = call_user_func(array(Jojo_Cart_Class, 'getCartCurrency'), $cart->token);
 $response['currencysymbol'] = call_user_func(array(Jojo_Cart_Class, 'getCurrencySymbol'), $response['currency']);
