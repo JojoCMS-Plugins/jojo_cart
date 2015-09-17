@@ -247,7 +247,7 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
         /* Save */
         self::addDataBlobField();
         Jojo::updateQuery("REPLACE INTO {cart} SET id=?, token=?, data=?, data_blob=?, status=?, ip=?, userid = ?, updated=?, handler=?, amount=?, actioncode=?, shipped=?",
-            array($cart->id, $token, serialize($cart), serialize($cart), $status, Jojo::getIp(), isset($_SESSION['userid']) ? $_SESSION['userid'] : '', time(), $cart->handler, $cart->order['amount'], $actioncode, $cart->shipped));
+            array($cart->id, $token, serialize($cart), serialize($cart), $status, Jojo::getIp(), (isset($_SESSION['userid']) ?: ''), time(), $cart->handler, $cart->order['amount'], $actioncode, $cart->shipped));
         /* save token to cookie */
         if (Jojo::getOption('cart_lifetime', 0)) {
             setcookie("jojo_cart_token", $token, time() + (60 * 60 * 24 * Jojo::getOption('cart_lifetime', 0)), '/' . _SITEFOLDER);
@@ -838,7 +838,7 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
 
         /* Assign vars to Smarty */
         $smarty->assign('items', self::getItems());
-        if (!count(self::getItems())) {
+        if (!count(self::getItems()) && Jojo::getOption('cart_zero_quantities','no')=='no') {
             $smarty->assign('cartisempty', true);
         } else {
             $cart->order['numitems'] = self::getNumItems($cart->items);

@@ -70,13 +70,13 @@ class jojo_plugin_jojo_cart_transaction_report extends JOJO_Plugin
             if ($report_start && $report_end) {
                 $transactions = Jojo::selectQuery("SELECT * FROM {cart} WHERE id > 0 AND (updated >= ?) AND (updated <= ?) ORDER BY updated DESC", array(strtotime($report_start), strtotime($report_end)));
             } else {
-                $transactions = Jojo::selectQuery("SELECT * FROM {cart} WHERE id > 0 OR (updated >= ?) ORDER BY updated DESC", array($ago));
+                $transactions = Jojo::selectQuery("SELECT * FROM {cart} WHERE id > 0 ORDER BY updated DESC", array());
             }
         }
         $totals = array();
         foreach($transactions as $k=>&$transaction) {
            /* Remove any old carts with no details entered */
-            if (!$transaction['id'] && !$transaction['handler']) {
+            if (!$transaction['id']) {
                 unset($transactions[$k]);
                 continue;
             }

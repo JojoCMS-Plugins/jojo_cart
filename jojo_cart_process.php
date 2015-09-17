@@ -154,10 +154,10 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
             /* update loyalty point balance */
             if ($_USERID && Jojo::getOption('cart_loyalty_cost', '') && JOJO_Plugin_Jojo_cart::getCartCurrency($token)==Jojo::getOption('cart_default_currency', 'USD')) {
                 $pointsused = isset($cart->points['used']) ? $cart->points['used'] : 0;
-                $cost = Jojo::getOption('cart_loyalty_cost');
+                $cost = Jojo::getOption('cart_loyalty_cost', '');
                 $value = $cart->order['apply_tax'] ? JOJO_Plugin_Jojo_cart::removeTax($cart->order['subtotal']) : $cart->order['subtotal'];
-                $pointsadded = floor($value/$cost);
-                $currentpoints = Jojo::selectRow("SELECT points FROM {cart_points} WHERE userid=?", array($_USERID));
+                $pointsadded = $cost && $value ? floor($value/$cost) : 0;
+                $currentpoints = $cart->points['balance'] ? Jojo::selectRow("SELECT points FROM {cart_points} WHERE userid=?", array($_USERID)) : 0;
                 if ($currentpoints) {
                     $balance = $currentpoints['points'] + $pointsadded - $pointsused;
                     if ($balance<0) {
@@ -166,7 +166,11 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
                     Jojo::updateQuery("UPDATE {cart_points} SET points=? WHERE userid=? LIMIT 1", array($balance, $_USERID));
                 } else {
                     $balance = $pointsadded;
-                    Jojo::insertQuery("INSERT INTO {cart_points} SET userid=?, points=?", array($_USERID, $balance));
+                    if (Jojo::selectRow("SELECT userid FROM {cart_points} WHERE userid=?", array($_USERID))) {
+                        Jojo::updateQuery("UPDATE {cart_points} SET points=? WHERE userid=? LIMIT 1", array($balance, $_USERID));
+                    } else {
+                        Jojo::insertQuery("INSERT INTO {cart_points} SET userid=?, points=?", array($_USERID, $balance));
+                    }
                 }
                 $cart->points['added'] = $pointsadded;
                 $cart->points['finalbalance'] = $balance;
@@ -189,11 +193,14 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
             $smarty->assign('items',      $cart->items);
 
             /* Get order id */
-
-            $lastinsert = Jojo::insertQuery("INSERT INTO {cart_ordernumbers} set value=1");
-            $smarty->assign('id', $lastinsert);
-            Jojo::updateQuery("UPDATE {cart} SET id=? where token=? LIMIT 1", array($lastinsert, $token));
-            $cart->id = $lastinsert;
+            if (!(isset($cart->id) && $cart->id)) {
+                $lastinsert = Jojo::insertQuery("INSERT INTO {cart_ordernumbers} set value=1");
+                $smarty->assign('id', $lastinsert);
+                Jojo::updateQuery("UPDATE {cart} SET id=? where token=? LIMIT 1", array($lastinsert, $token));
+                $cart->id = $lastinsert;
+            } else {
+                $smarty->assign('id', $cart->id);
+            }
 
             if ($result['paid']) {
                 $smarty->assign('status', 'complete');
@@ -204,7 +211,6 @@ class jojo_plugin_Jojo_cart_process extends JOJO_Plugin
                 $pending_template = Jojo::applyFilter('jojo_cart_process:pending_template', $pending_template, $cart);
                 $smarty->assign('pending_template', $pending_template);
             }
-
 
             $contact_name   = Jojo::either(_CONTACTNAME, _FROMNAME,_SITETITLE);
             $contact_email  = Jojo::either(_CONTACTADDRESS,_FROMADDRESS,_WEBMASTERADDRESS);

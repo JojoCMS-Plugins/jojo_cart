@@ -5,27 +5,77 @@ div.receipt {
   font-family: courier, serif;
 }
 
-#shoppingcart .cart-item span.cart-itemdescription {
-  font-weight: normal;
-  font-size: 90%;
+.shoppingcart {
+    .titles {
+        font-weight: bold;
+        > div {
+            text-align: center;
+            padding-top: 1em;
+            padding-bottom: 1em;
+            border-bottom: 1px solid #aaa;
+        }
+        .cart-item {
+            text-align: left;
+        }
+        .cart-linetotal {
+            text-align: right;
+        }
+    }
+    .cart-items {
+        position: relative;
+        .item-wrap {
+            padding: 1em 0;
+            border-bottom: 1px solid #aaa;
+        }
+    }
+    .cart-item {
+        img {
+            float: left;
+            margin: 0 0.5em 0.5em 0;
+        }
+        span.cart-itemname {
+            padding-top: 0.5em;
+            display: inline-block;
+        }
+        span.cart-itemdescription {
+          font-weight: normal;
+          font-size: 90%;
+        }
+    }
+    .cart-quantity input, .cart-quantity select {
+     min-width: 45px;
+     max-width: 65px;
+     display: inline-block;
+    }
+    .cart-remove {
+        position: absolute;
+        top: 1em;
+        right: 0;
+    }
+    .cart-total {
+      font-weight: bold;
+      p { font-weight: normal; }
+    }
+    .cart-price, .cart-linetotal, .cart-total {
+        text-align: right;
+        padding-top: 0.5em;
+    }
 }
-#shoppingcart .cart-quantity  {
- min-width: 45px;
-}
-#shoppingcart .cart-remove a {
-  color: red;
-  font-size: 115%;
-}
-
-
-#cart-fixedorder, #cart-total, #cart-subtotal, #cart-freight, #cart-surcharge, #shoppingcart .cart-price, #shoppingcart .cart-linetotal {
+#cart-fixedorder, #cart-subtotal, #cart-freight, #cart-surcharge  {
   text-align: right;
+  padding-top: 0.5em;
 }
 
-#cart-total {
-  font-weight: bold;
-}
 
 #cart-updatebuttons {
   text-align: right;
+}
+
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: @screen-sm-min) {
+    .shoppingcart {
+        .cart-quantity { text-align:center;}
+        .cart-remove { position: relative; top: 0.3em;}
+    }
 }

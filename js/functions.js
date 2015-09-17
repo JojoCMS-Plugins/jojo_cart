@@ -40,7 +40,7 @@ $(document).ready(function(){
 function change_quantity_callback(data)
 {
     $('#'+data.rowid+' .cart-linetotal span').html(data.linetotal.toFixed(2));
-    if (data.quantity==0 && $('.jojo_cart .orderlist').length==0) {
+    if (data.quantity==0 && $('.shoppingcart .orderlist').length==0) {
         $('#'+data.rowid).hide();
     } else {
         $('#'+data.rowid+' .cart-quantity').val(data.quantity);
@@ -53,5 +53,5 @@ function change_quantity_callback(data)
       $('#cart-surcharge').hide();
     }
     $('.cartItemTotal').html(data.itemtotal);
-    $('#cart-total span').html(data.total.toFixed(2));
+    $('.cart-total span').html(data.total.toFixed(2));
 }
