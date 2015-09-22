@@ -57,7 +57,7 @@
         <div class="col-sm-11"  id="cart-subtotal">##Sub-total##: {$order.currency_symbol|default:' '}<span>{$order.subtotal|string_format:"%01.2f"}</span></div>
     </div>
     <div class="row">
-        <div class="col-sm-11"  id="cart-freight">##Freight## {if $order.freight}: {$order.currency_symbol|default:' '}<span>{$order.freight|string_format:"%01.2f"}</span>{elseif $order.freight!==false}<span>{$OPTIONS.freight_description}</span>{else}##to be calculated##{/if}
+        <div class="col-sm-11"  id="cart-freight">##Freight## {if $order.freight}: {$order.currency_symbol|default:' '}<span>{$order.freight|string_format:"%01.2f"}</span>{elseif $order.freight===false}##to be calculated##{else}<span>{$OPTIONS.freight_description}</span>{/if}
        {if $order.surcharge}<div id="cart-surcharge">##{$order.surchargedescription}##: {$order.currency_symbol|default:' '}<span>{$order.surcharge|string_format:"%01.2f"}</span></div>
        {/if}
        </div>

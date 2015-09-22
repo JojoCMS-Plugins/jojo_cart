@@ -2,7 +2,7 @@
     {include file="jojo_cart_test_mode.tpl"}
     {jojoHook hook="jojo_cart_checkout_top"}
     {include file="jojo_cart_payment_customerdetails.tpl"}
-    <h2>##Order information## <a href="{$languageurlprefix}cart/" class="btn btn-default btn-xs" title="##Edit the quantities, or remove items from the order##">##Change Order?##</a></h2>
+    <h2>##Your Order## <a href="{$languageurlprefix}cart/" class="btn btn-default btn-xs" title="##Edit the quantities, or remove items from the order##">##Modify##</a></h2>
     <div class="shoppingcart table">
         <div class="row hidden-xs titles">
             <div class="cart-item col-sm-7">##Item##</div>
@@ -13,7 +13,7 @@
         <div id="row_{$i.id}" class="row cart-items">
             <div class="item-wrap clearfix">
                 <div class="cart-item col-sm-7">{$i.name}</div>
-                <div class="cart-quantity col-sm-3 col-xs-8">{$i.quantity}@{$order.currency_symbol|default:' '}{if $i.netprice != $i.price}<strike>{$i.price|string_format:"%01.2f"}</strike> {$i.netprice|string_format:"%01.2f"}{else}{$i.netprice|string_format:"%01.2f"}{/if}</div>
+                <div class="cart-quantity col-sm-3 col-xs-8">{$i.quantity} @{$order.currency_symbol|default:' '}{if $i.netprice != $i.price}<strike>{$i.price|string_format:"%01.2f"}</strike> {$i.netprice|string_format:"%01.2f"}{else}{$i.netprice|string_format:"%01.2f"}{/if}</div>
                 <div class="cart-linetotal col-sm-2 col-xs-4">{$order.currency_symbol|default:' '}{$i.linetotal|string_format:"%01.2f"}</div>
             </div>
         </div>
