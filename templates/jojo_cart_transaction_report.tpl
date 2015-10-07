@@ -16,6 +16,7 @@ $('a.shipped').cluetip({activation:"click", closePosition: 'top',closeText: '<im
 });
 {/literal}
 </script>
+{if $transactiontotals}<p class="note"><a href="#summaries">Monthly summaries <i class="glyphicon glyphicon-menu-down"></i></a></p>{/if}
 <form action='' method="post" class="form-inline pull-right">
     <div class="form-group">
         <input type="hidden" value="csv" name="filedownload" id="filedownload" /><input type="submit" name="submit" value="Download as CSV" class="btn btn-default" />
@@ -77,13 +78,48 @@ $('a.shipped').cluetip({activation:"click", closePosition: 'top',closeText: '<im
     {/foreach}
   </tbody>
 </table>
+{if $transactiontotals}
+<a name="summaries"></a>
 <h3>Summary</h3>
 <table class="sortabletable table table-striped table-bordered">
-<tr><th rowspan="2">Month</th><th rowspan="2">Total</th><th rowspan="2"># of transactions</th><th rowspan="2">Total items sold</th><th colspan="3" style="text-align: center;">Averages per transaction</th></tr>
-<tr><th>Total spend</th><th># of Items</th><th>Item value</th></tr>
+<tr>
+    <th rowspan="2">Month</th>
+    <th rowspan="2">Total <span class="note">(y-o-y change)</span></th>
+    <th rowspan="2"># of transactions</th>
+    <th rowspan="2">Total items sold</th>
+    <th colspan="3" style="text-align: center;">Averages per transaction</th>
+</tr>
+<tr>
+    <th>Total spend</th>
+    <th># of Items</th>
+    <th>Item value</th>
+</tr>
 {foreach from=$transactiontotals key=k item=t}
-<tr><td>{$k}</td><td>{$transaction.currencysymbol}{$t.total}</td><td>{$t.number}</td><td>{$t.items}</td><td>{$transaction.currencysymbol}{$t.average}</td><td>{$t.avitems}</td><td>{$transaction.currencysymbol}{$t.avitemvalue}</td></tr>
+<tr>
+    <td>{$k}</td>
+    <td>{$transaction.currencysymbol}{$t.total} {if $t.change}<span class="note {if $t.change<0}text-danger{else}text-success{/if}">({if $t.change>0}+{/if}{$t.change}%)</span>{/if}</td>
+    <td>{$t.number}</td>
+    <td>{$t.items}</td>
+    <td>{$transaction.currencysymbol}{$t.average}</td>
+    <td>{$t.avitems}</td>
+    <td>{$transaction.currencysymbol}{$t.avitemvalue}</td>
+</tr>
+{if $t.bestsellers}<tr>
+    <td></td>
+    <td colspan="6">Top by volume: {foreach $t.bestsellers b}{$b.name} x<b>{$b.number}</b>{if !$.foreach.default.last}, &nbsp;{/if}{/foreach}<br>
+    Top by value: {foreach $t.valuesellers b}{$b.name} <b>{$transaction.currencysymbol}{$b.amount}</b>{if !$.foreach.default.last}, &nbsp;{/if}{/foreach}<br>
+    </td>
+</tr>{/if}
 {/foreach}
-<tr><th>All</th><th>{$transaction.currencysymbol}{$grandtotals.total}</th><th>{$grandtotals.number}</th><th>{$grandtotals.items}</th><th>{$transaction.currencysymbol}{$grandtotals.average}</th><th>{$grandtotals.avitems}</th><th>{$transaction.currencysymbol}{$grandtotals.avitemvalue}</th></tr>
+<tr>
+    <th>All</th>
+    <th>{$transaction.currencysymbol}{$grandtotals.total}</th>
+    <th>{$grandtotals.number}</th>
+    <th>{$grandtotals.items}</th>
+    <th>{$transaction.currencysymbol}{$grandtotals.average}</th>
+    <th>{$grandtotals.avitems}</th>
+    <th>{$transaction.currencysymbol}{$grandtotals.avitemvalue}</th>
+</tr>
 </table>
+{/if}
 {include file="admin/footer.tpl"}

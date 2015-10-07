@@ -67,15 +67,16 @@ $default_fd['discount']['finishdate'] = array(
 
 // Discount percentage Field
 $default_fd['discount']['discountpercent'] = array(
-        'fd_name' => "Discount percentage",
+        'fd_name' => "Per Item Discount %",
         'fd_type' => "decimal",
         'fd_order' => "6",
         'fd_units' => "%",
+        'fd_help'  => "Percentage discount per item",
     );
 
 // Discount fixed Field
 $default_fd['discount']['discountfixed'] = array(
-        'fd_name' => "Discount fixed",
+        'fd_name' => "Per Item Discount",
         'fd_type' => "decimal",
         'fd_order' => "7",
         'fd_help'  => "Fixed $ discount per item",
@@ -83,10 +84,10 @@ $default_fd['discount']['discountfixed'] = array(
 
 // Discount fixed per order Field
 $default_fd['discount']['fixedorder'] = array(
-        'fd_name' => "Discount order",
+        'fd_name' => "Order Discount",
         'fd_type' => "decimal",
         'fd_order' => "7",
-        'fd_help'  => "Fixed $ discount per order",
+        'fd_help'  => "Fixed $ discount per order (off subtotal before freight)",
     );
     
 // Freeshipping

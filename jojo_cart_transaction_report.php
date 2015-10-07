@@ -107,33 +107,64 @@ class jojo_plugin_jojo_cart_transaction_report extends JOJO_Plugin
             /* Calculate monthly sales totals */
             if (Jojo::getOption('cart_force_default_currency', 'yes') == 'yes' && $transaction['status']=='complete') {
                 $month = substr($transaction['completed'], 0, 7);
-                if (isset($totals[$month])) {
-                    $totals[$month]['total'] = $totals[$month]['total'] + $transaction['amount'];
-                    $totals[$month]['number']++;
-                    foreach ($transaction['items'] as $i) {
-                        $totals[$month]['items'] = $totals[$month]['items'] + $i['quantity'];
-                    }
-                } else {
-                    $totals[$month]['total'] = $transaction['amount'];
+                if (!isset($totals[$month])) {
+                    $totals[$month]['total'] = 0;
                     $totals[$month]['number'] = 1;
                     $totals[$month]['items'] = 0;
-                    foreach ($transaction['items'] as $i) {
-                        $totals[$month]['items'] = $totals[$month]['items'] + $i['quantity'];
+                    $totals[$month]['itemssold'] = array();
+                }
+                $totals[$month]['total'] = $totals[$month]['total'] + $transaction['amount'];
+                $totals[$month]['number']++;
+                foreach ($transaction['items'] as $i) {
+                    $totals[$month]['items'] = $totals[$month]['items'] + $i['quantity'];
+                    if (!isset($totals[$month]['itemssold'][$i['id']])) {
+                        $totals[$month]['itemssold'][$i['id']] = $i['quantity'];
+                        $totals[$month]['itemssoldvalue'][$i['id']] = $i['linetotal'];
+                        $totals[$month]['itemnames'][$i['id']] = $i['name'];
+                    } else {
+                        $totals[$month]['itemssold'][$i['id']] = $totals[$month]['itemssold'][$i['id']] + $i['quantity'];
+                        $totals[$month]['itemssoldvalue'][$i['id']] = $totals[$month]['itemssoldvalue'][$i['id']] + $i['linetotal'];
                     }
                 }
             }
         }
         $gt = array('total'=>0, 'number'=>0, 'average'=>0, 'items'=>0,'avitems'=>0);
         foreach ($totals as $m=>&$t) {
+            $date = explode('-', $m);
             $gt['total'] = $gt['total'] + $t['total'];
             $gt['items'] = $gt['items'] + $t['items'];
             $gt['number'] = $gt['number'] + $t['number'];
             $t['average'] = number_format($t['total'] / $t['number'], 2);
             $t['avitems'] = number_format($t['items'] / $t['number'], 1);
             $t['avitemvalue'] = $t['number'] && $t['avitems'] ? number_format(($t['total'] / $t['number']) / ($t['items'] / $t['number']), 2) : 0.00;
+            $t['rawtotal'] = $t['total'];
             $t['total'] = number_format($t['total'], 2);
+            arsort($t['itemssold']);
+            $t['itemssold'] = array_slice($t['itemssold'], 0, 3);
+            $t['bestsellers'] = array();
+            foreach($t['itemssold'] as $k=>$i) {
+                $t['bestsellers'][$k]['number'] = $i;
+                $t['bestsellers'][$k]['name'] = $t['itemnames'][$k];
+            }
+            arsort($t['itemssoldvalue']);
+            $t['itemssoldvalue'] = array_slice($t['itemssoldvalue'], 0, 3);
+            $t['valuesellers'] = array();
+            foreach($t['itemssoldvalue'] as $k=>$i) {
+                $t['valuesellers'][$k]['amount'] = round($i, 0);
+                $t['valuesellers'][$k]['name'] = $t['itemnames'][$k];
+            }
         }
-        
+        foreach ($totals as $m=>&$t) {
+            $t['change'] = 0;
+            $date = explode('-', $m);
+            $lastyear = (int)($date[0]) -1;
+            if (isset($totals[ $lastyear . '-' . $date[1]]) && $totals[ $lastyear . '-' . $date[1]]['rawtotal']) {
+                $lasttotal = $totals[ $lastyear . '-' . $date[1]]['rawtotal'];
+                $thistotal = $t['rawtotal'];
+                $change = $thistotal - $lasttotal;
+                $t['change'] =  round(($change / $lasttotal)*100, 1);
+            }
+        }
         $gt['average'] = number_format($gt['total'] / $gt['number'], 2);
         $gt['avitems'] = number_format($gt['items'] / $gt['number'], 1);
         $gt['avitemvalue'] = $gt['number'] && $gt['avitems'] ? number_format(($gt['total'] / $gt['number']) / ($gt['items'] / $gt['number']) , 2) : 0.00;
