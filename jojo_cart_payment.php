@@ -11,6 +11,7 @@
  *
  * @author  Harvey Kane <code@ragepank.com>
  * @author  Mike Cochrane <mikec@mikenz.geek.nz>
+ * @author  Tom Dale <tom@zero.co.nz>
  * @license http://www.fsf.org/copyleft/lgpl.html GNU Lesser General Public License
  * @link    http://www.jojocms.org JojoCMS
  */
@@ -20,15 +21,14 @@ class jojo_plugin_Jojo_cart_payment extends JOJO_Plugin
     function _getContent()
     {
         global $smarty, $_USERGROUPS, $_USERID;
-
         $content = array();
-
         $languageurlprefix = $this->page['pageid'] ? Jojo::getPageUrlPrefix($this->page['pageid']) : $_SESSION['languageurlprefix'];
 
         /* Make sure there's something in the cart */
         $cart = call_user_func(array(Jojo_Cart_Class, 'getCart'));
+        $cart->userid = $_USERID ?: $cart->userid;
         if (!count($cart->items)) {
-            Jojo::redirect(_SECUREURL . '/' .$languageurlprefix. 'cart/');
+            Jojo::redirect(_SECUREURL . '/' . $languageurlprefix . 'cart/');
             exit;
         }
 
@@ -48,9 +48,9 @@ class jojo_plugin_Jojo_cart_payment extends JOJO_Plugin
         $cart->order['surcharge']  = call_user_func(array(Jojo_Cart_Class, 'getSurcharge'));
         $cart->order['amount']   = call_user_func(array(Jojo_Cart_Class, 'total'));
         if ($cart->order['subtotal']==0) {
-          $cart->order['freight']=0;
-          $cart->order['surcharge']=0;
-         $cart->order['amount']=0;
+            $cart->order['freight']=0;
+            $cart->order['surcharge']=0;
+            $cart->order['amount']=0;
         }
         if (isset($cart->fields['shipping_rd'])) {
             $rdsurcharge = !empty($cart->fields['shipping_rd']) ? Jojo::selectRow("SELECT rural_surcharge FROM {cart_region} WHERE regioncode = ?", array($cart->fields['shippingRegion'])) : '';

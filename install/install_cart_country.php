@@ -25,7 +25,7 @@ $query = "
       `applytax` enum('yes','no') NOT NULL DEFAULT 'no',
       `hasstates` enum('yes','no') NOT NULL DEFAULT 'no',
       PRIMARY KEY  (`countrycode`)
-    ) ENGINE=MyISAM DEFAULT CHARSET=latin1;";
+    ) ENGINE = InnoDB;";
 
 /* Check table structure */
 $result = Jojo::checkTable($table, $query);

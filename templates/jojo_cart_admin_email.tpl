@@ -36,6 +36,7 @@ item          |{if $plu} plu | {/if}   qty   |   price  | line total
 {/if}{/if}
 {jojoHook hook="jojo_cart_admin_email_bottom"}
 {include file="jojo_cart_checkout_admin_email.tpl"}
+View the full transaction report at {$SITEURL}/admin/cart/transactions/
 
 {if $message}###Message emailed to customer
 {$message}{/if}

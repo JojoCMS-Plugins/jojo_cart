@@ -22,7 +22,7 @@ $query = "
         `state` VARCHAR( 255 ) NOT NULL,
         `region` VARCHAR( 255 ) NOT NULL,
         PRIMARY KEY  (`statecode`)
-    ) ENGINE=MyISAM DEFAULT CHARSET=latin1;";
+    ) ENGINE = InnoDB;";
 
 /* Check table structure */
 $result = Jojo::checkTable($table, $query);

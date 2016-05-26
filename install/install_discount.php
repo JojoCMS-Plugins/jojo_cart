@@ -17,23 +17,28 @@
 $table = 'discount';
 $query = "
      CREATE TABLE {discount} (
+      `discountid` int(11) NOT NULL auto_increment,
       `discountcode` varchar(30) NOT NULL,
       `name` varchar(255) NOT NULL,
+      `status` tinyint(1) NOT NULL default '1',
+      `type` enum('code','automatic') NOT NULL default 'code',
       `description` varchar(255) NOT NULL,
       `startdate` int(11) NOT NULL,
       `finishdate` int(11) NOT NULL,
-      `discountpercent` decimal(10,0) NOT NULL,
-      `discountfixed` decimal(10,0) NOT NULL,
-      `fixedorder` decimal(10,0) NOT NULL,
-      `freeshipping` enum('yes','no') NOT NULL default 'no',
+      `discountpercent` decimal(10,2) NOT NULL,
+      `discountfixed` decimal(10,2) NOT NULL,
       `minorder` int(11) NOT NULL,
+      `fixedorder` decimal(10,2) NOT NULL,
+      `percentorder` decimal(10,2) NOT NULL,
+      `freeshipping` enum('yes','no') NOT NULL default 'no',
+      `minamount` decimal(10,0) NOT NULL,
       `products` text NOT NULL,
       `exclusions` text NOT NULL,
       `custom` text NOT NULL,
       `singleuse` enum('yes','no') NOT NULL default 'no',
       `usedby` varchar(255) NOT NULL,
-      PRIMARY KEY  (`discountcode`)
-    ) ENGINE=MyISAM DEFAULT CHARSET=latin1;";
+      PRIMARY KEY  (`discountid`)
+    ) ENGINE = InnoDB;";
 
 /* Check table structure */
 $result = Jojo::checkTable($table, $query);

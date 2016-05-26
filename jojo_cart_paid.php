@@ -11,6 +11,7 @@
  *
  * @author  Harvey Kane <code@ragepank.com>
  * @author  Mike Cochrane <mikec@mikenz.geek.nz>
+ * @author  Tom Dale <tom@zero.co.nz>
  * @license http://www.fsf.org/copyleft/lgpl.html GNU Lesser General Public License
  * @link    http://www.jojocms.org JojoCMS
  */
@@ -42,19 +43,18 @@ class jojo_plugin_Jojo_cart_paid extends JOJO_Plugin
                 $to_email    = Jojo::either(_CART_SHIPPED_EMAIL,_CONTACTADDRESS,_FROMADDRESS,_WEBMASTERADDRESS);
                 Jojo::simpleMail($to_name, $to_email, "copy ".$subject, $message, $from_name, $from_email);
             }
-
             if (defined('_CART_ORDER_EMAIL')) {
                 /* Email admin - if defined in the cart options */
                 $to_name     = _CART_ORDER_NAME;
                 $to_email    = _CART_ORDER_EMAIL;
-                Jojo::simpleMail($to_name, $to_email, "copy ".$subject, $message, $from_name, $from_email);
+                Jojo::simpleMail($to_name, $to_email, $subject, $message, $from_name, $from_email);
             }
 
             /* Email webmaster */
             if (Jojo::getOption('cart_webmaster_copy', 'yes') == 'yes' AND $to_email != _WEBMASTERADDRESS) {
               $to_name     = _WEBMASTERNAME;
               $to_email    = _WEBMASTERADDRESS;
-              Jojo::simpleMail($to_name, $to_email, "copy ".$subject, $message, $from_name, $from_email);
+              Jojo::simpleMail($to_name, $to_email, $subject, $message, $from_name, $from_email);
             }
 
             /* Email client */
@@ -66,21 +66,23 @@ class jojo_plugin_Jojo_cart_paid extends JOJO_Plugin
         }
 
         $cart = call_user_func(array(Jojo_Cart_Class, 'getCart'), $token);
-        //if (($cart->shipped == 0) || ($cart->shipped == -1)) $cart->shipped = time();
 
         /* ensure the actioncode is the same as is stored against the cart */
         if ($actioncode != $cart->actioncode) {
             $content['content'] = 'This link is invalid.';
         } else {
+            $checkid = false;
             switch($action){
               case "paid":
               case "paidadmin_complete":
                 $cart->cartstatus = 'complete';
                 $smarty->assign('changestatus','');
+                $checkid = true;
                 break;
               case "paidadmin_paymentpending":
                 $cart->cartstatus = 'payment_pending';
                 $smarty->assign('changestatus','Status has been changed to payment pending');
+                $checkid = true;
                 break;
               case "paidadmin_abandoned":
                 $cart->cartstatus = 'abandoned';
@@ -88,7 +90,20 @@ class jojo_plugin_Jojo_cart_paid extends JOJO_Plugin
                 break;
             }
 
-            call_user_func(array(Jojo_Cart_Class, 'saveCart'));
+            if ($checkid && !$cart->id) { 
+                $lastcart = Jojo::selectRow("SELECT id FROM {cart} ORDER BY id DESC"); 
+                $lastnum = Jojo::selectRow("SELECT id FROM {cart_ordernumbers} ORDER BY id DESC");
+                if ($lastcart['id']==$lastnum['id']) {
+                    // add a new id
+                    $lastinsert = Jojo::insertQuery("INSERT INTO {cart_ordernumbers} set value=1");
+                    $cart->id = $lastinsert;
+                } elseif ($lastcart['id']<$lastnum['id']) {
+                    // restore missing id
+                    $cart->id = $lastnum['id'];
+                }
+            }
+
+            Jojo_Plugin_Jojo_cart::saveCart($cart, $notimeupdate=true);
 
             /* hook for plugins to make custom actions */
             Jojo::runHook('jojo_cart_paid_hook', $cart->token);

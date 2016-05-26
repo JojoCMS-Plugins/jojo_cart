@@ -11,6 +11,7 @@
  *
  * @author  Harvey Kane <code@ragepank.com>
  * @author  Mike Cochrane <mikec@mikenz.geek.nz>
+ * @author  Tom Dale <tom@zero.co.nz>
  * @license http://www.fsf.org/copyleft/lgpl.html GNU Lesser General Public License
  * @link    http://www.jojocms.org JojoCMS
  */
@@ -18,19 +19,20 @@
 $table = 'cart';
 $query = "
      CREATE TABLE {cart} (
-      `id` INT(11) NOT NULL,
-      `token` VARCHAR( 40 ) NOT NULL ,
-      `handler` VARCHAR( 50 ) NULL ,
-      `amount` decimal(10,2) NOT NULL DEFAULT '0.00',
+      `id` int(11) NOT NULL,
+      `token` varchar( 40 ) NOT NULL,
+      `handler` varchar( 50 ) NULL,
+      `amount` decimal(10,2) NOT NULL default '0.00',
       `data` text NOT NULL ,
       `data_blob` blob NOT NULL ,
-      `status` enum('pending','abandoned','complete','payment_pending') NOT NULL DEFAULT 'pending',
-      `shipped` INT NOT NULL DEFAULT '-1',
-      `ip` VARCHAR( 255 ) NOT NULL ,
-      `userid` INT(11) ,
-      `updated` INT NOT NULL ,
-      `actioncode` VARCHAR( 40 ),
-      `testmode` ENUM('yes','no','') NOT NULL DEFAULT '' ,
+      `status` enum('pending','abandoned','complete','payment_pending','failed','processing','unverified') NOT NULL default 'pending',
+      `shipped` int NOT NULL default '-1',
+      `ip` varchar( 255 ) NOT NULL,
+      `userid` int(11),
+      `updated` int NOT NULL,
+      `actioncode` varchar( 40 ),
+      `testmode` ENUM('yes','no','') NOT NULL default '',
+      `locked` tinyint(1) NOT NULL default '0',
       PRIMARY KEY ( `token` )
       ) ENGINE = InnoDB ";
 
@@ -86,10 +88,6 @@ foreach ($rows as $row) {
         Jojo::updateQuery("UPDATE {cart} SET amount=? WHERE token=? LIMIT 1", array($cart->order['amount'], $cart->token));
     }
 }
-
-/* This change is too important to ignore - so manual query required */
-Jojo::structureQuery("ALTER TABLE {cart} CHANGE `status` `status` ENUM('pending','abandoned','complete','payment_pending') NOT NULL DEFAULT 'pending';");
-
 
 // ****************************
 $table = 'cart_points';

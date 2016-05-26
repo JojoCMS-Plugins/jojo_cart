@@ -22,7 +22,7 @@ $query = "
             `longname` VARCHAR( 255 ) NOT NULL,
             `displayorder` INT(11) NOT NULL DEFAULT '99',
             PRIMARY KEY  (`id`)
-        ) ENGINE = MYISAM ";
+        ) ENGINE = InnoDB ";
 
 /* Check table structure */
 $result = Jojo::checkTable($table, $query);

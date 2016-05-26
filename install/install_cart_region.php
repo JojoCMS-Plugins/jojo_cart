@@ -22,7 +22,7 @@ $query = "
       `displayorder` int(11) NOT NULL,
       `minfreight` blob NOT NULL,
       PRIMARY KEY  (`regioncode`)
-    ) ENGINE=MyISAM DEFAULT CHARSET=latin1;";
+    ) ENGINE = InnoDB;";
 
 /* Check table structure */
 $result = Jojo::checkTable($table, $query);

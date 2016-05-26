@@ -137,7 +137,7 @@ $data = Jojo::selectRow("SELECT pageid FROM {page} WHERE pg_link = ?", array('jo
 if (!$data) {
   echo "Adding <b>Cart Transactionlist report</b> Page to menu<br />";
   Jojo::insertQuery('INSERT INTO {page} SET pg_title = ?, pg_url = ?, pg_body_code = ?, pg_link = ?, pg_order = ?, pg_parent = ?, pg_contentcache = ?, pg_sitemapnav = ?, pg_xmlsitemapnav = ?, pg_mainnav = ?',
-       array("Transactionlist report", "admin/cart/transaction_list", "[editor:html]\n", "jojo_plugin_jojo_cart_transaction_list", "3", "23", "no", "no", "no", "no"));
+       array("Transactionlist report", "admin/cart/transaction_list", "[editor:html]\n", "jojo_plugin_jojo_cart_transaction_list", "3", $_ADMIN_SHOPPING_ID, "no", "no", "no", "no"));
 }
 
 // Cart regions

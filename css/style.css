@@ -9,13 +9,9 @@ div.receipt {
     .titles {
         font-weight: bold;
         > div {
-            text-align: center;
             padding-top: 1em;
             padding-bottom: 1em;
             border-bottom: 1px solid #aaa;
-        }
-        .cart-item {
-            text-align: left;
         }
         .cart-linetotal {
             text-align: right;
@@ -26,6 +22,9 @@ div.receipt {
         .item-wrap {
             padding: 1em 0;
             border-bottom: 1px solid #aaa;
+        }
+        strike {
+            font-size: 90%;
         }
     }
     .cart-item {
@@ -75,7 +74,6 @@ div.receipt {
 /* Small devices (tablets, 768px and up) */
 @media (min-width: @screen-sm-min) {
     .shoppingcart {
-        .cart-quantity { text-align:center;}
         .cart-remove { position: relative; top: 0.3em;}
     }
 }

@@ -394,7 +394,7 @@ class Jojo_Cart_Freight {
     }
 
     /**
-     * Sets the default priceing
+     * Sets the default pricing
      */
     function setDefault($default = array())
     {
@@ -434,7 +434,7 @@ class Jojo_Cart_Freight {
     }
 
     /**
-     * Get's the default priceing
+     * Get's the default pricing
      */
     function getDefault($default = array())
     {

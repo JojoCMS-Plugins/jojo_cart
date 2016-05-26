@@ -11,6 +11,7 @@
  *
  * @author  Harvey Kane <code@ragepank.com>
  * @author  Mike Cochrane <mikec@mikenz.geek.nz>
+ * @author  Tom Dale <tom@zero.co.nz>
  * @license http://www.fsf.org/copyleft/lgpl.html GNU Lesser General Public License
  * @link    http://www.jojocms.org JojoCMS
  */
@@ -141,7 +142,7 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
         static $has_blob;
         if (isset($has_blob)) return true;
         if (!Jojo::fieldExists('cart', 'data_blob')) {
-            Jojo::structureQuery("ALTER TABLE `cart` ADD `data_blob` BLOB NOT NULL AFTER `data`");
+            Jojo::structureQuery("ALTER TABLE {cart} ADD `data_blob` BLOB NOT NULL AFTER `data`");
         }
         $has_blob = true;
         return true;
@@ -152,15 +153,16 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
      * database, else return the one in the session.
      */
     public static function getCart($token = false) {
-        self::addDataBlobField();
-        if ($token && $data = Jojo::selectRow("SELECT *, OCTET_LENGTH(data_blob) AS blobsize FROM {cart} WHERE token = ?", $token)) {
+        if ($token && $data = Jojo::selectRow("SELECT * FROM {cart} WHERE token = ?", $token)) {
             /* Return a database cart */
-            //$_SESSION['jojo_cart'] = unserialize($data['data']);
-            if ($data['blobsize'] > 0) {
-                $_SESSION['jojo_cart'] = unserialize($data['data_blob']);
-            } else {
-                $_SESSION['jojo_cart'] = unserialize($data['data']);
-            }
+            $_SESSION['jojo_cart'] = unserialize($data['data']);
+            $_SESSION['jojo_cart']->id  = $data['id'];
+            $_SESSION['jojo_cart']->token  = $data['token'];
+            $_SESSION['jojo_cart']->cartstatus  = $data['status'];
+            $_SESSION['jojo_cart']->handler  = $data['handler'];
+            $_SESSION['jojo_cart']->userid  = $data['userid'];
+            $_SESSION['jojo_cart']->updated  = $data['updated'];
+            $_SESSION['jojo_cart']->locked  = $data['locked'];
 
             /* save token to cookie */
             if (Jojo::getOption('cart_lifetime', 0)) {
@@ -172,12 +174,15 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
         /* Attempt to load the cart from a cookie */
         $cart_lifetime = Jojo::getOption('cart_lifetime', 0);
         if ($cart_lifetime && (!isset($_SESSION['jojo_cart']) || !is_object($_SESSION['jojo_cart']))) {
-            if (!empty($_COOKIE['jojo_cart_token']) && $data = Jojo::selectRow("SELECT *, OCTET_LENGTH(data_blob) AS blobsize FROM {cart} WHERE token = ? AND updated > ? AND status='pending'", array($_COOKIE['jojo_cart_token'], strtotime('-'.$cart_lifetime.' day')))) {
-                if ($data['blobsize'] > 0) {
-                    $_SESSION['jojo_cart'] = unserialize($data['data_blob']);
-                } else {
-                    $_SESSION['jojo_cart'] = unserialize($data['data']);
-                }
+            if (!empty($_COOKIE['jojo_cart_token']) && $data = Jojo::selectRow("SELECT * FROM {cart} WHERE token = ? AND updated > ? AND status='pending'", array($_COOKIE['jojo_cart_token'], strtotime('-'.$cart_lifetime.' day')))) {
+                $_SESSION['jojo_cart'] = unserialize($data['data']);
+                $_SESSION['jojo_cart']->id  = $data['id'];
+                $_SESSION['jojo_cart']->token  = $data['token'];
+                $_SESSION['jojo_cart']->cartstatus  = $data['status'];
+                $_SESSION['jojo_cart']->handler  = $data['handler'];
+                $_SESSION['jojo_cart']->userid  = $data['userid'];
+                $_SESSION['jojo_cart']->updated  = $data['updated'];
+                $_SESSION['jojo_cart']->locked  = $data['locked'];
             }
         }
 
@@ -185,6 +190,8 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
         if (!isset($_SESSION['jojo_cart']) || !is_object($_SESSION['jojo_cart'])) {
             $_SESSION['jojo_cart'] = new stdClass();
         }
+        $_SESSION['jojo_cart']->id         = isset($_SESSION['jojo_cart']->id)          ? $_SESSION['jojo_cart']->id          : 0;
+        $_SESSION['jojo_cart']->userid     = isset($_SESSION['jojo_cart']->userid)      ? $_SESSION['jojo_cart']->userid      : 0;
         $_SESSION['jojo_cart']->items      = isset($_SESSION['jojo_cart']->items)       ? $_SESSION['jojo_cart']->items       : array();
         $_SESSION['jojo_cart']->token      = isset($_SESSION['jojo_cart']->token)       ? $_SESSION['jojo_cart']->token       : self::newToken();
         $_SESSION['jojo_cart']->errors     = isset($_SESSION['jojo_cart']->errors)      ? $_SESSION['jojo_cart']->errors      : array();
@@ -193,6 +200,8 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
         $_SESSION['jojo_cart']->amount     = isset($_SESSION['jojo_cart']->amount)      ? $_SESSION['jojo_cart']->amount      : '';
         $_SESSION['jojo_cart']->shipped    = isset($_SESSION['jojo_cart']->shipped)     ? $_SESSION['jojo_cart']->shipped     : 0;
         $_SESSION['jojo_cart']->cartstatus = isset($_SESSION['jojo_cart']->cartstatus)  ? $_SESSION['jojo_cart']->cartstatus  : 'pending';
+        $_SESSION['jojo_cart']->updated    = isset($_SESSION['jojo_cart']->updated)     ? $_SESSION['jojo_cart']->updated     : 0;
+        $_SESSION['jojo_cart']->locked     = isset($_SESSION['jojo_cart']->locked)      ? $_SESSION['jojo_cart']->locked      : 0;
 
         /* Create unique action code for use in admin emails, ensure they are not already in the database for another order */
         if (empty($_SESSION['jojo_cart']->actioncode)) {
@@ -211,7 +220,8 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
     /**
      * Save a cart instance to the database
      */
-    public static function saveCart($cart = false) {
+    public static function saveCart($cart=false, $notimeupdate=false, $lock=false) {
+        global $_USERGROUPS;
         if ($cart === false) {
             $cart = self::getCart();
         }
@@ -224,7 +234,7 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
         if (isset($cart->order['cardExpiryYear']))  unset($cart->order['cardExpiryYear']);
         if (isset($cart->order['cardName']))        unset($cart->order['cardName']);
 
-        $status = (isset($cart->cartstatus)) ? $cart->cartstatus : 'pending'; //default to pending
+        $status = isset($cart->cartstatus) ? $cart->cartstatus : 'pending'; //default to pending
 
         /* Create unique action code for use in admin emails, ensure they are not already in the database for another order */
         if (!empty($cart->actioncode)) {
@@ -237,17 +247,27 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
             } while (count($res) > 0);
         }
 
-       if(!isset($cart->id)) $cart->id = 0;
-
-       if (empty($cart->order['amount'])) $cart->order['amount'] = 0;
+        if(!isset($cart->id)) $cart->id = 0;
+        if (empty($cart->order['amount'])) $cart->order['amount'] = 0;
+        $updated = $notimeupdate ? $cart->updated : time();
 
         $cart->order['currency']        = self::getCartCurrency();
         $cart->order['currency_symbol'] = self::getCurrencySymbol($cart->order['currency']);
 
+        /* Locked carts can only be updated by admins */
+        if ($cart->locked && !in_array('admin',$_USERGROUPS)) {
+            return false;
+        }
+        $cart->locked = $lock ? 1 : $cart->locked;
+
         /* Save */
         self::addDataBlobField();
-        Jojo::updateQuery("REPLACE INTO {cart} SET id=?, token=?, data=?, data_blob=?, status=?, ip=?, userid = ?, updated=?, handler=?, amount=?, actioncode=?, shipped=?",
-            array($cart->id, $token, serialize($cart), serialize($cart), $status, Jojo::getIp(), (isset($_SESSION['userid']) ?: ''), time(), $cart->handler, $cart->order['amount'], $actioncode, $cart->shipped));
+        if (!Jojo::fieldExists('cart', 'locked')) {
+            Jojo::structureQuery("ALTER TABLE {cart} ADD `locked` tinyint(1) NOT NULL default '0';");
+        } 
+        $saved = Jojo::updateQuery("REPLACE INTO {cart} SET id=?, token=?, data=?, status=?, ip=?, userid=?, updated=?, handler=?, amount=?, actioncode=?, shipped=?, locked=?",
+        array($cart->id, $token, serialize($cart), $status, Jojo::getIp(), $cart->userid, $updated, $cart->handler, $cart->order['amount'], $actioncode, $cart->shipped, $cart->locked));
+
         /* save token to cookie */
         if (Jojo::getOption('cart_lifetime', 0)) {
             setcookie("jojo_cart_token", $token, time() + (60 * 60 * 24 * Jojo::getOption('cart_lifetime', 0)), '/' . _SITEFOLDER);
@@ -433,6 +453,7 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
                 return false;
             }
         }
+        $item = self::applyDiscount($item);
 
         $cart->items[$id] = $item;
 
@@ -473,40 +494,89 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
     public static function subTotal()
     {
         $cart = self::getCart();
-        $cart->discount['exclusions'] = isset($cart->discount['exclusions']) ? $cart->discount['exclusions'] : array();
-        $cart->discount['products']   = isset($cart->discount['products'])   ? $cart->discount['products']   : array();
-        $cart->discount['minorder']   = isset($cart->discount['minorder'])   ? $cart->discount['minorder']   : 0;
-        $cart->discount['percent']    = isset($cart->discount['percent'])    ? $cart->discount['percent']    : 0;
-        $cart->discount['fixed']      = isset($cart->discount['fixed'])      ? $cart->discount['fixed']      : 0;
-        $cart->discount['fixedorder'] = isset($cart->discount['fixedorder']) ? $cart->discount['fixedorder'] : 0;
-        $cart->discount['singleuse']  = isset($cart->discount['singleuse'])  ? $cart->discount['singleuse']  : false;
+        $cart->discount['code']         = isset($cart->discount['code'])  ? $cart->discount['code'] : '';
+        $cart->discount['exclusions']   = isset($cart->discount['exclusions'])  ? $cart->discount['exclusions'] : array();
+        $cart->discount['productranges']   = isset($cart->discount['productranges']) ? $cart->discount['productranges']   : array();
+        $cart->discount['exclusionranges'] = isset($cart->discount['exclusionranges']) ? $cart->discount['exclusionranges']   : array();
+        $cart->discount['products']     = isset($cart->discount['products'])    ? $cart->discount['products']   : array();
+        $cart->discount['minorder']     = isset($cart->discount['minorder'])    ? $cart->discount['minorder']   : 0;
+        $cart->discount['percent']      = isset($cart->discount['percent'])     ? $cart->discount['percent']    : 0;
+        $cart->discount['fixed']        = isset($cart->discount['fixed'])       ? $cart->discount['fixed']      : 0;
+        $cart->discount['fixedorder']   = isset($cart->discount['fixedorder'])  ? $cart->discount['fixedorder'] : 0;
+        $cart->discount['percentorder'] = isset($cart->discount['percentorder']) ? $cart->discount['percentorder'] : 0;
+        $cart->discount['minamount']    = isset($cart->discount['minamount'])   ? $cart->discount['minamount']   : 0;
+        $cart->discount['singleuse']    = isset($cart->discount['singleuse'])   ? $cart->discount['singleuse']  : false;
 
         $cart->points['used']  = isset($cart->points['used'])  ? $cart->points['used']  : false;
+
+        /* Calculate undiscounted order subtotal  */
+        $rawsubtotal = 0;
+        $rawlinetotal = 0;
+        foreach ($cart->items as $k => $item) {
+            $rawlinetotal = $cart->items[$k]['baseprice'] * $cart->items[$k]['quantity'];
+            $rawsubtotal += $rawlinetotal;
+        }
 
         $subtotal = 0;
         foreach ($cart->items as $k => $item) {
             $cart->items[$k]['price'] = $cart->items[$k]['baseprice'];
-            $cart->items[$k]['netprice'] = $cart->items[$k]['price'];
+            $cart->items[$k]['netprice'] = $cart->items[$k]['netprice'] ?: $cart->items[$k]['price'];
+            /* Apply item discounts */
+            $excluded = false;
+            /* check if id is in excluded ranges of items */
+            if (in_array($item['id'], $cart->discount['exclusions'])) {
+                $excluded = true;
+            } elseif ($cart->discount['exclusionranges']) {
+               foreach($cart->discount['exclusionranges'] as $d) {
+                    $pattern = preg_quote($d,'/'); 
+                    $pattern = str_replace( '\*' , '.*?', $pattern);
+                    if (preg_match( '/^' . $pattern . '$/i' , $item['id'])) {
+                        $excluded = true;
+                        break;
+                    }
+                }
 
-            /* Apply discounts */
-            if (!in_array($item['id'], $cart->discount['exclusions']) &&
-                (!count($cart->discount['products']) || in_array($item['id'], $cart->discount['products'])) &&
-                $cart->items[$k]['quantity'] >= $cart->discount['minorder']) {
-                if (isset($cart->discount['custom'][$item['id']])) {
+            }
+            /* If order total is above the minimum amount required ...  */
+            if (($rawsubtotal > $cart->discount['minamount']) &&
+            /* and is not an excluded product ...  */
+               !$excluded &&
+            /* .. and the number of items ordered is above the minimum quantity requirement ..  */
+               $cart->items[$k]['quantity'] >= $cart->discount['minorder'] && 
+            /*  .. check for general per item discounts or specific item discounts or range discounts  */
+                ((!$cart->discount['products'] && !$cart->discount['productranges']) || in_array($item['id'], $cart->discount['products']) || $cart->discount['productranges'])
+            ) {
+
+                if ($cart->discount['productranges']) {
+                   foreach($cart->discount['productranges'] as $d) {
+                        $pattern = preg_quote($d,'/'); 
+                        $pattern = str_replace( '\*' , '.*?', $pattern);
+                        if (preg_match( '/^' . $pattern . '$/i' , $item['id'])) {
+                            if ($cart->discount['percent']) {
+                                /* Percentage discount off item */
+                                $cart->items[$k]['netprice'] -= $cart->items[$k]['price'] * $cart->discount['percent'] / 100;
+                            } elseif ($cart->discount['fixed']) {
+                                /* Fixed discount off item */
+                                $cart->items[$k]['netprice'] -= $cart->discount['fixed'];
+                            }
+                            break;
+                        }
+                    }
+                } elseif (isset($cart->discount['custom'][$item['id']])) {
                     if (preg_match('/^(\\d+)%$/', $cart->discount['custom'][$item['id']], $match)) {
-                        /* Per item Percentage discount */
+                        /* Custom item Percentage discount */
                         $percentage = $match[1];
                         $cart->items[$k]['netprice'] -= $cart->items[$k]['price'] * $percentage / 100;
                     } elseif (preg_match('/^(\\d+)$/', $cart->discount['custom'][$item['id']], $match)) {
-                        /* Per item Fixed discount */
+                        /* Custom item Fixed discount */
                         $fixed = $match[1];
                         $cart->items[$k]['netprice'] -= $fixed;
                     }
-                } elseif ($cart->discount['percent']) {
-                    /* Percentage discount */
+                } elseif ($cart->discount['percent'] && $cart->discount['percent'] > 0) {
+                   /* Percentage discount off item */
                     $cart->items[$k]['netprice'] -= $cart->items[$k]['price'] * $cart->discount['percent'] / 100;
-                } elseif ($cart->discount['fixed']) {
-                    /* Fixed discount */
+                } elseif ($cart->discount['fixed'] && $cart->discount['fixed'] > 0) {
+                   /* Fixed discount off item */
                     $cart->items[$k]['netprice'] -= $cart->discount['fixed'];
                 }
             }
@@ -522,13 +592,25 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
                 $cart->items[$k]['price']    = self::removeTax($cart->items[$k]['price']);
                 $cart->items[$k]['netprice'] = self::removeTax($cart->items[$k]['netprice']);
             }
-
             $cart->items[$k]['linetotal'] = $cart->items[$k]['netprice'] * $cart->items[$k]['quantity'];
             $cart->items[$k]['linetotal'] = Jojo::applyFilter('cart_linetotal', $cart->items[$k]['linetotal'], array($item['id'], $item['quantity']));
             $subtotal += $cart->items[$k]['linetotal'] ;
+            $cart->items[$k]['price']    = is_numeric($cart->items[$k]['price']) ? number_format($cart->items[$k]['price'],2) : $cart->items[$k]['price'];
+            $cart->items[$k]['netprice'] = is_numeric($cart->items[$k]['netprice']) ? number_format($cart->items[$k]['netprice'],2) : $cart->items[$k]['netprice'];
         }
-        $cart->order['fixedorder'] = $cart->discount['fixedorder'];
+
+        $percentorderdiscount = $cart->discount['percentorder'] && ($rawsubtotal > $cart->discount['minamount']) ? $cart->discount['percentorder'] * $subtotal / 100 : 0;
+        $fixedorderdiscount = $cart->discount['fixedorder'] && ($rawsubtotal > $cart->discount['minamount']) ? $cart->discount['fixedorder'] : 0;
+        $cart->order['fixedorder'] = $percentorderdiscount + $fixedorderdiscount;
+        if ($cart->discount['minamount'] && $rawsubtotal < $cart->discount['minamount']) {
+            $cart->errors = array();
+            $currency = self::getCartCurrency($cart->token);
+            $cart->errors[] = 'This discount code only applies to orders above ' . self::getCurrencySymbol($currency) . $cart->discount['minamount'];
+        } elseif ($cart->discount['minamount'] && $rawsubtotal > $cart->discount['minamount']) {
+            $cart->errors = array();
+        }
         $subtotal -= $cart->order['fixedorder'];
+
         /* Apply Points discount */
         if ($cart->points['used']) {
             $pointsvalue = $cart->points['used']*Jojo::getOption('cart_loyalty_value', 0);
@@ -640,15 +722,15 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
     public static function getSurcharge()
     {
         /* check if we're using surcharges */
-		if (!Jojo::getOption('cart_freight_surcharge', 0)) {
-			return false;
-		} 
+        if (!Jojo::getOption('cart_freight_surcharge', 0)) {
+            return false;
+        } 
         /* check if the subtotal is more than the surcharge trigger amount */
         $cart = self::getCart();
-  		if ($cart->order['subtotal'] < (int)(Jojo::getOption('cart_freight_surcharge_at', 0))) {
-			return false;
-		}
-		return (int)(Jojo::getOption('cart_freight_surcharge', 0));
+        if ($cart->order['subtotal'] < (int)(Jojo::getOption('cart_freight_surcharge_at', 0))) {
+            return false;
+        }
+        return (int)(Jojo::getOption('cart_freight_surcharge', 0));
     }
 
     /**
@@ -688,7 +770,7 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
             $cart->errors[] = "'$code' is not a valid discount code";
             unset($cart->discount);
             return false;
-        } elseif (($discount['finishdate'] > 0) && (time() > $discount['finishdate'])) {
+        } elseif (($discount['finishdate'] > 0 && time() > $discount['finishdate']) || (isset($discount['status']) && !$discount['status']) ) {
             /* The code has expired */
             unset($cart->discount);
             $cart->errors[] = 'This discount code has expired';
@@ -702,6 +784,8 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
             unset($cart->discount);
             $cart->errors[] = 'This discount code has already been used';
             return false;
+        } elseif ( isset($discount['type']) && $discount['type']=='general') {
+            return false;
         }
 
         /* Add discount details to the cart */
@@ -709,26 +793,49 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
         $cart->discount['code']       = $discount['discountcode'];
         $cart->discount['percent']    = $discount['discountpercent'];
         $cart->discount['fixed']      = $discount['discountfixed'];
-        $cart->discount['fixedorder'] = $discount['fixedorder'];
         $cart->discount['minorder']   = $discount['minorder'];
+        $cart->discount['percentorder'] = $discount['percentorder'];
+        $cart->discount['fixedorder'] = $discount['fixedorder'];
+        $cart->discount['minamount']   = $discount['minamount'];
         $cart->discount['products']   = array();
+        $cart->discount['productranges'] = array();
         $cart->discount['exclusions'] = array();
+        $cart->discount['exclusionranges'] = array();
         $cart->discount['singleuse']  = ($discount['singleuse'] == 'yes') ? true : false;
         $cart->discount['freeshipping']  = (isset($discount['freeshipping']) && ($discount['freeshipping'] == 'yes')) ? true : false;
 
-        /* Clean up codes and remove empty ones */
-        foreach (explode("\n", str_replace(',', "\n", $discount['products'])) as $k => $v) {
-            $v = trim($v);
-            if (!empty($v)) {
-                $cart->discount['products'][] = $v;
+        if ($discount['products'] && strpos($discount['products'],'*')!==false) {
+            /* add wildcard codes to a separate array */
+            foreach (Jojo::csv2array($discount['products']) as $k => $v) {
+                if (strpos($v,'*')!==false) {
+                    $cart->discount['productranges'][] = $v;
+                }
             }
         }
-
-        /* Clean up codes and remove empty ones */
-        foreach (explode("\n", str_replace(',', "\n", $discount['exclusions'])) as $k => $v) {
-            $v = trim($v);
-            if (!empty($v)) {
-                $cart->discount['exclusions'][] = $v;
+        if ($discount['products']) {
+            /* Clean up codes and remove empty or wildcard ones */
+            foreach (explode("\n", str_replace(',', "\n", $discount['products'])) as $k => $v) {
+                $v = trim($v);
+                if ($v && strpos($v,'*')===false) {
+                    $cart->discount['products'][] = $v;
+                }
+            }
+        }
+        if ($discount['exclusions'] && strpos($discount['exclusions'],'*')!==false) {
+            /* add wildcard codes to a separate array */
+            foreach (Jojo::csv2array($discount['exclusions']) as $k => $v) {
+                if (strpos($v,'*')!==false) {
+                    $cart->discount['exclusionranges'][] = $v;
+                }
+            }
+        }
+        if ($discount['exclusions']) {
+            /* Clean up codes and remove empty or wildcard ones */
+            foreach (explode("\n", str_replace(',', "\n", $discount['exclusions'])) as $k => $v) {
+                $v = trim($v);
+                if ($v && strpos($v,'*')===false) {
+                    $cart->discount['exclusions'][] = $v;
+                }
             }
         }
 
@@ -747,9 +854,123 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
         return true;
     }
 
+    public static function applyDiscount($item=false)
+    {
+        if ($item) {
+            $discounts = Jojo::selectQuery("SELECT * FROM {discount}");
+            $cart = self::getCart();
+            foreach ($discounts as $d) {
+                if (isset($d['type']) && $d['type']=='automatic' && isset($d['status']) && $d['status'] && $item['netprice']) {
+                    $d['productarray'] = array();
+                    $d['productranges'] = array();
+                    $d['exclusionarray'] = array();
+                    $d['exclusionranges'] = array();
+                    $d['customarray'] = array();
+                    if ($d['products'] && strpos($d['products'],'*')!==false) {
+                        /* add wildcard codes to a separate array */
+                        foreach (Jojo::csv2array($d['products']) as $k => $v) {
+                            if (strpos($v,'*')!==false) {
+                                $d['productranges'][] = $v;
+                            }
+                        }
+                    }
+                    if ($d['products']) {
+                        /* Clean up codes and remove empty or wildcard ones */
+                        foreach (explode("\n", str_replace(',', "\n", $d['products'])) as $k => $v) {
+                            $v = trim($v);
+                            if ($v && strpos($v,'*')===false) {
+                                $d['productarray'][] = $v;
+                            }
+                        }
+                    }
+                    if ($d['exclusions'] && strpos($d['exclusions'],'*')!==false) {
+                        /* add wildcard codes to a separate array */
+                        foreach (Jojo::csv2array($d['exclusions']) as $k => $v) {
+                            if (strpos($v,'*')!==false) {
+                                $d['exclusionranges'][] = $v;
+                            }
+                        }
+                    }
+                    if ($d['exclusions']) {
+                        /* Clean up codes and remove empty or wildcard ones */
+                        foreach (explode("\n", str_replace(',', "\n", $d['exclusions'])) as $k => $v) {
+                            $v = trim($v);
+                            if ($v && strpos($v,'*')===false) {
+                                $d['exclusionarray'][] = $v;
+                            }
+                        }
+                    }
+
+                    /* apply custom discounts */
+                    foreach (explode("\n", str_replace(',', "\n", $d['custom'])) as $k => $v) {
+                        $v = trim($v);
+                        if (!empty($v)) {
+                            $parts = explode('=', $v);
+                            $d['customarray'][trim($parts[0])] = trim($parts[1]);
+                        }
+                    }
+                    $excluded = false;
+                    /* check if id is in excluded ranges of items */
+                    if (in_array($item['id'], $d['exclusionarray'])) {
+                        $excluded = true;
+                    } elseif ($d['exclusionranges']) {
+                       foreach($d['exclusionranges'] as $e) {
+                            $pattern = preg_quote($e,'/'); 
+                            $pattern = str_replace( '\*' , '.*?', $pattern);
+                            if (preg_match( '/^' . $pattern . '$/i' , $item['id'])) {
+                                $excluded = true;
+                                break;
+                            }
+                        }
+                    }
+                    /* If is not an excluded product ...  ...  */
+                    if (!$excluded &&
+                    /* .. and the number of items ordered is above the minimum quantity requirement ..  */
+                       $item['quantity'] >= $d['minorder'] && 
+                    /*  .. check for general per item discounts or specific item discounts or range discounts  */
+                        ((!$d['products'] && !$d['productranges']) || in_array($item['id'], $d['productarray']) || $d['productranges'])
+                    ) {
+                        if ($d['productranges']) {
+                           foreach($d['productranges'] as $r) {
+                                $pattern = preg_quote($r,'/'); 
+                                $pattern = str_replace( '\*' , '.*?', $pattern);
+                                if (preg_match( '/^' . $pattern . '$/i' , $item['id'])) {
+                                    if ($d['discountpercent']) {
+                                        /* Percentage discount off item */
+                                        $item['netprice'] -= $item['price'] * $d['discountpercent'] / 100;
+                                    } elseif ($d['discountfixed']) {
+                                        /* Fixed discount off item */
+                                        $item['netprice'] -= $d['discountfixed'];
+                                    }
+                                    break;
+                                }
+                            }
+                        } elseif (isset($d['customarray'][$item['id']])) {
+                            if (preg_match('/^(\\d+)%$/', $d['custom'][$item['id']], $match)) {
+                                /* Custom item Percentage discount */
+                                $percentage = $match[1];
+                                $item['netprice'] -= $item['price'] * $percentage / 100;
+                            } elseif (preg_match('/^(\\d+)$/', $d['customarray'][$item['id']], $match)) {
+                                /* Custom item Fixed discount */
+                                $fixed = $match[1];
+                                $item['netprice'] -= $fixed;
+                            }
+                        } elseif ($d['discountpercent'] && $d['discountpercent'] > 0) {
+                           /* Percentage discount off item */
+                            $item['netprice'] -= $item['price'] * $d['discountpercent'] / 100;
+                        } elseif ($d['discountfixed'] && $d['discountfixed'] > 0) {
+                           /* Fixed discount off item */
+                            $item['netprice'] -= $d['discountfixed'];
+                        }
+                    }
+              }
+            }
+        }
+        return $item;
+    }
+ 
     public static function applyPoints($points=false)
     {
-        global $_USERID;
         $cart = self::getCart();
        /* If empty then clear points used */
         if (!$points) {
@@ -758,21 +979,18 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
             $cart->points['currentbalance'] = isset($cart->points['balance']) ? $cart->points['balance'] : 0;
             return true;
         }
-
         /* Check the user actually has points available */
         if (isset($cart->points) && $cart->points['balance'] && $cart->points['balance']>0) {
             /* Add details to the cart */
             $cart->points['used'] = $points;
             $cart->points['currentbalance'] = $cart->points['balance'] - $cart->points['used'];
             $cart->points['discount'] = Jojo::getOption('cart_loyalty_value')*$points;
-           
         } else {
             $cart->points['used'] = 0;
             $cart->points['discount'] = 0;
             $cart->points['currentbalance'] = $cart->points['balance'];
             return true;        
         }
-
         self::total();
         return true;
     }
@@ -797,7 +1015,6 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
         $testmode = self::isTestMode();
 
         $content = array();
-
         $languageurlprefix = Jojo::getPageUrlPrefix($this->page['pageid']);
 
         /* Read GET variables */
@@ -808,15 +1025,16 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
 
         /* Get the cart array */
         $cart = self::getCart();
+        $cart->userid = $_USERID ?: $cart->userid;
         $smarty->assign('token',  $cart->token);
         $smarty->assign('status', $cart->cartstatus);
         $cart->order['subtotal'] = self::subTotal();
 
-        if ($_USERID && Jojo::getOption('cart_loyalty_cost', '') && JOJO_Plugin_Jojo_cart::getCartCurrency($cart->token)==Jojo::getOption('cart_default_currency', 'USD')) {
+        if ($cart->userid && Jojo::getOption('cart_loyalty_cost', '') && JOJO_Plugin_Jojo_cart::getCartCurrency($cart->token)==Jojo::getOption('cart_default_currency', 'USD')) {
             if (isset($cart->points['balance'])) {
                 $pointsavailable = $cart->points['balance']; 
             } else {
-                $pointsavailable = Jojo::selectRow("SELECT points FROM {cart_points} WHERE userid=?", array($_USERID));
+                $pointsavailable = Jojo::selectRow("SELECT points FROM {cart_points} WHERE userid=?", array($cart->userid));
                 $pointsavailable =  ($pointsavailable && $pointsavailable['points']>0) ? $pointsavailable['points'] : 0;
                 $cart->points['balance'] = $pointsavailable;
             }
@@ -858,8 +1076,8 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
                 if (isset($savedcart->receipt)) $smarty->assign('receipt', $savedcart->receipt);
                 if (isset($savedcart->handler)) $smarty->assign('handler', $savedcart->handler);
             }
-            if ($_USERID) {
-                $current = Jojo::selectRow("SELECT points FROM {cart_points} WHERE userid=?", array($_USERID));
+            if ($cart->userid) {
+                $current = Jojo::selectRow("SELECT points FROM {cart_points} WHERE userid=?", array($cart->userid));
                 if ($current) {
                     $smarty->assign('pointsbalance', $current['points']);
                 }
@@ -936,6 +1154,112 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
         $content['content'] = $smarty->fetch('jojo_cart.tpl');
 
         return $content;
+    }
+
+    public static function sendEmails($token=false, $target=false, $empty=false)
+    {
+        global $smarty;
+        if ($cart = self::getCart($token)) {
+
+            $smarty->assign('id',         $cart->id);
+            $smarty->assign('token',      $cart->token);
+            $smarty->assign('actioncode', $cart->actioncode);
+            $smarty->assign('fields',     $cart->fields);
+            $smarty->assign('order',      $cart->order);
+            $smarty->assign('items',      $cart->items);
+            $smarty->assign('status',     $cart->cartstatus);
+            $smarty->assign('errors',     $cart->errors);
+            $smarty->assign('points',     $cart->points);
+            $smarty->assign('handler',    $cart->handler);
+            $smarty->assign('activeplugin', ucwords(str_replace('_', ' ', (str_replace('jojo_plugin_jojo_cart_', '', $cart->handler)))));
+            $smarty->assign('countries', Jojo::selectQuery("SELECT cc.countrycode AS code, cc.name, 0 AS special FROM {cart_country} AS cc ORDER BY name"));
+
+            /* are we using the discount code functionality? No need to show if the discount table is empty */
+            $data = Jojo::selectRow("SELECT COUNT(*) AS numdiscounts FROM {discount}");
+            if ($data['numdiscounts'] > 0) {
+                $smarty->assign('discount', $cart->discount);
+            }
+
+            if ($cart->cartstatus == 'payment_pending') {
+                /* allow plugins to replace the 'payment pending' text for both admin and customer emails with their own */
+                $pending_template = array('admin' => 'jojo_cart_admin_email_pending.tpl', 'customer' => 'jojo_cart_customer_email_pending.tpl');
+                $pending_template = Jojo::applyFilter('jojo_cart_process:pending_template', $pending_template, $cart);
+                $smarty->assign('pending_template', $pending_template);
+            }
+
+           /* Get visitor details for emailing etc */
+            if (!empty($cart->fields['billing_email'])) {
+                $email = $cart->fields['billing_email'];
+            } elseif (!empty($cart->fields['shipping_email'])) {
+                $email = $cart->fields['shipping_email'];
+            } else {
+                $email = Jojo::either(_CONTACTADDRESS,_FROMADDRESS,_WEBMASTERADDRESS);
+            }
+            if (!empty($cart->fields['billing_firstname'])) {
+                $name = $cart->fields['billing_firstname'] . ' ' . $cart->fields['billing_lastname'];
+            } elseif (!empty($cart->fields['shipping_firstname'])) {
+                $name = $cart->fields['shipping_firstname'] . ' ' . $cart->fields['shipping_lastname'];
+            } else {
+                $name = '';
+            }
+
+            $contact_name   = Jojo::either(_CONTACTNAME, _FROMNAME,_SITETITLE);
+            $contact_email  = Jojo::either(_CONTACTADDRESS,_FROMADDRESS,_WEBMASTERADDRESS);
+            $subject     = 'Order by ' . $name . ' on ' . Jojo::getOption('sitetitle');
+            $message     = $smarty->fetch('jojo_cart_admin_email.tpl') . Jojo::emailFooter();
+
+            include _BASEPLUGINDIR . '/jojo_core/external/parsedown/Parsedown.php';
+            $parsedown = new Parsedown();
+            $htmlmessage = $parsedown->text($message);
+            
+            if ($css = Jojo::getOption('css-email', '')) {
+                $htmlmessage = Jojo::inlineStyle($htmlmessage, $css, true);
+            }
+            
+            if ($target=='all' || $target=='admin') {
+                if (defined('_CART_ORDER_EMAIL')) {
+                    /* Email admin - if defined in the cart options */
+                    $to_name     = _CART_ORDER_NAME;
+                    $to_email    = _CART_ORDER_EMAIL;
+                    Jojo::simpleMail($to_name, $to_email, $subject, $message, $name, $email, $htmlmessage, $name . ' <' . $contact_email . '>');
+                } elseif (Jojo::getOption('cart_order_email', false)) {
+                    /* Email admin - if defined in the cart options */
+                    $to_name     = Jojo::getOption('cart_order_name', '');
+                    $to_email    = Jojo::getOption('cart_order_email', false);
+                    Jojo::simpleMail($to_name, $to_email, $subject, $message, $name, $email, $htmlmessage, $name . ' <' . $contact_email . '>');
+                } 
+                if (defined('_CONTACTADDRESS') && (_CONTACTADDRESS != _WEBMASTERADDRESS)) {
+                    /* Email admin */
+                    $to_name     = Jojo::either(_CONTACTNAME, _FROMNAME,_SITETITLE);
+                    $to_email    = Jojo::either(_CONTACTADDRESS,_FROMADDRESS,_WEBMASTERADDRESS);
+                    Jojo::simpleMail($to_name, $to_email, $subject, $message, $name, $email, $htmlmessage, $name . ' <' . $contact_email . '>');
+                }
+            }
+            if ($target=='all' || $target=='webmaster') {
+                /* Email webmaster */
+                if ($target=='webmaster' || (Jojo::getOption('cart_webmaster_copy', 'yes') == 'yes' AND $to_email != _WEBMASTERADDRESS)) {
+                    $to_name     = _WEBMASTERNAME;
+                    $to_email    = _WEBMASTERADDRESS;
+                    Jojo::simpleMail($to_name, $to_email, $subject, $message, $name, $email, $htmlmessage, $name . ' <' . $contact_email . '>');
+                }
+            }
+            if ($target=='all' || $target=='customer') {
+                /* Email client */
+                $subject     = 'Order confirmation from ' . Jojo::getOption('sitetitle');
+                $message     = $smarty->fetch('jojo_cart_customer_email.tpl');
+                $htmlmessage = $parsedown->text($message);
+                if ($css) {
+                    $htmlmessage = Jojo::inlineStyle($htmlmessage, $css, true);
+                }
+                Jojo::simpleMail($name, $email, $subject, $message, $contact_name, $contact_email, $htmlmessage, $contact_name . ' <' . $contact_email . '>');
+            }
+            if ($empty) {
+                /* empty cart and clear token */
+                call_user_func(array(Jojo_Cart_Class, 'emptyCart'));
+                unset($cart);
+            }
+           
+        }
     }
 
     function getCorrectUrl()

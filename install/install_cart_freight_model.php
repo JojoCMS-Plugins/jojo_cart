@@ -21,7 +21,7 @@ $query = "
             `name` VARCHAR( 20 ) NOT NULL ,
             `freightmodel` blob NOT NULL,
             PRIMARY KEY  (`id`)
-        ) ENGINE = MYISAM ";
+        ) ENGINE = InnoDB ";
 
 /* Check table structure */
 $result = Jojo::checkTable($table, $query);

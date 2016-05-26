@@ -24,7 +24,7 @@ class jojo_plugin_Jojo_cart_shipping extends JOJO_Plugin
         /* Is there something in the cart? */
         $cart = call_user_func(array(Jojo_Cart_Class, 'getCart'));
         if (!count($cart->items)) {
-            Jojo::redirect(_SECUREURL .'/' .$languageurlprefix. 'cart/');
+            Jojo::redirect(_SECUREURL . '/' . $languageurlprefix . 'cart/');
             exit;
         }
 
