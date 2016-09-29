@@ -433,8 +433,8 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
             $item['quantity'] = min($item['max_quantity'], $item['quantity']);
         }
         $item['baseprice']  = $item['price']; //baseprice is the original prices as stored in the DB, before tax calculations are applied (this value is exclusive or inclusive as per 'cart_tax_pricing_type' option)
-        $item['netprice']   = $item['price']; //price is the price before discounts - netprice is the price after discounts
-        $item['linetotal']  = $item['netprice'] * $qty;
+        $item['discountprice']   = $item['price']; //price is the price before discounts - netprice is the price after discounts
+        $item['linetotal']  = $item['discountprice'] * $qty;
         $item['currency']   = empty($item['currency']) ? Jojo::getOption('cart_default_currency', 'USD') : $item['currency'];
         $item['currency']   = strtoupper($item['currency']);
 
@@ -520,64 +520,66 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
         $subtotal = 0;
         foreach ($cart->items as $k => $item) {
             $cart->items[$k]['price'] = $cart->items[$k]['baseprice'];
-            $cart->items[$k]['netprice'] = $cart->items[$k]['netprice'] ?: $cart->items[$k]['price'];
-            /* Apply item discounts */
-            $excluded = false;
-            /* check if id is in excluded ranges of items */
-            if (in_array($item['id'], $cart->discount['exclusions'])) {
-                $excluded = true;
-            } elseif ($cart->discount['exclusionranges']) {
-               foreach($cart->discount['exclusionranges'] as $d) {
-                    $pattern = preg_quote($d,'/'); 
-                    $pattern = str_replace( '\*' , '.*?', $pattern);
-                    if (preg_match( '/^' . $pattern . '$/i' , $item['id'])) {
-                        $excluded = true;
-                        break;
-                    }
-                }
-
-            }
-            /* If order total is above the minimum amount required ...  */
-            if (($rawsubtotal > $cart->discount['minamount']) &&
-            /* and is not an excluded product ...  */
-               !$excluded &&
-            /* .. and the number of items ordered is above the minimum quantity requirement ..  */
-               $cart->items[$k]['quantity'] >= $cart->discount['minorder'] && 
-            /*  .. check for general per item discounts or specific item discounts or range discounts  */
-                ((!$cart->discount['products'] && !$cart->discount['productranges']) || in_array($item['id'], $cart->discount['products']) || $cart->discount['productranges'])
-            ) {
-
-                if ($cart->discount['productranges']) {
-                   foreach($cart->discount['productranges'] as $d) {
+            $cart->items[$k]['netprice'] = $cart->items[$k]['discountprice'] ?: $cart->items[$k]['price'];
+            if ($cart->discount['code']) {
+                /* Apply item discounts */
+                $excluded = false;
+                /* check if id is in excluded ranges of items */
+                if (in_array($item['id'], $cart->discount['exclusions'])) {
+                    $excluded = true;
+                } elseif ($cart->discount['exclusionranges']) {
+                   foreach($cart->discount['exclusionranges'] as $d) {
                         $pattern = preg_quote($d,'/'); 
                         $pattern = str_replace( '\*' , '.*?', $pattern);
                         if (preg_match( '/^' . $pattern . '$/i' , $item['id'])) {
-                            if ($cart->discount['percent']) {
-                                /* Percentage discount off item */
-                                $cart->items[$k]['netprice'] -= $cart->items[$k]['price'] * $cart->discount['percent'] / 100;
-                            } elseif ($cart->discount['fixed']) {
-                                /* Fixed discount off item */
-                                $cart->items[$k]['netprice'] -= $cart->discount['fixed'];
-                            }
+                            $excluded = true;
                             break;
                         }
                     }
-                } elseif (isset($cart->discount['custom'][$item['id']])) {
-                    if (preg_match('/^(\\d+)%$/', $cart->discount['custom'][$item['id']], $match)) {
-                        /* Custom item Percentage discount */
-                        $percentage = $match[1];
-                        $cart->items[$k]['netprice'] -= $cart->items[$k]['price'] * $percentage / 100;
-                    } elseif (preg_match('/^(\\d+)$/', $cart->discount['custom'][$item['id']], $match)) {
-                        /* Custom item Fixed discount */
-                        $fixed = $match[1];
-                        $cart->items[$k]['netprice'] -= $fixed;
+
+                }
+                /* If order total is above the minimum amount required ...  */
+                if (($rawsubtotal > $cart->discount['minamount']) &&
+                /* and is not an excluded product ...  */
+                   !$excluded &&
+                /* .. and the number of items ordered is above the minimum quantity requirement ..  */
+                   $cart->items[$k]['quantity'] >= $cart->discount['minorder'] && 
+                /*  .. check for general per item discounts or specific item discounts or range discounts  */
+                    ((!$cart->discount['products'] && !$cart->discount['productranges']) || in_array($item['id'], $cart->discount['products']) || $cart->discount['productranges'])
+                ) {
+
+                    if ($cart->discount['productranges']) {
+                       foreach($cart->discount['productranges'] as $d) {
+                            $pattern = preg_quote($d,'/'); 
+                            $pattern = str_replace( '\*' , '.*?', $pattern);
+                            if (preg_match( '/^' . $pattern . '$/i' , $item['id'])) {
+                                if ($cart->discount['percent']) {
+                                    /* Percentage discount off item */
+                                    $cart->items[$k]['netprice'] -= $cart->items[$k]['price'] * $cart->discount['percent'] / 100;
+                                } elseif ($cart->discount['fixed']) {
+                                    /* Fixed discount off item */
+                                    $cart->items[$k]['netprice'] -= $cart->discount['fixed'];
+                                }
+                                break;
+                            }
+                        }
+                    } elseif (isset($cart->discount['custom'][$item['id']])) {
+                        if (preg_match('/^(\\d+)%$/', $cart->discount['custom'][$item['id']], $match)) {
+                            /* Custom item Percentage discount */
+                            $percentage = $match[1];
+                            $cart->items[$k]['netprice'] -= $cart->items[$k]['price'] * $percentage / 100;
+                        } elseif (preg_match('/^(\\d+)$/', $cart->discount['custom'][$item['id']], $match)) {
+                            /* Custom item Fixed discount */
+                            $fixed = $match[1];
+                            $cart->items[$k]['netprice'] -= $fixed;
+                        }
+                    } elseif ($cart->discount['percent'] && $cart->discount['percent'] > 0) {
+                       /* Percentage discount off item */
+                        $cart->items[$k]['netprice'] -= $cart->items[$k]['price'] * $cart->discount['percent'] / 100;
+                    } elseif ($cart->discount['fixed'] && $cart->discount['fixed'] > 0) {
+                       /* Fixed discount off item */
+                        $cart->items[$k]['netprice'] -= $cart->discount['fixed'];
                     }
-                } elseif ($cart->discount['percent'] && $cart->discount['percent'] > 0) {
-                   /* Percentage discount off item */
-                    $cart->items[$k]['netprice'] -= $cart->items[$k]['price'] * $cart->discount['percent'] / 100;
-                } elseif ($cart->discount['fixed'] && $cart->discount['fixed'] > 0) {
-                   /* Fixed discount off item */
-                    $cart->items[$k]['netprice'] -= $cart->discount['fixed'];
                 }
             }
 
@@ -858,112 +860,114 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
     {
         if ($item) {
             $discounts = Jojo::selectQuery("SELECT * FROM {discount}");
-            $cart = self::getCart();
-            foreach ($discounts as $d) {
-                if (isset($d['type']) && $d['type']=='automatic' && isset($d['status']) && $d['status'] && $item['netprice']) {
-                    $d['productarray'] = array();
-                    $d['productranges'] = array();
-                    $d['exclusionarray'] = array();
-                    $d['exclusionranges'] = array();
-                    $d['customarray'] = array();
-                    if ($d['products'] && strpos($d['products'],'*')!==false) {
-                        /* add wildcard codes to a separate array */
-                        foreach (Jojo::csv2array($d['products']) as $k => $v) {
-                            if (strpos($v,'*')!==false) {
-                                $d['productranges'][] = $v;
+            if ($discounts) {
+                $cart = self::getCart();
+                foreach ($discounts as $d) {
+                    if (isset($d['type']) && $d['type']=='automatic' && isset($d['status']) && $d['status'] && $item['discountprice']) {
+                        $d['productarray'] = array();
+                        $d['productranges'] = array();
+                        $d['exclusionarray'] = array();
+                        $d['exclusionranges'] = array();
+                        $d['customarray'] = array();
+                        if ($d['products'] && strpos($d['products'],'*')!==false) {
+                            /* add wildcard codes to a separate array */
+                            foreach (Jojo::csv2array($d['products']) as $k => $v) {
+                                if (strpos($v,'*')!==false) {
+                                    $d['productranges'][] = $v;
+                                }
                             }
                         }
-                    }
-                    if ($d['products']) {
-                        /* Clean up codes and remove empty or wildcard ones */
-                        foreach (explode("\n", str_replace(',', "\n", $d['products'])) as $k => $v) {
-                            $v = trim($v);
-                            if ($v && strpos($v,'*')===false) {
-                                $d['productarray'][] = $v;
+                        if ($d['products']) {
+                            /* Clean up codes and remove empty or wildcard ones */
+                            foreach (explode("\n", str_replace(',', "\n", $d['products'])) as $k => $v) {
+                                $v = trim($v);
+                                if ($v && strpos($v,'*')===false) {
+                                    $d['productarray'][] = $v;
+                                }
                             }
                         }
-                    }
-                    if ($d['exclusions'] && strpos($d['exclusions'],'*')!==false) {
-                        /* add wildcard codes to a separate array */
-                        foreach (Jojo::csv2array($d['exclusions']) as $k => $v) {
-                            if (strpos($v,'*')!==false) {
-                                $d['exclusionranges'][] = $v;
+                        if ($d['exclusions'] && strpos($d['exclusions'],'*')!==false) {
+                            /* add wildcard codes to a separate array */
+                            foreach (Jojo::csv2array($d['exclusions']) as $k => $v) {
+                                if (strpos($v,'*')!==false) {
+                                    $d['exclusionranges'][] = $v;
+                                }
                             }
                         }
-                    }
-                    if ($d['exclusions']) {
-                        /* Clean up codes and remove empty or wildcard ones */
-                        foreach (explode("\n", str_replace(',', "\n", $d['exclusions'])) as $k => $v) {
-                            $v = trim($v);
-                            if ($v && strpos($v,'*')===false) {
-                                $d['exclusionarray'][] = $v;
+                        if ($d['exclusions']) {
+                            /* Clean up codes and remove empty or wildcard ones */
+                            foreach (explode("\n", str_replace(',', "\n", $d['exclusions'])) as $k => $v) {
+                                $v = trim($v);
+                                if ($v && strpos($v,'*')===false) {
+                                    $d['exclusionarray'][] = $v;
+                                }
                             }
                         }
-                    }
 
-                    /* apply custom discounts */
-                    foreach (explode("\n", str_replace(',', "\n", $d['custom'])) as $k => $v) {
-                        $v = trim($v);
-                        if (!empty($v)) {
-                            $parts = explode('=', $v);
-                            $d['customarray'][trim($parts[0])] = trim($parts[1]);
-                        }
-                    }
-                    $excluded = false;
-                    /* check if id is in excluded ranges of items */
-                    if (in_array($item['id'], $d['exclusionarray'])) {
-                        $excluded = true;
-                    } elseif ($d['exclusionranges']) {
-                       foreach($d['exclusionranges'] as $e) {
-                            $pattern = preg_quote($e,'/'); 
-                            $pattern = str_replace( '\*' , '.*?', $pattern);
-                            if (preg_match( '/^' . $pattern . '$/i' , $item['id'])) {
-                                $excluded = true;
-                                break;
+                        /* apply custom discounts */
+                        foreach (explode("\n", str_replace(',', "\n", $d['custom'])) as $k => $v) {
+                            $v = trim($v);
+                            if (!empty($v)) {
+                                $parts = explode('=', $v);
+                                $d['customarray'][trim($parts[0])] = trim($parts[1]);
                             }
                         }
-                    }
-                    /* If is not an excluded product ...  ...  */
-                    if (!$excluded &&
-                    /* .. and the number of items ordered is above the minimum quantity requirement ..  */
-                       $item['quantity'] >= $d['minorder'] && 
-                    /*  .. check for general per item discounts or specific item discounts or range discounts  */
-                        ((!$d['products'] && !$d['productranges']) || in_array($item['id'], $d['productarray']) || $d['productranges'])
-                    ) {
-                        if ($d['productranges']) {
-                           foreach($d['productranges'] as $r) {
-                                $pattern = preg_quote($r,'/'); 
+                        $excluded = false;
+                        /* check if id is in excluded ranges of items */
+                        if (in_array($item['id'], $d['exclusionarray'])) {
+                            $excluded = true;
+                        } elseif ($d['exclusionranges']) {
+                           foreach($d['exclusionranges'] as $e) {
+                                $pattern = preg_quote($e,'/'); 
                                 $pattern = str_replace( '\*' , '.*?', $pattern);
                                 if (preg_match( '/^' . $pattern . '$/i' , $item['id'])) {
-                                    if ($d['discountpercent']) {
-                                        /* Percentage discount off item */
-                                        $item['netprice'] -= $item['price'] * $d['discountpercent'] / 100;
-                                    } elseif ($d['discountfixed']) {
-                                        /* Fixed discount off item */
-                                        $item['netprice'] -= $d['discountfixed'];
-                                    }
+                                    $excluded = true;
                                     break;
                                 }
                             }
-                        } elseif (isset($d['customarray'][$item['id']])) {
-                            if (preg_match('/^(\\d+)%$/', $d['custom'][$item['id']], $match)) {
-                                /* Custom item Percentage discount */
-                                $percentage = $match[1];
-                                $item['netprice'] -= $item['price'] * $percentage / 100;
-                            } elseif (preg_match('/^(\\d+)$/', $d['customarray'][$item['id']], $match)) {
-                                /* Custom item Fixed discount */
-                                $fixed = $match[1];
-                                $item['netprice'] -= $fixed;
-                            }
-                        } elseif ($d['discountpercent'] && $d['discountpercent'] > 0) {
-                           /* Percentage discount off item */
-                            $item['netprice'] -= $item['price'] * $d['discountpercent'] / 100;
-                        } elseif ($d['discountfixed'] && $d['discountfixed'] > 0) {
-                           /* Fixed discount off item */
-                            $item['netprice'] -= $d['discountfixed'];
                         }
-                    }
-              }
+                        /* If is not an excluded product ...  ...  */
+                        if (!$excluded &&
+                        /* .. and the number of items ordered is above the minimum quantity requirement ..  */
+                           $item['quantity'] >= $d['minorder'] && 
+                        /*  .. check for general per item discounts or specific item discounts or range discounts  */
+                            ((!$d['products'] && !$d['productranges']) || in_array($item['id'], $d['productarray']) || $d['productranges'])
+                        ) {
+                            if ($d['productranges']) {
+                               foreach($d['productranges'] as $r) {
+                                    $pattern = preg_quote($r,'/'); 
+                                    $pattern = str_replace( '\*' , '.*?', $pattern);
+                                    if (preg_match( '/^' . $pattern . '$/i' , $item['id'])) {
+                                        if ($d['discountpercent']) {
+                                            /* Percentage discount off item */
+                                            $item['discountprice'] -= $item['price'] * $d['discountpercent'] / 100;
+                                        } elseif ($d['discountfixed']) {
+                                            /* Fixed discount off item */
+                                            $item['discountprice'] -= $d['discountfixed'];
+                                        }
+                                        break;
+                                    }
+                                }
+                            } elseif (isset($d['customarray'][$item['id']])) {
+                                if (preg_match('/^(\\d+)%$/', $d['custom'][$item['id']], $match)) {
+                                    /* Custom item Percentage discount */
+                                    $percentage = $match[1];
+                                    $item['discountprice'] -= $item['price'] * $percentage / 100;
+                                } elseif (preg_match('/^(\\d+)$/', $d['customarray'][$item['id']], $match)) {
+                                    /* Custom item Fixed discount */
+                                    $fixed = $match[1];
+                                    $item['discountprice'] -= $fixed;
+                                }
+                            } elseif ($d['discountpercent'] && $d['discountpercent'] > 0) {
+                               /* Percentage discount off item */
+                                $item['discountprice'] -= $item['price'] * $d['discountpercent'] / 100;
+                            } elseif ($d['discountfixed'] && $d['discountfixed'] > 0) {
+                               /* Fixed discount off item */
+                                $item['discountprice'] -= $d['discountfixed'];
+                            }
+                        }
+                  }
+                }
             }
         }
         return $item;

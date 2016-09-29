@@ -133,11 +133,11 @@ class jojo_plugin_jojo_cart_transaction_report extends JOJO_Plugin
                 $gt['total'] = $gt['total'] + $t['total'];
                 $gt['items'] = $gt['items'] + $t['items'];
                 $gt['number'] = $gt['number'] + $t['number'];
-                $t['average'] = number_format($t['total'] / $t['number'], 2);
+                $t['average'] = number_format($t['total'] / $t['number'], 0);
                 $t['avitems'] = number_format($t['items'] / $t['number'], 1);
-                $t['avitemvalue'] = $t['number'] && $t['avitems'] ? number_format(($t['total'] / $t['number']) / ($t['items'] / $t['number']), 2) : 0.00;
+                $t['avitemvalue'] = $t['number'] && $t['avitems'] ? number_format(($t['total'] / $t['number']) / ($t['items'] / $t['number']), 0) : 0;
                 $t['rawtotal'] = $t['total'];
-                $t['total'] = number_format($t['total'], 2);
+                $t['total'] = number_format($t['total'], 0);
                 arsort($t['itemssold']);
                 $t['itemssold'] = array_slice($t['itemssold'], 0, 3);
                 $t['bestsellers'] = array();
@@ -173,7 +173,7 @@ class jojo_plugin_jojo_cart_transaction_report extends JOJO_Plugin
                 }
             }
             foreach ($yt as $k=>&$y) {
-                $y['average'] = $y['number'] ? number_format($y['rawtotal'] / $y['number'], 2) : 0;
+                $y['average'] = $y['number'] ? number_format($y['rawtotal'] / $y['number'], 0) : 0;
                 $y['avitems'] = $y['number'] ? number_format($y['items'] / $y['number'], 1) : '';
                 $y['avitemvalue'] = $y['number'] && $y['avitems'] ? number_format(($y['rawtotal'] / $y['number']) / ($y['items'] / $y['number']) , 2) : 0.00;
                 if (isset($yt[$k-1]) && $yt[$k-1]['rawtotal']) {
@@ -183,7 +183,7 @@ class jojo_plugin_jojo_cart_transaction_report extends JOJO_Plugin
                     $y['change'] =  round(($change / $lasttotal)*100, 0);
                 }
             }
-            $gt['average'] = $gt['number'] ? number_format($gt['total'] / $gt['number'], 2) : 0;
+            $gt['average'] = $gt['number'] ? number_format($gt['total'] / $gt['number'], 0) : 0;
             $gt['avitems'] = $gt['number'] ? number_format($gt['items'] / $gt['number'], 1) : '';
             $gt['avitemvalue'] = $gt['number'] && $gt['avitems'] ? number_format(($gt['total'] / $gt['number']) / ($gt['items'] / $gt['number']) , 2) : 0.00;
             $gt['total'] = number_format($gt['total'], 0);

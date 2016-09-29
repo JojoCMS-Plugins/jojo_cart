@@ -76,9 +76,9 @@ function change_quantity_callback(data)
     }
     if (data.items) {
             $.each(data.items, function(itemid, item) {
-                if (item.baseprice!=item.netprice) {
+                if (item.price!=item.netprice) {
                     $('#row_'+itemid+' .cart-price strike').show();
-                    $('#row_'+itemid+' .cart-price strike').html(item.baseprice);
+                    $('#row_'+itemid+' .cart-price strike').html(item.price);
                     $('#row_'+itemid+' .cart-price span').html(item.netprice);
                 } else {
                     $('#row_'+itemid+' .cart-price strike').hide();
@@ -104,7 +104,6 @@ function change_quantity_callback(data)
     }
    $('.cartItemTotal').html(data.itemtotal);
     $('.cart-total span').html(data.total.toFixed(2));
-    console.log(data.errors);
     if (!data.errors) {
       $('.shoppingcart .errors').hide();
     } else {
