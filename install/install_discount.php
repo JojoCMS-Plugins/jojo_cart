@@ -14,6 +14,11 @@
  * @link    http://www.jojocms.org JojoCMS
  */
 
+if (Jojo::tableExists('discount') && !Jojo::fieldExists('discount', 'discountid')) {
+  Jojo::structureQuery("ALTER TABLE {discount} DROP PRIMARY KEY");
+  Jojo::structureQuery("ALTER TABLE {discount} ADD `discountid` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY");
+}
+
 $table = 'discount';
 $query = "
      CREATE TABLE {discount} (
