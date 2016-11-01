@@ -495,6 +495,7 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
     {
         $cart = self::getCart();
         $cart->discount['code']         = isset($cart->discount['code'])  ? $cart->discount['code'] : '';
+        $cart->discount['type']         = isset($cart->discount['type'])  ? $cart->discount['type'] : '';
         $cart->discount['exclusions']   = isset($cart->discount['exclusions'])  ? $cart->discount['exclusions'] : array();
         $cart->discount['productranges']   = isset($cart->discount['productranges']) ? $cart->discount['productranges']   : array();
         $cart->discount['exclusionranges'] = isset($cart->discount['exclusionranges']) ? $cart->discount['exclusionranges']   : array();
@@ -520,7 +521,7 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
         $subtotal = 0;
         foreach ($cart->items as $k => $item) {
             $cart->items[$k]['price'] = $cart->items[$k]['baseprice'];
-            $cart->items[$k]['netprice'] = $cart->items[$k]['discountprice'] ?: $cart->items[$k]['price'];
+            $cart->items[$k]['netprice'] = $cart->items[$k]['discountprice'] && !($cart->discount['code'] && $cart->discount['type']=='code') ? $cart->items[$k]['discountprice'] : $cart->items[$k]['price'];
             if ($cart->discount['code']) {
                 /* Apply item discounts */
                 $excluded = false;
@@ -793,6 +794,7 @@ class Jojo_Plugin_Jojo_cart extends Jojo_Plugin
         /* Add discount details to the cart */
         $cart->discount = array();
         $cart->discount['code']       = $discount['discountcode'];
+        $cart->discount['type']       = $discount['type'];
         $cart->discount['percent']    = $discount['discountpercent'];
         $cart->discount['fixed']      = $discount['discountfixed'];
         $cart->discount['minorder']   = $discount['minorder'];

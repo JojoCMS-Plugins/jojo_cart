@@ -111,9 +111,9 @@ if (!$data) {
 // Discount codes
 $data = Jojo::selectRow("SELECT pageid FROM {page} WHERE pg_url = ?", array('admin/edit/discount'));
 if (!$data) {
-   echo "Adding <b>Discount codes</b> Page to menu<br />";
+   echo "Adding <b>Discounts</b> Page to menu<br />";
    Jojo::insertQuery('INSERT INTO {page} SET pg_title = ?, pg_url = ?, pg_body_code = ?, pg_link = ?, pg_order = ?, pg_parent = ?, pg_index = ?, pg_followto = ?, pg_contentcache = ?, pg_sitemapnav = ?, pg_xmlsitemapnav = ?',
-        array("Discount codes", "admin/edit/discount", "[editor:html]\n", "jojo_plugin_admin_edit", "3", $_ADMIN_SHOPPING_ID, "no", "no", "no", "no", "no"));
+        array("Discounts", "admin/edit/discount", "[editor:html]\n", "jojo_plugin_admin_edit", "3", $_ADMIN_SHOPPING_ID, "no", "no", "no", "no", "no"));
 }
 
 // Cart Countries

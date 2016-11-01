@@ -50,7 +50,7 @@ $default_fd['discount']['type'] = array(
         'fd_name'    => "Discount method",
         'fd_type'    => "radio",
         'fd_default' => "no",
-        'fd_options' => "code\nautomatic",
+        'fd_options' => "code:Code (exclusive)\ncode+: Code (+ auto)\nautomatic: Automatic",
         'fd_help'    => "Apply the discount only when code is entered, or automatically",
         'fd_order' => $o++
     );

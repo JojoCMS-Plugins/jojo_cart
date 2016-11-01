@@ -26,7 +26,7 @@ $query = "
       `discountcode` varchar(30) NOT NULL,
       `name` varchar(255) NOT NULL,
       `status` tinyint(1) NOT NULL default '1',
-      `type` enum('code','automatic') NOT NULL default 'code',
+      `type` enum('code','code+','automatic') NOT NULL default 'code',
       `description` varchar(255) NOT NULL,
       `startdate` int(11) NOT NULL,
       `finishdate` int(11) NOT NULL,
